@@ -1,4 +1,4 @@
-import { mysqlEnum, mysqlTable, serial, text, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, serial, text, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
 
 enum Roles {
   ADMIN = 0,
@@ -8,7 +8,7 @@ enum Roles {
 }
 
 export const users = mysqlTable('users', {
-  id: serial("id").primaryKey(),
+  id: int("id").primaryKey().autoincrement(),
   fullName: text('full_name'),
   userName: varchar('user_name',{length: 256}).unique(),
   email: varchar('email',{length:256}).unique(),

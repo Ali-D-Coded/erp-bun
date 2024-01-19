@@ -1,5 +1,5 @@
 CREATE TABLE `attendance` (
-	`id` serial AUTO_INCREMENT NOT NULL,
+	`id` int AUTO_INCREMENT NOT NULL,
 	`employee_id` int,
 	`date` date,
 	`check_in_time` time,
@@ -8,7 +8,7 @@ CREATE TABLE `attendance` (
 );
 --> statement-breakpoint
 CREATE TABLE `employees` (
-	`id` serial AUTO_INCREMENT NOT NULL,
+	`id` int AUTO_INCREMENT NOT NULL,
 	`user_id` int,
 	`job_title` varchar(256),
 	`department_id` int DEFAULT NULL,
@@ -17,7 +17,7 @@ CREATE TABLE `employees` (
 );
 --> statement-breakpoint
 CREATE TABLE `leaves` (
-	`id` serial AUTO_INCREMENT NOT NULL,
+	`id` int AUTO_INCREMENT NOT NULL,
 	`employee_id` int,
 	`leave_type` varchar(256),
 	`start_date` date,
@@ -27,7 +27,7 @@ CREATE TABLE `leaves` (
 );
 --> statement-breakpoint
 CREATE TABLE `payroll` (
-	`id` serial AUTO_INCREMENT NOT NULL,
+	`id` int AUTO_INCREMENT NOT NULL,
 	`employee_id` int,
 	`payment_date` date,
 	`gross_pay` decimal,
@@ -37,10 +37,10 @@ CREATE TABLE `payroll` (
 );
 --> statement-breakpoint
 CREATE TABLE `users` (
-	`id` serial AUTO_INCREMENT NOT NULL,
+	`id` int AUTO_INCREMENT NOT NULL,
 	`full_name` text,
 	`user_name` varchar(256),
-	`email` text,
+	`email` varchar(256),
 	`password` varchar(256),
 	`phone` varchar(256),
 	`role` enum('ADMIN','MANAGER','SALESMAN','ACCOUNTANT') DEFAULT 'SALESMAN',

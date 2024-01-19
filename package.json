@@ -1,7 +1,8 @@
 {
   "scripts": {
     "dev": "bun run --hot src/index.ts",
-    "migrate":"bun src/database/migrate.ts"
+    "gen":"bunx drizzle-kit generate:mysql",
+    "mig":"bun src/database/migrate.ts"
   },
   "dependencies": {
     "dotenv": "^16.3.1",
