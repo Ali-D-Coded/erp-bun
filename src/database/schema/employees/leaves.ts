@@ -1,5 +1,5 @@
 import { mysqlTable, serial, text, varchar,mysqlEnum, uniqueIndex, int, decimal, date } from "drizzle-orm/mysql-core";
-import { users } from "./users";
+import { users } from "../users/users";
 import { sql } from "drizzle-orm";
 import { employees } from "./employees";
 

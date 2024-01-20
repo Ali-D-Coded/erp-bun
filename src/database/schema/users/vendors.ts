@@ -1,4 +1,6 @@
+import { relations } from "drizzle-orm";
 import { int, mysqlEnum, mysqlTable, serial, text, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
+import { productsVariant } from "../product/product-variant";
 
 
 
@@ -16,3 +18,7 @@ export const vendors = mysqlTable('vendors', {
 
 export type Vendor = typeof vendors.$inferSelect; // return type when queried
 export type NewVendor = typeof vendors.$inferInsert; // insert type
+
+export const vendorRelations = relations(vendors, ({many}) => ({
+  productVariants : many(productsVariant)
+}))

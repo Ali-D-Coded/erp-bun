@@ -1,4 +1,6 @@
+import { relations } from "drizzle-orm";
 import { int, mysqlEnum, mysqlTable, serial, text, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
+import { employees } from "../employees/employees";
 
 enum Roles {
   ADMIN = 0,
@@ -23,3 +25,7 @@ export const users = mysqlTable('users', {
 
 export type User = typeof users.$inferSelect; // return type when queried
 export type NewUser = typeof users.$inferInsert; // insert type
+
+export const usersRelations = relations(users, ({ one }) => ({
+  profileInfo: one(employees),
+}));
