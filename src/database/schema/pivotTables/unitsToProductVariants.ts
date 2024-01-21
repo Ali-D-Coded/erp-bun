@@ -9,7 +9,7 @@ export const unitsToProductVariants = mysqlTable('users_to_groups', {
     productVariantId: int('product_variant_id').notNull().references(() => productsVariant.id),
     purchaseItemId: int('purchase_item_id').notNull().references(() => purchaseItems.id),
   }, (t) => ({
-    pk: primaryKey(t.unitId, t.productVariantId),
+    pk: primaryKey({columns:[t.unitId, t.productVariantId]}),
   }),
 );
 
