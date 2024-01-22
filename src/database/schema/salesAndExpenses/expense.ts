@@ -1,4 +1,4 @@
-import { date, decimal, int, mysqlTable, text, uniqueIndex } from "drizzle-orm/mysql-core";
+import { date, decimal, int, mysqlTable } from "drizzle-orm/mysql-core";
 import { employees } from "../employees/employees";
 import { expenseTypes } from "./expense-type";
 

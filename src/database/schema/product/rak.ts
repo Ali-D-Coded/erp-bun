@@ -1,8 +1,8 @@
-import { int, mysqlTable, text, uniqueIndex } from "drizzle-orm/mysql-core";
+import { int, mysqlTable, varchar } from "drizzle-orm/mysql-core";
 
 export const raks = mysqlTable('raks', {
     id: int("id").primaryKey().autoincrement(),
-    name: text('name'),
+    name: varchar('name',{length:256}),
   });
 
   

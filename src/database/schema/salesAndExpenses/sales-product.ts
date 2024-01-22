@@ -1,9 +1,7 @@
-import { date, decimal, int, mysqlTable, text, uniqueIndex } from "drizzle-orm/mysql-core";
-import { employees } from "../employees/employees";
-import { expenseTypes } from "./expense-type";
+import { relations } from "drizzle-orm";
+import { int, mysqlTable } from "drizzle-orm/mysql-core";
 import { products } from "../product/products";
 import { sales } from "./sales";
-import { relations } from "drizzle-orm";
 
 export const salesProducts = mysqlTable('salesProducts', {
     id: int("id").primaryKey().autoincrement(),

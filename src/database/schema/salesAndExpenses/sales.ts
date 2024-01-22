@@ -1,8 +1,7 @@
-import { date, decimal, int, mysqlTable, text, uniqueIndex } from "drizzle-orm/mysql-core";
-import { employees } from "../employees/employees";
-import { expenseTypes } from "./expense-type";
-import { custmers } from "../users/customer";
 import { relations } from "drizzle-orm";
+import { date, decimal, int, mysqlTable } from "drizzle-orm/mysql-core";
+import { employees } from "../employees/employees";
+import { custmers } from "../users/customer";
 import { salesProducts } from "./sales-product";
 
 export const sales = mysqlTable('sales', {

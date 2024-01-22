@@ -1,11 +1,11 @@
-import { decimal, int, mysqlEnum, mysqlTable, serial, text, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
-import { productsVariant } from "./product-variant";
 import { relations } from "drizzle-orm";
+import { int, mysqlTable, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
+import { productsVariant } from "./product-variant";
 
 
 export const products = mysqlTable('products', {
   id: int("id").primaryKey().autoincrement(),
-  name: text('name'),
+  name: varchar('name',{length:256}),
 },(products) => ({
 	idIndex: uniqueIndex('id_idx').on(products.id),
 	nameIndex: uniqueIndex('name_idx').on(products.name),

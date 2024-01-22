@@ -1,10 +1,10 @@
 import { relations } from "drizzle-orm";
-import { int, mysqlTable, text, uniqueIndex } from "drizzle-orm/mysql-core";
+import { int, mysqlTable, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
 import { subCategories } from "./sub-category";
 
 export const categories = mysqlTable('categories', {
     id: int("id").primaryKey().autoincrement(),
-    name: text('name'),
+    name: varchar('name',{length:256}),
   },(categories) => ({
       idIndex: uniqueIndex('id_idx').on(categories.id),
       nameIndex: uniqueIndex('name_idx').on(categories.name),

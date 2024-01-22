@@ -1,11 +1,8 @@
-import { mysqlTable, serial, text, varchar,mysqlEnum, uniqueIndex, int, decimal, date } from "drizzle-orm/mysql-core";
-import { users } from "../users/users";
-import { relations, sql } from "drizzle-orm";
-import { employees } from "../employees/employees";
-import { purchase } from "./purchase";
-import { productsVariant } from "../product/product-variant";
-import { units } from "../units/units";
+import { relations } from "drizzle-orm";
+import { decimal, int, mysqlTable, varchar } from "drizzle-orm/mysql-core";
 import { unitsToProductVariants } from "../pivotTables/unitsToProductVariants";
+import { productsVariant } from "../product/product-variant";
+import { purchase } from "./purchase";
 
 export const purchaseItems = mysqlTable('purchaseItems', {
 id: int("id").primaryKey().autoincrement(),

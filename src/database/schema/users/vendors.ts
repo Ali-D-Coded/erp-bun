@@ -1,12 +1,12 @@
 import { relations } from "drizzle-orm";
-import { int, mysqlEnum, mysqlTable, serial, text, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
+import { int, mysqlTable, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
 import { productsVariant } from "../product/product-variant";
 
 
 
 export const vendors = mysqlTable('vendors', {
   id: int("id").primaryKey().autoincrement(),
-  name: text('name'),
+  name: varchar('name',{length:256}),
   email: varchar('email',{length:256}).unique(),
   contactPerson: varchar('contact_person',{length: 256}),
 	phone: varchar('phone', { length: 256 }).unique(),

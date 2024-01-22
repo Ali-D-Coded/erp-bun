@@ -1,7 +1,7 @@
-import { int, mysqlTable, primaryKey, text, uniqueIndex } from "drizzle-orm/mysql-core";
+import { relations } from "drizzle-orm";
+import { int, mysqlTable, primaryKey } from "drizzle-orm/mysql-core";
 import { permissions } from "../users/permissions";
 import { users } from "../users/users";
-import { relations } from "drizzle-orm";
 
 export const userPermissions = mysqlTable('userPermissions', {
     permissionId: int('permission_id').notNull().references(() => permissions.id),

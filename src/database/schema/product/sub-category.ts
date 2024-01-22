@@ -1,9 +1,9 @@
-import { int, mysqlTable, text, uniqueIndex } from "drizzle-orm/mysql-core";
+import { int, mysqlTable, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
 import { categories } from "./category";
 
 export const subCategories = mysqlTable('subCategories', {
     id: int("id").primaryKey().autoincrement(),
-    name: text('name'),
+    name: varchar('name',{length:256}),
     categoryId: int("catrgory_id").references(() => categories.id)
   },(subCategories) => ({
       idIndex: uniqueIndex('id_idx').on(subCategories.id),

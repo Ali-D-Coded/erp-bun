@@ -1,6 +1,4 @@
-import { mysqlTable, serial, text, varchar,mysqlEnum, uniqueIndex, int, decimal, date } from "drizzle-orm/mysql-core";
-import { users } from "../users/users";
-import { sql } from "drizzle-orm";
+import { date, int, mysqlEnum, mysqlTable, varchar } from "drizzle-orm/mysql-core";
 import { employees } from "./employees";
 
 export const leaves = mysqlTable('leaves', {

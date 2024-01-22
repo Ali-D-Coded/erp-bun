@@ -1,7 +1,5 @@
-import { mysqlTable, serial, text, varchar,mysqlEnum, uniqueIndex, int, decimal, date } from "drizzle-orm/mysql-core";
-import { users } from "../users/users";
-import { relations, sql } from "drizzle-orm";
-import { employees } from "../employees/employees";
+import { relations } from "drizzle-orm";
+import { date, decimal, int, mysqlTable, varchar } from "drizzle-orm/mysql-core";
 import { vendors } from "../users/vendors";
 import { purchaseItems } from "./purchase-items";
 

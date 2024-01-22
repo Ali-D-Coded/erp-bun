@@ -1,13 +1,13 @@
-import { decimal, int, mysqlEnum, mysqlTable, serial, text, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
+import { relations } from "drizzle-orm";
+import { decimal, int, mysqlTable, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
+import { units } from "../units/units";
 import { vendors } from "../users/vendors";
 import { products } from "./products";
-import { relations } from "drizzle-orm";
-import { units } from "../units/units";
 
 
 export const productsVariant = mysqlTable('products_variant', {
   id: int("id").primaryKey().autoincrement(),
-  name: text('name'),
+  name: varchar('name',{length:256}),
   description: varchar('description',{length:256}).unique(),
   price: decimal('price'),
   quantityInStock: int('quantity_in_stock'),

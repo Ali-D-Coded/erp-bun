@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { int, mysqlEnum, mysqlTable, serial, text, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
 import { employees } from "../employees/employees";
 
 enum Roles {
@@ -11,7 +11,7 @@ enum Roles {
 
 export const users = mysqlTable('users', {
   id: int("id").primaryKey().autoincrement(),
-  fullName: text('full_name'),
+  fullName: varchar('full_name',{length:256}),
   userName: varchar('user_name',{length: 256}).unique(),
   email: varchar('email',{length:256}).unique(),
   password: varchar('password',{length: 256}),
