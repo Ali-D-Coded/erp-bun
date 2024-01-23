@@ -7,11 +7,7 @@ import { NewUser, users } from "../database/schema/users/users";
 export const usersApi = new Hono()
 
 usersApi.get("/", async (c) => {
-	const users = await db.query.users.findMany({
-		with: {
-			
-		}
-	})
+	const users = await db.query.users.findMany()
 	return c.json({
 		users
 	})
