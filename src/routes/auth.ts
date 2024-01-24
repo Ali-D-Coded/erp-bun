@@ -5,6 +5,8 @@ import { eq, getTableColumns } from "drizzle-orm";
 import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
 import { JwtHandler } from "../utils/jwt";
+import { userPermissions } from "../database/schema/pivotTables/userPermissions";
+import { permissions } from "../database/schema/users/permissions";
 
 
 
@@ -25,7 +27,7 @@ const schema = z.object({
 auth.post("admin/seeder", async (c) => {
 	try {
 		const hash = await Bun.password.hash("12356")
-		await db.insert(users).values({
+		const user = await db.insert(users).values({
 			userName:"admin",
 			email: "admin@gmail.com",
 			fullName: "admin",
@@ -33,6 +35,17 @@ auth.post("admin/seeder", async (c) => {
 			role: "ADMIN",
 			password: hash,
 		})
+		const perm = await db.query.permissions.findFirst({
+			where: eq(permissions.type,"ADMIN")
+		})
+
+		await db.insert(userPermissions).values([
+			{
+				userId: user[0].insertId,
+				permissionId: perm?.id || 1
+			}
+		])
+
 		return c.json({
 			msg: "admin created",
 			

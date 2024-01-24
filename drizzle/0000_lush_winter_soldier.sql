@@ -200,7 +200,8 @@ CREATE TABLE `customers` (
 --> statement-breakpoint
 CREATE TABLE `permissions` (
 	`id` int AUTO_INCREMENT NOT NULL,
-	`name` varchar(256),
+	`type` enum('ADMIN','MANAGER','SALESMAN','ACCOUNTANT'),
+	`can_do` json,
 	CONSTRAINT `permissions_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint

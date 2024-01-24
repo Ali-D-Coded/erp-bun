@@ -1,6 +1,7 @@
 import { relations } from "drizzle-orm";
 import { int, mysqlEnum, mysqlTable, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
 import { employees } from "../employees/employees";
+import { userPermissions } from "../pivotTables/userPermissions";
 
 enum Roles {
   ADMIN = 0,
@@ -16,7 +17,8 @@ export const users = mysqlTable('users', {
   email: varchar('email',{length:256}).unique(),
   password: varchar('password',{length: 256}),
   phone: varchar('phone', { length: 256 }).unique(),
-  role: mysqlEnum("role",["ADMIN","MANAGER","SALESMAN","ACCOUNTANT"]).default("SALESMAN")
+  role: mysqlEnum("role", ["ADMIN", "MANAGER", "SALESMAN", "ACCOUNTANT"]).default("SALESMAN"),
+
 },(users) => ({
 	idIndex: uniqueIndex('id_idx').on(users.id),
 	usernameIndex: uniqueIndex('username_idx').on(users.userName),
@@ -26,6 +28,7 @@ export const users = mysqlTable('users', {
 export type User = typeof users.$inferSelect; // return type when queried
 export type NewUser = typeof users.$inferInsert; // insert type
 
-export const usersRelations = relations(users, ({ one }) => ({
-  profileInfo: one(employees),
+export const usersRelations = relations(users, ({ one,many }) => ({
+  employee: one(employees),
+  userPermissions: many(userPermissions)
 }));

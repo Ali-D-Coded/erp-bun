@@ -7,7 +7,11 @@ import { NewUser, users } from "../database/schema/users/users";
 export const usersApi = new Hono()
 
 usersApi.get("/", async (c) => {
-	const users = await db.query.users.findMany()
+	const users = await db.query.users.findMany({
+		with: {
+			userPermissions: true
+		}
+	})
 	return c.json({
 		users
 	})
@@ -17,7 +21,7 @@ const insertUser = async (user: NewUser) => {
   return db.insert(users).values(user);
 }
 
-usersApi.get("/create", async (c) => {
+usersApi.post("/create", async (c) => {
 	const newUser: NewUser = {
 		fullName: "ali",
 		email: "aliallu3xa@gmail.com",

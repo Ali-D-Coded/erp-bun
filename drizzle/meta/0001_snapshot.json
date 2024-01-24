@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "49f07360-eea8-49ab-8718-662381d9b2e0",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "442acb74-7ecc-4a78-9f71-761811d4d5ad",
+  "prevId": "49f07360-eea8-49ab-8718-662381d9b2e0",
   "tables": {
     "attendance": {
       "name": "attendance",
@@ -1538,7 +1538,14 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "permissions_type_unique": {
+          "name": "permissions_type_unique",
+          "columns": [
+            "type"
+          ]
+        }
+      }
     },
     "users": {
       "name": "users",

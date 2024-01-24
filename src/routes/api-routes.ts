@@ -3,6 +3,8 @@ import { jwt } from "hono/jwt";
 import { usersApi } from "./users";
 import { JwtHandler } from "../utils/jwt";
 import auth from "./auth";
+import permissionsRoute from "./permissions";
+import { db } from "../database/db";
 
 
 const api = new Hono()
@@ -27,6 +29,7 @@ api.use(
 )
 
 api.get("/data", async (c) => {
+	// const admin = await db.query.users.
 	return c.json({
 		msg: "Hello user you are authenticared"
 	})
@@ -38,6 +41,7 @@ api.get("/data", async (c) => {
 
 api.route("/users", usersApi)
 api.route("/auth", auth)
+api.route("/permissions", permissionsRoute)
 
 
 export default api
