@@ -255,7 +255,7 @@ export const unitsToProductVariantsRelations = relations(unitsToProductVariants,
 // //Departments 
 export const departments = mysqlTable('departments', {
 	id: int("id").primaryKey().autoincrement(),
-	name: varchar("name", {length:256}),
+	name: varchar("name", {length:256}).unique(),
 });
 
 export type Department = typeof departments.$inferSelect; // return type when queried

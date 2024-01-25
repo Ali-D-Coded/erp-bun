@@ -15,6 +15,13 @@
       "when": 1706177463395,
       "tag": "0001_spicy_hiroim",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1706184729001,
+      "tag": "0002_foamy_invaders",
+      "breakpoints": true
     }
   ]
 }

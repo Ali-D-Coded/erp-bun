@@ -10,5 +10,9 @@ export const CreateUser = z.object({
   password: z.string().min(8),
   phone: z.string().min(10),
   role: z.enum(["SALESMAN", "MANAGER", "ACCOUNTANT"]),
-  jobTitle: z.string()
+  jobTitle: z.string(),
+  departmentId: z.number(),
+  permissionId: z.number(),
+
 })
+
