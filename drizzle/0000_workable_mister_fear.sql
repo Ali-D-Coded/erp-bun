@@ -7,6 +7,27 @@ CREATE TABLE `attendance` (
 	CONSTRAINT `attendance_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
+CREATE TABLE `categories` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`name` varchar(256),
+	CONSTRAINT `categories_id` PRIMARY KEY(`id`),
+	CONSTRAINT `id_idx` UNIQUE(`id`),
+	CONSTRAINT `name_idx` UNIQUE(`name`)
+);
+--> statement-breakpoint
+CREATE TABLE `customers` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`full_name` varchar(256),
+	`email` varchar(256),
+	`phone` varchar(256),
+	`address` varchar(256),
+	CONSTRAINT `customers_id` PRIMARY KEY(`id`),
+	CONSTRAINT `customers_email_unique` UNIQUE(`email`),
+	CONSTRAINT `customers_phone_unique` UNIQUE(`phone`),
+	CONSTRAINT `id_idx` UNIQUE(`id`),
+	CONSTRAINT `email_idx` UNIQUE(`email`)
+);
+--> statement-breakpoint
 CREATE TABLE `departments` (
 	`id` int AUTO_INCREMENT NOT NULL,
 	`name` varchar(256),
@@ -19,6 +40,21 @@ CREATE TABLE `employees` (
 	`job_title` varchar(256),
 	`department_id` int,
 	CONSTRAINT `employees_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `expenseTypes` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`name` varchar(256),
+	CONSTRAINT `expenseTypes_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `expenses` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`date` date,
+	`employee_id` int,
+	`amount` decimal,
+	`expense_type_id` int,
+	CONSTRAINT `expenses_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `leaves` (
@@ -41,23 +77,18 @@ CREATE TABLE `payroll` (
 	CONSTRAINT `payroll_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
-CREATE TABLE `users_to_groups` (
-	`unit_id` int NOT NULL,
-	`product_variant_id` int NOT NULL,
-	`purchase_item_id` int NOT NULL,
-	CONSTRAINT `users_to_groups_unit_id_product_variant_id_pk` PRIMARY KEY(`unit_id`,`product_variant_id`)
+CREATE TABLE `permissions` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`type` enum('ADMIN','MANAGER','SALESMAN','ACCOUNTANT'),
+	`can_do` json,
+	CONSTRAINT `permissions_id` PRIMARY KEY(`id`),
+	CONSTRAINT `permissions_type_unique` UNIQUE(`type`)
 );
 --> statement-breakpoint
-CREATE TABLE `userPermissions` (
-	`permission_id` int NOT NULL,
-	`user_id` int NOT NULL,
-	CONSTRAINT `userPermissions_permission_id_user_id_pk` PRIMARY KEY(`permission_id`,`user_id`)
-);
---> statement-breakpoint
-CREATE TABLE `categories` (
+CREATE TABLE `products` (
 	`id` int AUTO_INCREMENT NOT NULL,
 	`name` varchar(256),
-	CONSTRAINT `categories_id` PRIMARY KEY(`id`),
+	CONSTRAINT `products_id` PRIMARY KEY(`id`),
 	CONSTRAINT `id_idx` UNIQUE(`id`),
 	CONSTRAINT `name_idx` UNIQUE(`name`)
 );
@@ -80,27 +111,13 @@ CREATE TABLE `products_variant` (
 	CONSTRAINT `name_idx` UNIQUE(`name`)
 );
 --> statement-breakpoint
-CREATE TABLE `products` (
+CREATE TABLE `purchase` (
 	`id` int AUTO_INCREMENT NOT NULL,
-	`name` varchar(256),
-	CONSTRAINT `products_id` PRIMARY KEY(`id`),
-	CONSTRAINT `id_idx` UNIQUE(`id`),
-	CONSTRAINT `name_idx` UNIQUE(`name`)
-);
---> statement-breakpoint
-CREATE TABLE `raks` (
-	`id` int AUTO_INCREMENT NOT NULL,
-	`name` varchar(256),
-	CONSTRAINT `raks_id` PRIMARY KEY(`id`)
-);
---> statement-breakpoint
-CREATE TABLE `subCategories` (
-	`id` int AUTO_INCREMENT NOT NULL,
-	`name` varchar(256),
-	`catrgory_id` int,
-	CONSTRAINT `subCategories_id` PRIMARY KEY(`id`),
-	CONSTRAINT `id_idx` UNIQUE(`id`),
-	CONSTRAINT `name_idx` UNIQUE(`name`)
+	`vendor_id` int,
+	`purchase_bill_no` varchar(256),
+	`date` date,
+	`total_amount` decimal,
+	CONSTRAINT `purchase_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `purchaseItems` (
@@ -126,28 +143,21 @@ CREATE TABLE `purchaseReturn` (
 	CONSTRAINT `purchaseReturn_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
-CREATE TABLE `purchase` (
-	`id` int AUTO_INCREMENT NOT NULL,
-	`vendor_id` int,
-	`purchase_bill_no` varchar(256),
-	`date` date,
-	`total_amount` decimal,
-	CONSTRAINT `purchase_id` PRIMARY KEY(`id`)
-);
---> statement-breakpoint
-CREATE TABLE `expenseTypes` (
+CREATE TABLE `raks` (
 	`id` int AUTO_INCREMENT NOT NULL,
 	`name` varchar(256),
-	CONSTRAINT `expenseTypes_id` PRIMARY KEY(`id`)
+	CONSTRAINT `raks_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
-CREATE TABLE `expenses` (
+CREATE TABLE `sales` (
 	`id` int AUTO_INCREMENT NOT NULL,
 	`date` date,
-	`employee_id` int,
-	`amount` decimal,
-	`expense_type_id` int,
-	CONSTRAINT `expenses_id` PRIMARY KEY(`id`)
+	`accountantId` int,
+	`customer_id` int,
+	`total_amount` decimal,
+	`discount_amount` decimal,
+	`grandTotal` decimal,
+	CONSTRAINT `sales_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `salesProducts` (
@@ -168,15 +178,13 @@ CREATE TABLE `salesReturn` (
 	CONSTRAINT `salesReturn_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
-CREATE TABLE `sales` (
+CREATE TABLE `subCategories` (
 	`id` int AUTO_INCREMENT NOT NULL,
-	`date` date,
-	`accountantId` int,
-	`customer_id` int,
-	`total_amount` decimal,
-	`discount_amount` decimal,
-	`grandTotal` decimal,
-	CONSTRAINT `sales_id` PRIMARY KEY(`id`)
+	`name` varchar(256),
+	`catrgory_id` int,
+	CONSTRAINT `subCategories_id` PRIMARY KEY(`id`),
+	CONSTRAINT `id_idx` UNIQUE(`id`),
+	CONSTRAINT `name_idx` UNIQUE(`name`)
 );
 --> statement-breakpoint
 CREATE TABLE `unit` (
@@ -185,24 +193,17 @@ CREATE TABLE `unit` (
 	CONSTRAINT `unit_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
-CREATE TABLE `customers` (
-	`id` int AUTO_INCREMENT NOT NULL,
-	`full_name` varchar(256),
-	`email` varchar(256),
-	`phone` varchar(256),
-	`address` varchar(256),
-	CONSTRAINT `customers_id` PRIMARY KEY(`id`),
-	CONSTRAINT `customers_email_unique` UNIQUE(`email`),
-	CONSTRAINT `customers_phone_unique` UNIQUE(`phone`),
-	CONSTRAINT `id_idx` UNIQUE(`id`),
-	CONSTRAINT `email_idx` UNIQUE(`email`)
+CREATE TABLE `users_to_groups` (
+	`unit_id` int NOT NULL,
+	`product_variant_id` int NOT NULL,
+	`purchase_item_id` int NOT NULL,
+	CONSTRAINT `users_to_groups_unit_id_product_variant_id_pk` PRIMARY KEY(`unit_id`,`product_variant_id`)
 );
 --> statement-breakpoint
-CREATE TABLE `permissions` (
-	`id` int AUTO_INCREMENT NOT NULL,
-	`type` enum('ADMIN','MANAGER','SALESMAN','ACCOUNTANT'),
-	`can_do` json,
-	CONSTRAINT `permissions_id` PRIMARY KEY(`id`)
+CREATE TABLE `user_permissions` (
+	`permission_id` int NOT NULL,
+	`user_id` int NOT NULL,
+	CONSTRAINT `user_permissions_permission_id_user_id_pk` PRIMARY KEY(`permission_id`,`user_id`)
 );
 --> statement-breakpoint
 CREATE TABLE `users` (
@@ -239,26 +240,26 @@ CREATE TABLE `vendors` (
 ALTER TABLE `attendance` ADD CONSTRAINT `attendance_employee_id_employees_id_fk` FOREIGN KEY (`employee_id`) REFERENCES `employees`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `employees` ADD CONSTRAINT `employees_user_id_users_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `employees` ADD CONSTRAINT `employees_department_id_departments_id_fk` FOREIGN KEY (`department_id`) REFERENCES `departments`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `expenses` ADD CONSTRAINT `expenses_employee_id_employees_id_fk` FOREIGN KEY (`employee_id`) REFERENCES `employees`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `expenses` ADD CONSTRAINT `expenses_expense_type_id_expenseTypes_id_fk` FOREIGN KEY (`expense_type_id`) REFERENCES `expenseTypes`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `leaves` ADD CONSTRAINT `leaves_employee_id_employees_id_fk` FOREIGN KEY (`employee_id`) REFERENCES `employees`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `payroll` ADD CONSTRAINT `payroll_employee_id_employees_id_fk` FOREIGN KEY (`employee_id`) REFERENCES `employees`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `users_to_groups` ADD CONSTRAINT `users_to_groups_unit_id_unit_id_fk` FOREIGN KEY (`unit_id`) REFERENCES `unit`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `users_to_groups` ADD CONSTRAINT `users_to_groups_product_variant_id_products_variant_id_fk` FOREIGN KEY (`product_variant_id`) REFERENCES `products_variant`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `users_to_groups` ADD CONSTRAINT `users_to_groups_purchase_item_id_purchaseItems_id_fk` FOREIGN KEY (`purchase_item_id`) REFERENCES `purchaseItems`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `userPermissions` ADD CONSTRAINT `userPermissions_permission_id_permissions_id_fk` FOREIGN KEY (`permission_id`) REFERENCES `permissions`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `userPermissions` ADD CONSTRAINT `userPermissions_user_id_users_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `products_variant` ADD CONSTRAINT `products_variant_unit_id_unit_id_fk` FOREIGN KEY (`unit_id`) REFERENCES `unit`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `subCategories` ADD CONSTRAINT `subCategories_catrgory_id_categories_id_fk` FOREIGN KEY (`catrgory_id`) REFERENCES `categories`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `purchase` ADD CONSTRAINT `purchase_vendor_id_vendors_id_fk` FOREIGN KEY (`vendor_id`) REFERENCES `vendors`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `purchaseItems` ADD CONSTRAINT `purchaseItems_purchase_id_purchase_id_fk` FOREIGN KEY (`purchase_id`) REFERENCES `purchase`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `purchaseItems` ADD CONSTRAINT `purchaseItems_product_variant_id_products_variant_id_fk` FOREIGN KEY (`product_variant_id`) REFERENCES `products_variant`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `purchaseReturn` ADD CONSTRAINT `purchaseReturn_ourchase_item_id_purchaseItems_id_fk` FOREIGN KEY (`ourchase_item_id`) REFERENCES `purchaseItems`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `purchaseReturn` ADD CONSTRAINT `purchaseReturn_vendor_id_vendors_id_fk` FOREIGN KEY (`vendor_id`) REFERENCES `vendors`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `purchase` ADD CONSTRAINT `purchase_vendor_id_vendors_id_fk` FOREIGN KEY (`vendor_id`) REFERENCES `vendors`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `expenses` ADD CONSTRAINT `expenses_employee_id_employees_id_fk` FOREIGN KEY (`employee_id`) REFERENCES `employees`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `expenses` ADD CONSTRAINT `expenses_expense_type_id_expenseTypes_id_fk` FOREIGN KEY (`expense_type_id`) REFERENCES `expenseTypes`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `sales` ADD CONSTRAINT `sales_accountantId_employees_id_fk` FOREIGN KEY (`accountantId`) REFERENCES `employees`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `sales` ADD CONSTRAINT `sales_customer_id_customers_id_fk` FOREIGN KEY (`customer_id`) REFERENCES `customers`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `salesProducts` ADD CONSTRAINT `salesProducts_sale_id_sales_id_fk` FOREIGN KEY (`sale_id`) REFERENCES `sales`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `salesProducts` ADD CONSTRAINT `salesProducts_product_id_products_id_fk` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `salesReturn` ADD CONSTRAINT `salesReturn_sale_product_id_salesProducts_id_fk` FOREIGN KEY (`sale_product_id`) REFERENCES `salesProducts`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `salesReturn` ADD CONSTRAINT `salesReturn_product_id_products_id_fk` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `salesReturn` ADD CONSTRAINT `salesReturn_customer_id_customers_id_fk` FOREIGN KEY (`customer_id`) REFERENCES `customers`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `sales` ADD CONSTRAINT `sales_accountantId_employees_id_fk` FOREIGN KEY (`accountantId`) REFERENCES `employees`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `sales` ADD CONSTRAINT `sales_customer_id_customers_id_fk` FOREIGN KEY (`customer_id`) REFERENCES `customers`(`id`) ON DELETE no action ON UPDATE no action;
+ALTER TABLE `subCategories` ADD CONSTRAINT `subCategories_catrgory_id_categories_id_fk` FOREIGN KEY (`catrgory_id`) REFERENCES `categories`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `users_to_groups` ADD CONSTRAINT `users_to_groups_unit_id_unit_id_fk` FOREIGN KEY (`unit_id`) REFERENCES `unit`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `users_to_groups` ADD CONSTRAINT `users_to_groups_product_variant_id_products_variant_id_fk` FOREIGN KEY (`product_variant_id`) REFERENCES `products_variant`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `users_to_groups` ADD CONSTRAINT `users_to_groups_purchase_item_id_purchaseItems_id_fk` FOREIGN KEY (`purchase_item_id`) REFERENCES `purchaseItems`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `user_permissions` ADD CONSTRAINT `user_permissions_permission_id_permissions_id_fk` FOREIGN KEY (`permission_id`) REFERENCES `permissions`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `user_permissions` ADD CONSTRAINT `user_permissions_user_id_users_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE no action ON UPDATE no action;

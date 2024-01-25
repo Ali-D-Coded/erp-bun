@@ -1,1 +1,0 @@
-ALTER TABLE `permissions` ADD CONSTRAINT `permissions_type_unique` UNIQUE(`type`);

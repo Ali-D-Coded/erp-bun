@@ -1,12 +1,12 @@
 import { Hono } from "hono";
 import { db } from "../database/db";
-import { User, users } from "../database/schema/users/users";
+
 import { eq, getTableColumns } from "drizzle-orm";
 import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
 import { JwtHandler } from "../utils/jwt";
-import { userPermissions } from "../database/schema/pivotTables/userPermissions";
-import { permissions } from "../database/schema/users/permissions";
+import { User, permissions, userPermissions, users } from "../database/schema/schema";
+
 
 
 

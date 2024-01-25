@@ -1,7 +1,8 @@
 import { Hono } from "hono";
 import { db } from "../database/db";
-import { NewPermission, permissions, permissions } from "../database/schema/users/permissions";
+
 import { eq } from "drizzle-orm";
+import { NewPermission, permissions } from "../database/schema/schema";
 
  const permissionsRoute = new Hono()
 
@@ -50,9 +51,17 @@ permissionsRoute.get("/all", async (c) => {
 
 permissionsRoute.get("/:id?", async (c) => {
 	const { id } = c.req.param()
-	const {type} = c.req.query()
+	const {type}  = c.req.query()
 	try {
-		const condition = id ? eq(permissions.id, +id) : eq(permissions.type, type || "") 
+		let condition;
+		if (id) {
+			condition = eq(permissions.id, +id) 
+		}
+		if (type) {
+			//@ts-ignore
+			condition = eq(permissions.type, type) 
+			
+		}
 		const perm = await db.query.permissions.findFirst({
 			where: condition,
 			

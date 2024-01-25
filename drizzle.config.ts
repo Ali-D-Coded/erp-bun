@@ -4,7 +4,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 export default {
- schema: "./src/database/schema/*",
+ schema: "./src/database/schema/schema.ts",
   driver: 'mysql2',
   dbCredentials: {
    host: "localhost",
