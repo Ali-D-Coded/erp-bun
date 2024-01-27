@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1706172073342,
-      "tag": "0000_workable_mister_fear",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1706177463395,
-      "tag": "0001_spicy_hiroim",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1706184729001,
-      "tag": "0002_foamy_invaders",
+      "when": 1706329158174,
+      "tag": "0000_acoustic_toad",
       "breakpoints": true
     }
   ]

@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { logger } from 'hono/logger'
 import { poweredBy } from 'hono/powered-by'
-import api from './routes/api-routes'
+import api from './routes/api.routes'
 import { usersApi } from './routes/users/users.routes'
 
 const app = new Hono()

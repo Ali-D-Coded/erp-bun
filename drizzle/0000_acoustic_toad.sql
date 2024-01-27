@@ -31,12 +31,12 @@ CREATE TABLE `customers` (
 CREATE TABLE `departments` (
 	`id` int AUTO_INCREMENT NOT NULL,
 	`name` varchar(256),
-	CONSTRAINT `departments_id` PRIMARY KEY(`id`)
+	CONSTRAINT `departments_id` PRIMARY KEY(`id`),
+	CONSTRAINT `departments_name_unique` UNIQUE(`name`)
 );
 --> statement-breakpoint
 CREATE TABLE `employees` (
 	`id` int AUTO_INCREMENT NOT NULL,
-	`user_id` int,
 	`job_title` varchar(256),
 	`department_id` int,
 	CONSTRAINT `employees_id` PRIMARY KEY(`id`)
@@ -101,7 +101,6 @@ CREATE TABLE `products_variant` (
 	`quantity_in_stock` int,
 	`minimum_quantity` int,
 	`images` int,
-	`unit_id` int,
 	`bar_code` varchar(256),
 	`vendor_id` int,
 	`product_id` int,
@@ -214,6 +213,7 @@ CREATE TABLE `users` (
 	`password` varchar(256),
 	`phone` varchar(256),
 	`role` enum('ADMIN','MANAGER','SALESMAN','ACCOUNTANT') DEFAULT 'SALESMAN',
+	`employee_id` int,
 	CONSTRAINT `users_id` PRIMARY KEY(`id`),
 	CONSTRAINT `users_user_name_unique` UNIQUE(`user_name`),
 	CONSTRAINT `users_email_unique` UNIQUE(`email`),
@@ -238,13 +238,11 @@ CREATE TABLE `vendors` (
 );
 --> statement-breakpoint
 ALTER TABLE `attendance` ADD CONSTRAINT `attendance_employee_id_employees_id_fk` FOREIGN KEY (`employee_id`) REFERENCES `employees`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `employees` ADD CONSTRAINT `employees_user_id_users_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `employees` ADD CONSTRAINT `employees_department_id_departments_id_fk` FOREIGN KEY (`department_id`) REFERENCES `departments`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `expenses` ADD CONSTRAINT `expenses_employee_id_employees_id_fk` FOREIGN KEY (`employee_id`) REFERENCES `employees`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `expenses` ADD CONSTRAINT `expenses_expense_type_id_expenseTypes_id_fk` FOREIGN KEY (`expense_type_id`) REFERENCES `expenseTypes`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `leaves` ADD CONSTRAINT `leaves_employee_id_employees_id_fk` FOREIGN KEY (`employee_id`) REFERENCES `employees`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `payroll` ADD CONSTRAINT `payroll_employee_id_employees_id_fk` FOREIGN KEY (`employee_id`) REFERENCES `employees`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `products_variant` ADD CONSTRAINT `products_variant_unit_id_unit_id_fk` FOREIGN KEY (`unit_id`) REFERENCES `unit`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `purchase` ADD CONSTRAINT `purchase_vendor_id_vendors_id_fk` FOREIGN KEY (`vendor_id`) REFERENCES `vendors`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `purchaseItems` ADD CONSTRAINT `purchaseItems_purchase_id_purchase_id_fk` FOREIGN KEY (`purchase_id`) REFERENCES `purchase`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `purchaseItems` ADD CONSTRAINT `purchaseItems_product_variant_id_products_variant_id_fk` FOREIGN KEY (`product_variant_id`) REFERENCES `products_variant`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -262,4 +260,5 @@ ALTER TABLE `users_to_groups` ADD CONSTRAINT `users_to_groups_unit_id_unit_id_fk
 ALTER TABLE `users_to_groups` ADD CONSTRAINT `users_to_groups_product_variant_id_products_variant_id_fk` FOREIGN KEY (`product_variant_id`) REFERENCES `products_variant`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `users_to_groups` ADD CONSTRAINT `users_to_groups_purchase_item_id_purchaseItems_id_fk` FOREIGN KEY (`purchase_item_id`) REFERENCES `purchaseItems`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `user_permissions` ADD CONSTRAINT `user_permissions_permission_id_permissions_id_fk` FOREIGN KEY (`permission_id`) REFERENCES `permissions`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `user_permissions` ADD CONSTRAINT `user_permissions_user_id_users_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE no action ON UPDATE no action;
+ALTER TABLE `user_permissions` ADD CONSTRAINT `user_permissions_user_id_users_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `users` ADD CONSTRAINT `users_employee_id_employees_id_fk` FOREIGN KEY (`employee_id`) REFERENCES `employees`(`id`) ON DELETE no action ON UPDATE no action;

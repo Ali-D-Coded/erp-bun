@@ -1,10 +1,7 @@
 import { z } from "zod";
 import { emailRegex } from "../../../utils/constants";
 
-
-
-
-export const CreateUserDto = z.object({
+export const CreateEmployeeDto = z.object({
   fullName: z.string(),
   userName: z.string().min(3),
   email: z.string().regex(emailRegex),
@@ -17,8 +14,7 @@ export const CreateUserDto = z.object({
 
 })
 
-
-export const UpdateUserDto = z.object({
+export const UpdateEmployeeDto = z.object({
   fullName: z.string().optional(),
   userName: z.string().min(3).optional(),
   email: z.string().regex(emailRegex).optional(),
@@ -30,4 +26,3 @@ export const UpdateUserDto = z.object({
   permissionId: z.number().optional(),
 
 })
-

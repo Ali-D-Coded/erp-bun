@@ -1,11 +1,11 @@
 import { Hono } from "hono";
-import { db } from "../database/db";
+import { db } from "../../database/db";
 
 import { eq, getTableColumns } from "drizzle-orm";
 import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
-import { JwtHandler } from "../utils/jwt";
-import { User, permissions, userPermissions, users } from "../database/schema/schema";
+import { JwtHandler } from "../../utils/jwt";
+import { User, permissions, userPermissions, users } from "../../database/schema/schema";
 
 
 
@@ -35,16 +35,16 @@ auth.post("admin/seeder", async (c) => {
 			role: "ADMIN",
 			password: hash,
 		})
-		const perm = await db.query.permissions.findFirst({
-			where: eq(permissions.type,"ADMIN")
-		})
+		// const perm = await db.query.permissions.findFirst({
+		// 	where: eq(permissions.type,"ADMIN")
+		// })
 
-		await db.insert(userPermissions).values([
-			{
-				userId: user[0].insertId,
-				permissionId: perm?.id || 1
-			}
-		])
+		// await db.insert(userPermissions).values([
+		// 	{
+		// 		userId: user[0].insertId,
+		// 		permissionId: perm?.id || 1
+		// 	}
+		// ])
 
 		return c.json({
 			msg: "admin created",

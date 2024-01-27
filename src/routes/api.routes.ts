@@ -2,10 +2,11 @@ import { Hono } from "hono";
 import { jwt } from "hono/jwt";
 import { usersApi } from "./users/users.routes";
 import { JwtHandler } from "../utils/jwt";
-import auth from "./auth";
-import permissionsRoute from "./permissions";
+import auth from "./auth/auth.routes";
+import permissionsRoute from "./permissions/permissions.routes";
 import { db } from "../database/db";
 import departmentsApi from "./departments/departments.routes";
+import { employeeApi } from "./employees/employees.routes";
 
 
 const api = new Hono()
@@ -44,6 +45,7 @@ api.route("/users", usersApi)
 api.route("/auth", auth)
 api.route("/permissions", permissionsRoute)
 api.route("/departments", departmentsApi)
+api.route("/employees", employeeApi)
 
 
 export default api

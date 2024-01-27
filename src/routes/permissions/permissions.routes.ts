@@ -1,8 +1,8 @@
 import { Hono } from "hono";
-import { db } from "../database/db";
+import { db } from "../../database/db";
 
 import { eq } from "drizzle-orm";
-import { NewPermission, permissions } from "../database/schema/schema";
+import { NewPermission, permissions } from "../../database/schema/schema";
 
  const permissionsRoute = new Hono()
 

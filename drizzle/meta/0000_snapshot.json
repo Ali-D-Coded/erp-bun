@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "4b4d6578-d2b2-450b-bc28-0ab10f33ab99",
+  "id": "f1ed9505-9c1e-41a5-b20e-f033cd307fae",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "attendance": {
@@ -221,7 +221,14 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "departments_name_unique": {
+          "name": "departments_name_unique",
+          "columns": [
+            "name"
+          ]
+        }
+      }
     },
     "employees": {
       "name": "employees",
@@ -232,13 +239,6 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": true
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
         },
         "job_title": {
           "name": "job_title",
@@ -257,19 +257,6 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "employees_user_id_users_id_fk": {
-          "name": "employees_user_id_users_id_fk",
-          "tableFrom": "employees",
-          "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
         "employees_department_id_departments_id_fk": {
           "name": "employees_department_id_departments_id_fk",
           "tableFrom": "employees",
@@ -687,13 +674,6 @@
           "notNull": false,
           "autoincrement": false
         },
-        "unit_id": {
-          "name": "unit_id",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
         "bar_code": {
           "name": "bar_code",
           "type": "varchar(256)",
@@ -732,21 +712,7 @@
           "isUnique": true
         }
       },
-      "foreignKeys": {
-        "products_variant_unit_id_unit_id_fk": {
-          "name": "products_variant_unit_id_unit_id_fk",
-          "tableFrom": "products_variant",
-          "tableTo": "unit",
-          "columnsFrom": [
-            "unit_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {
         "products_variant_id": {
           "name": "products_variant_id",
@@ -1599,6 +1565,13 @@
           "notNull": false,
           "autoincrement": false,
           "default": "'SALESMAN'"
+        },
+        "employee_id": {
+          "name": "employee_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         }
       },
       "indexes": {
@@ -1624,7 +1597,21 @@
           "isUnique": true
         }
       },
-      "foreignKeys": {},
+      "foreignKeys": {
+        "users_employee_id_employees_id_fk": {
+          "name": "users_employee_id_employees_id_fk",
+          "tableFrom": "users",
+          "tableTo": "employees",
+          "columnsFrom": [
+            "employee_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {
         "users_id": {
           "name": "users_id",
