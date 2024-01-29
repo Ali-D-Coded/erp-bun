@@ -135,7 +135,7 @@ export const productsVariant = mysqlTable('products_variant', {
   price: decimal('price'),
   quantityInStock: int('quantity_in_stock'),
 	minimumQuantity: int('minimum_quantity'),
-	images: int("images"),
+
 	
 	barCode: varchar("bar_code", { length: 256 }),
 	vendorId: int("vendor_id"),
@@ -157,9 +157,28 @@ export const productsVariantRelations = relations(productsVariant, ({ one, many 
 		fields: [productsVariant.vendorId],
 		references: [vendors.id]
 	}),
-	unitsToProductVariants: many(unitsToProductVariants)
+  unitsToProductVariants: many(unitsToProductVariants),
+  images: many(media)
 }));
 
+
+// Media
+export const media = mysqlTable("media", {
+  id: int("id").primaryKey().autoincrement(),
+  name: varchar("name", { length: 256 }),
+  url: varchar("url", { length: 256 }),
+  productId: int("product_id").references(() => productsVariant.id,{onDelete:"cascade"})
+})
+
+export type Media = typeof media.$inferSelect
+export type NewMedia = typeof media.$inferInsert
+
+export const mediaRelations = relations(media, ({ one }) => ({
+  product: one(productsVariant, {
+    fields: [media.productId],
+    references:[productsVariant.id]
+  })
+}))
 
 
 // Raks
@@ -341,8 +360,6 @@ export const payroll = mysqlTable('payroll', {
 	gross_pay: decimal("gross_pay"),
 	deductions: decimal("deductions"),
 	netPay: decimal("net_pay"),
-	
-	
 });
 
 export type Payroll = typeof payroll.$inferSelect; // return type when queried

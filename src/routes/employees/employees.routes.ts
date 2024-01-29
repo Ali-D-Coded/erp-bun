@@ -32,7 +32,6 @@ employeeApi.post("/create", zValidator("json", CreateEmployeeDto),async (c) => {
 	}
 })
 
-
 employeeApi.get("/all", async (c) => {
 	try {
 		const employeesdata = await db.query.employees.findMany({

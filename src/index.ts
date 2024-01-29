@@ -26,4 +26,7 @@ app.notFound((c) => {
 app.route("/api", api)
 
 
-export default app
+export default {
+  port: 4000,
+  fetch : app.fetch
+}

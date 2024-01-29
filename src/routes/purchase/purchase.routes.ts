@@ -21,8 +21,21 @@ purchaseRoute.get("/all", async (c) => {
 
 purchaseRoute.post("/create", async (c) => {
 	try {
-		
+		const body = await c.req.json()
+		return c.json({body})
 	} catch (error:any) {
 		return c.newResponse(error, 400)
 	}
 })
+
+export default purchaseRoute
+
+
+
+
+
+
+
+
+
+
