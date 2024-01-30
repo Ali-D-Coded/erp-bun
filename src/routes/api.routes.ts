@@ -9,6 +9,7 @@ import departmentsApi from "./departments/departments.routes";
 import { employeeApi } from "./employees/employees.routes";
 import purchaseRoute from "./purchase/purchase.routes";
 import productsRoute from "./products/products.routes";
+import unitsRoutes from "./products/units.routes";
 
 
 const api = new Hono()
@@ -50,6 +51,7 @@ api.route("/departments", departmentsApi)
 api.route("/employees", employeeApi)
 api.route("/purchase", purchaseRoute)
 api.route("/products", productsRoute)
+api.route("/units", unitsRoutes)
 
 
 export default api

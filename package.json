@@ -6,10 +6,12 @@
   },
   "dependencies": {
     "@hono/zod-validator": "^0.1.11",
+    "canvas": "^2.11.2",
     "datatables.net-dt": "^1.13.8",
     "dotenv": "^16.3.1",
     "drizzle-orm": "^0.29.3",
     "hono": "^3.12.5",
+    "jsbarcode": "^3.11.6",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.7.1",
     "unstorage": "^1.10.1",
@@ -17,6 +19,7 @@
   },
   "devDependencies": {
     "@types/bun": "^1.0.0",
+    "@types/jsbarcode": "^3.11.4",
     "@types/jsonwebtoken": "^9.0.5",
     "drizzle-kit": "^0.20.13"
   }

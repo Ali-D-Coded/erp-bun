@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "f1ed9505-9c1e-41a5-b20e-f033cd307fae",
+  "id": "60bdcae8-8a1e-4807-baec-64aa698d9e3f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "attendance": {
@@ -461,6 +461,64 @@
       },
       "uniqueConstraints": {}
     },
+    "media": {
+      "name": "media",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "url": {
+          "name": "url",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "product_id": {
+          "name": "product_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "media_product_id_products_variant_id_fk": {
+          "name": "media_product_id_products_variant_id_fk",
+          "tableFrom": "media",
+          "tableTo": "products_variant",
+          "columnsFrom": [
+            "product_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "media_id": {
+          "name": "media_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
     "payroll": {
       "name": "payroll",
       "columns": {
@@ -667,8 +725,8 @@
           "notNull": false,
           "autoincrement": false
         },
-        "images": {
-          "name": "images",
+        "prodcut_code": {
+          "name": "prodcut_code",
           "type": "int",
           "primaryKey": false,
           "notNull": false,
@@ -726,6 +784,18 @@
           "name": "products_variant_description_unique",
           "columns": [
             "description"
+          ]
+        },
+        "products_variant_prodcut_code_unique": {
+          "name": "products_variant_prodcut_code_unique",
+          "columns": [
+            "prodcut_code"
+          ]
+        },
+        "products_variant_bar_code_unique": {
+          "name": "products_variant_bar_code_unique",
+          "columns": [
+            "bar_code"
           ]
         }
       }

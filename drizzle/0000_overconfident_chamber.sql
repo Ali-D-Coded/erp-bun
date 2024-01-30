@@ -67,6 +67,14 @@ CREATE TABLE `leaves` (
 	CONSTRAINT `leaves_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
+CREATE TABLE `media` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`name` varchar(256),
+	`url` varchar(256),
+	`product_id` int,
+	CONSTRAINT `media_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
 CREATE TABLE `payroll` (
 	`id` int AUTO_INCREMENT NOT NULL,
 	`employee_id` int,
@@ -100,12 +108,14 @@ CREATE TABLE `products_variant` (
 	`price` decimal,
 	`quantity_in_stock` int,
 	`minimum_quantity` int,
-	`images` int,
+	`prodcut_code` int,
 	`bar_code` varchar(256),
 	`vendor_id` int,
 	`product_id` int,
 	CONSTRAINT `products_variant_id` PRIMARY KEY(`id`),
 	CONSTRAINT `products_variant_description_unique` UNIQUE(`description`),
+	CONSTRAINT `products_variant_prodcut_code_unique` UNIQUE(`prodcut_code`),
+	CONSTRAINT `products_variant_bar_code_unique` UNIQUE(`bar_code`),
 	CONSTRAINT `id_idx` UNIQUE(`id`),
 	CONSTRAINT `name_idx` UNIQUE(`name`)
 );
@@ -242,6 +252,7 @@ ALTER TABLE `employees` ADD CONSTRAINT `employees_department_id_departments_id_f
 ALTER TABLE `expenses` ADD CONSTRAINT `expenses_employee_id_employees_id_fk` FOREIGN KEY (`employee_id`) REFERENCES `employees`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `expenses` ADD CONSTRAINT `expenses_expense_type_id_expenseTypes_id_fk` FOREIGN KEY (`expense_type_id`) REFERENCES `expenseTypes`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `leaves` ADD CONSTRAINT `leaves_employee_id_employees_id_fk` FOREIGN KEY (`employee_id`) REFERENCES `employees`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `media` ADD CONSTRAINT `media_product_id_products_variant_id_fk` FOREIGN KEY (`product_id`) REFERENCES `products_variant`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `payroll` ADD CONSTRAINT `payroll_employee_id_employees_id_fk` FOREIGN KEY (`employee_id`) REFERENCES `employees`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `purchase` ADD CONSTRAINT `purchase_vendor_id_vendors_id_fk` FOREIGN KEY (`vendor_id`) REFERENCES `vendors`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `purchaseItems` ADD CONSTRAINT `purchaseItems_purchase_id_purchase_id_fk` FOREIGN KEY (`purchase_id`) REFERENCES `purchase`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint

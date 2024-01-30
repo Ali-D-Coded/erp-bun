@@ -135,9 +135,8 @@ export const productsVariant = mysqlTable('products_variant', {
   price: decimal('price'),
   quantityInStock: int('quantity_in_stock'),
 	minimumQuantity: int('minimum_quantity'),
-
-	
-	barCode: varchar("bar_code", { length: 256 }),
+  productCode: int('prodcut_code').unique(),
+	barCode: varchar("bar_code", { length: 256 }).unique(),
 	vendorId: int("vendor_id"),
 	  productId: int("product_id"),
 },(products_variant) => ({

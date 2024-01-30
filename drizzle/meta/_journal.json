@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1706329158174,
-      "tag": "0000_acoustic_toad",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1706525423668,
-      "tag": "0001_normal_onslaught",
+      "when": 1706604626838,
+      "tag": "0000_overconfident_chamber",
       "breakpoints": true
     }
   ]
