@@ -10,6 +10,7 @@ import { employeeApi } from "./employees/employees.routes";
 import purchaseRoute from "./purchase/purchase.routes";
 import productsRoute from "./products/products.routes";
 import unitsRoutes from "./products/units.routes";
+import vendorRoutes from "./vendors/vendor.routes";
 
 
 const api = new Hono()
@@ -45,6 +46,7 @@ api.get("/data", async (c) => {
 
 
 api.route("/users", usersApi)
+api.route("/vendors", vendorRoutes)
 api.route("/auth", auth)
 api.route("/permissions", permissionsRoute)
 api.route("/departments", departmentsApi)

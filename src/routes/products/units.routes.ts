@@ -30,7 +30,7 @@ unitsRoutes.patch("/update/:id",async (c) => {
 	try {
 		const { id } = c.req.param()
 		const data = await c.req.json()
-		 await db.update(units).set(data).where(eq(units.id, +id))
+		 await db.update(units).set({...data,updatedAt: new Date()}).where(eq(units.id, +id))
 		return c.json(data)
 	} catch (error:any) {
 		return c.newResponse(error,400)

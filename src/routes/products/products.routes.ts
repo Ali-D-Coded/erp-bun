@@ -3,12 +3,26 @@ import { db } from "../../database/db";
 
 import {randomUUID} from "crypto"
 import { zValidator } from "@hono/zod-validator";
-import { CreateProductDto } from "./dto/products.dto";
+import { CreateProductDto, CreateProductVariantDto } from "./dto/products.dto";
 import { NewMedia, media, products, productsVariant } from "../../database/schema/schema";
 import JsBarcode from "jsbarcode";
 import { Canvas, createCanvas } from "canvas";
 
 const productsRoute = new Hono()
+
+
+productsRoute.post("/create-product",zValidator("json", CreateProductDto), async (c) => {
+	try {
+		const data = await CreateProductDto.parseAsync(c.req.json)
+		const productres = await db.insert(products).values(data)
+		return c.json({
+			msg: "product created",
+			prodId: productres[0].insertId
+		})
+	} catch (error:any) {
+		return 
+	}
+})
 
 productsRoute.get("/all", async (c) => {
 	try {
@@ -63,19 +77,12 @@ function generateRandomNumber() {
 }
 
 
-productsRoute.post("/create",zValidator("form",CreateProductDto), async (c) => {
+productsRoute.post("/create-product-variants",zValidator("form",CreateProductVariantDto), async (c) => {
 	try {
 		const STORE_PATH = "uploads/products";
 		const formData = await c.req.formData()
-		const data = await CreateProductDto.parseAsync(await c.req.parseBody())
-		console.log("FILES :",data.files);
-		
-		
-		
-		
-		const product = await db.insert(products).values({
-			name: data.name,
-		})
+		const data = await CreateProductVariantDto.parseAsync(await c.req.parseBody())
+
 		const countryCode = 8
 		const manuCode = generateRandomNumber()
 		const productCode = generateRandomNumber()
@@ -84,10 +91,7 @@ productsRoute.post("/create",zValidator("form",CreateProductDto), async (c) => {
 		const productVariant = await db.insert(productsVariant).values({
 			name: data.name,
 			description: data.description,
-			productId: product[0].insertId,
-			vendorId: +data.vendorId,
-			minimumQuantity: +data.minimumQuantity,
-			quantityInStock: +data.quantityInStock,
+			productId: +data.productId,
 			price: "45",
 			barCode,
 			productCode

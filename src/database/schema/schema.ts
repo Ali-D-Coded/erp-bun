@@ -1,5 +1,5 @@
 import { relations, sql } from "drizzle-orm";
-import { date, decimal, int, json, mysqlEnum, mysqlTable, primaryKey, time, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
+import { date, decimal, int, json, mysqlEnum, mysqlTable, primaryKey, time, timestamp, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
 
 // Users
 export const users = mysqlTable('users', {
@@ -10,7 +10,9 @@ export const users = mysqlTable('users', {
   password: varchar('password',{length: 256}),
   phone: varchar('phone', { length: 256 }).unique(),
   role: mysqlEnum("role", ["ADMIN", "MANAGER", "SALESMAN", "ACCOUNTANT"]).default("SALESMAN"),
-  employeeId: int("employee_id").references(() => employees.id)
+  employeeId: int("employee_id").references(() => employees.id),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 },(users) => ({
 	idIndex: uniqueIndex('id_idx').on(users.id),
 	usernameIndex: uniqueIndex('username_idx').on(users.userName),
@@ -33,7 +35,9 @@ export const usersRelations = relations(users, ({ one,many }) => ({
 export const permissions = mysqlTable('permissions', {
     id: int("id").primaryKey().autoincrement(),
     type: mysqlEnum("type", ["ADMIN", "MANAGER", "SALESMAN", "ACCOUNTANT"]).unique(),
-    canDo: json("can_do"),
+  canDo: json("can_do"),
+     createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
   });
 
   
@@ -80,6 +84,8 @@ export const custmers = mysqlTable('customers', {
   email: varchar('email',{length:256}).unique(),
   phone: varchar('phone', { length: 256 }).unique(),
   address: varchar('address', { length: 256 }),
+   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 },(customers) => ({
 	idIndex: uniqueIndex('id_idx').on(customers.id),
 	emailIndex: uniqueIndex('email_idx').on(customers.email),
@@ -96,7 +102,9 @@ export const vendors = mysqlTable('vendors', {
   email: varchar('email',{length:256}).unique(),
   contactPerson: varchar('contact_person',{length: 256}),
 	phone: varchar('phone', { length: 256 }).unique(),
-    address: varchar('address', { length: 256 }),
+  address: varchar('address', { length: 256 }),
+     createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 },(vendors) => ({
 	idIndex: uniqueIndex('id_idx').on(vendors.id),
 	emailIndex: uniqueIndex('email_idx').on(vendors.email),
@@ -112,7 +120,11 @@ export const vendorRelations = relations(vendors, ({many}) => ({
 // Products
 export const products = mysqlTable('products', {
   id: int("id").primaryKey().autoincrement(),
-  name: varchar('name',{length:256}),
+  name: varchar('name', { length: 256 }),
+  categoryId: int("category_id").references(() => categories.id),
+  subCategoryId: int("sub_category_id").references(() => subCategories.id),
+   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 },(products) => ({
 	idIndex: uniqueIndex('id_idx').on(products.id),
 	nameIndex: uniqueIndex('name_idx').on(products.name),
@@ -122,8 +134,16 @@ export type Product = typeof products.$inferSelect; // return type when queried
 export type NewProduct = typeof products.$inferInsert; // insert type
 
 
-export const productRelations = relations(products, ({many}) => ({
-  productVariant : many(productsVariant)
+export const productRelations = relations(products, ({many,one}) => ({
+  productVariant: many(productsVariant),
+  category: one(categories, {
+    fields:[products.categoryId], 
+    references: [categories.id]
+  }),
+  subCategory: one(subCategories, {
+    fields:[products.subCategoryId], 
+    references: [subCategories.id]
+  })
 }))
 
 
@@ -131,14 +151,15 @@ export const productRelations = relations(products, ({many}) => ({
 export const productsVariant = mysqlTable('products_variant', {
   id: int("id").primaryKey().autoincrement(),
   name: varchar('name',{length:256}),
-  description: varchar('description',{length:256}).unique(),
-  price: decimal('price'),
-  quantityInStock: int('quantity_in_stock'),
-	minimumQuantity: int('minimum_quantity'),
+  description: varchar('description',{length:256}).unique(), 
+  price: decimal('price').default(sql`NULL`),
+
   productCode: int('prodcut_code').unique(),
 	barCode: varchar("bar_code", { length: 256 }).unique(),
 	vendorId: int("vendor_id"),
-	  productId: int("product_id"),
+  productId: int("product_id"),
+     createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 },(products_variant) => ({
 	idIndex: uniqueIndex('id_idx').on(products_variant.id),
 	nameIndex: uniqueIndex('name_idx').on(products_variant.name),
@@ -161,12 +182,34 @@ export const productsVariantRelations = relations(productsVariant, ({ one, many 
 }));
 
 
+//Stock
+export const productStocks = mysqlTable("products_stocks", {
+  id: int("id").primaryKey().autoincrement(),
+  productVariantId: int("product_variant_id").references(() => productsVariant.id),
+  quantityInStock: int('quantity_in_stock'),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+})
+
+export type ProductStock = typeof productStocks.$inferSelect; // return type when queried
+export type NewProductStock = typeof productStocks.$inferInsert; // insert type
+
+export const productStockRelations = relations(productStocks, ({ one }) =>({
+  productVariant: one(productsVariant, {
+    fields: [productStocks.productVariantId],
+    references: [productsVariant.id]
+    })
+}))
+
+
 // Media
 export const media = mysqlTable("media", {
   id: int("id").primaryKey().autoincrement(),
   name: varchar("name", { length: 256 }),
   url: varchar("url", { length: 256 }),
-  productId: int("product_id").references(() => productsVariant.id,{onDelete:"cascade"})
+  productId: int("product_id").references(() => productsVariant.id, { onDelete: "cascade" }),
+   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 })
 
 export type Media = typeof media.$inferSelect
@@ -183,7 +226,9 @@ export const mediaRelations = relations(media, ({ one }) => ({
 // Raks
 export const raks = mysqlTable('raks', {
     id: int("id").primaryKey().autoincrement(),
-    name: varchar('name',{length:256}),
+  name: varchar('name', { length: 256 }),
+     createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
   });
 
   
@@ -194,7 +239,9 @@ export type NewRaks = typeof raks.$inferInsert; // insert type
 // Category
 export const categories = mysqlTable('categories', {
     id: int("id").primaryKey().autoincrement(),
-    name: varchar('name',{length:256}),
+    name: varchar('name', { length: 256 }),
+     createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
   },(categories) => ({
       idIndex: uniqueIndex('id_idx').on(categories.id),
       nameIndex: uniqueIndex('name_idx').on(categories.name),
@@ -206,7 +253,8 @@ export type NewCategory = typeof categories.$inferInsert; // insert type
 
 
 export const categoriesRelations = relations(categories,({many}) => ({
-    subCategories: many(subCategories)
+  subCategories: many(subCategories),
+  products: many(products)
 }))
 
 
@@ -214,7 +262,9 @@ export const categoriesRelations = relations(categories,({many}) => ({
 export const subCategories = mysqlTable('subCategories', {
     id: int("id").primaryKey().autoincrement(),
     name: varchar('name',{length:256}),
-    categoryId: int("catrgory_id").references(() => categories.id)
+  categoryId: int("catrgory_id").references(() => categories.id),
+     createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
   },(subCategories) => ({
       idIndex: uniqueIndex('id_idx').on(subCategories.id),
       nameIndex: uniqueIndex('name_idx').on(subCategories.name),
@@ -224,17 +274,20 @@ export const subCategories = mysqlTable('subCategories', {
 export type SubCategory = typeof subCategories.$inferSelect; // return type when queried
 export type NewSubCategory = typeof subCategories.$inferInsert; // insert type
 
-export const subcategoriesRelations = relations(subCategories,({one}) => ({
+export const subcategoriesRelations = relations(subCategories,({one,many}) => ({
   category: one(categories, {
     fields: [subCategories.categoryId],
     references: [categories.id]
-    })
+  }),
+  products: many(products)
 }))
 
 // Units
 export const units = mysqlTable('unit', {
 	id: int("id").primaryKey().autoincrement(),
-	name: varchar("name", {length:256})
+  name: varchar("name", { length: 256 }),
+   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export type Unit = typeof units.$inferSelect; // return type when queried
@@ -273,7 +326,9 @@ export const unitsToProductVariantsRelations = relations(unitsToProductVariants,
 // //Departments 
 export const departments = mysqlTable('departments', {
 	id: int("id").primaryKey().autoincrement(),
-	name: varchar("name", {length:256}).unique(),
+  name: varchar("name", { length: 256 }).unique(),
+   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export type Department = typeof departments.$inferSelect; // return type when queried
@@ -287,7 +342,9 @@ export const departmentsRelations = relations(departments, ({ many }) => ({
 export const employees = mysqlTable('employees', {
   id: int("id").primaryKey().autoincrement(),
   jobTitle: varchar("job_title", { length: 256 }),
-  departmentId: int("department_id").references(() => departments.id)
+  departmentId: int("department_id").references(() => departments.id),
+   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export type Employee = typeof employees.$inferSelect; // return type when queried
@@ -314,7 +371,9 @@ export const attendance = mysqlTable('attendance', {
 	employeeId: int('employee_id').references(() => employees.id),
 	date: date("date"),
 	check_in_time: time("check_in_time"),
-	check_out_time: time("check_out_time"),
+  check_out_time: time("check_out_time"),
+   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 	
 });
 
@@ -337,7 +396,9 @@ id: int("id").primaryKey().autoincrement(),
 	leaveType: varchar("leave_type", { length: 256 }),
 	startDate: date("start_date"),
 	endDate: date("end_date"),
-	status: mysqlEnum("status",["APPROVED","PENDING"])
+  status: mysqlEnum("status", ["APPROVED", "PENDING"]),
+   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export type Leaves = typeof leaves.$inferSelect; // return type when queried
@@ -358,7 +419,9 @@ export const payroll = mysqlTable('payroll', {
 	paymentDate: date("payment_date"),
 	gross_pay: decimal("gross_pay"),
 	deductions: decimal("deductions"),
-	netPay: decimal("net_pay"),
+  netPay: decimal("net_pay"),
+   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export type Payroll = typeof payroll.$inferSelect; // return type when queried
@@ -383,7 +446,9 @@ id: int("id").primaryKey().autoincrement(),
 	commissionPercentage: decimal("commission_percentage"),
 	quantity: int("quantity"),
 	productVariantId: int("product_variant_id").references(() => productsVariant.id), 
-	// unitId: int("unit_id").references(() => uni.id)
+  // unitId: int("unit_id").references(() => uni.id)
+   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 
 });
 
@@ -411,7 +476,9 @@ export const purchaseReturn = mysqlTable('purchaseReturn', {
 	vendorId: int("vendor_id").references(() => vendors.id),
 	reason: varchar("reason", { length: 256 }), 
 	returnType: mysqlEnum("return_type", ["REPLACE", "REFUND"]).default(sql`NULL`),
-	status: mysqlEnum("status", ["PENDING", "ACCEPTED", "REJECTED","RETURNED"]).default("PENDING"),
+  status: mysqlEnum("status", ["PENDING", "ACCEPTED", "REJECTED", "RETURNED"]).default("PENDING"),
+   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 	 
   });
 
@@ -428,7 +495,9 @@ id: int("id").primaryKey().autoincrement(),
 	vendorId: int('vendor_id').references(() => vendors.id),
 	purchaseBillNo: varchar("purchase_bill_no", { length: 256 }),
 	date: date("date"),
-	totalAmount: decimal("total_amount")
+  totalAmount: decimal("total_amount"),
+   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export type Purchase = typeof purchase.$inferSelect; // return type when queried
@@ -451,7 +520,9 @@ export const sales = mysqlTable('sales', {
     customerId: int("customer_id").references(() => custmers.id),
     totalAmount: decimal("total_amount"),
     discountAmount: decimal("discount_amount"),
-    grandTotal: decimal("grandTotal"),
+  grandTotal: decimal("grandTotal"),
+     createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
   });
 
   
@@ -467,7 +538,9 @@ export const salesRelations = relations(sales,({many}) => ({
 export const salesProducts = mysqlTable('salesProducts', {
     id: int("id").primaryKey().autoincrement(),
     saleId:int("sale_id").references(() => sales.id),
-    productId: int("product_id").references(() => products.id)
+  productId: int("product_id").references(() => products.id),
+     createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
   });
 
   
@@ -492,7 +565,8 @@ export const salesReturn = mysqlTable('salesReturn', {
 	reason: varchar("reason", { length: 256 }), 
 	returnType: mysqlEnum("return_type", ["REPLACE", "REFUND"]).default(sql`NULL`),
 	status: mysqlEnum("status", ["PENDING", "ACCEPTED", "REJECTED","RETURNED"]).default("PENDING"),
-	 
+	  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
   });
 
   
@@ -513,7 +587,9 @@ export const expenses = mysqlTable('expenses', {
     date: date('date'),
     employeeId: int("employee_id").references(() => employees.id),
     amount: decimal("amount"),
-    expenseTypeId: int("expense_type_id").references(() => expenseTypes.id)
+  expenseTypeId: int("expense_type_id").references(() => expenseTypes.id),
+     createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
   });
 
   
