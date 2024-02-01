@@ -5,6 +5,7 @@ import { zValidator } from "@hono/zod-validator";
 import { randomUUID } from "crypto";
 import { NewMedia, media, products, productsVariant } from "../../database/schema/schema";
 import { CreateProductDto, CreateProductVariantDto } from "./dto/products.dto";
+import { generateRandomNumber } from "../../utils/fun";
 
 const productsRoute = new Hono()
 
@@ -76,15 +77,7 @@ const saveFile = async (files: any[], path: string, productId: number) => {
 	return fileNames
 }
 
-function generateRandomNumber() {
-  // Use Math.random() to get a random decimal between 0 (inclusive) and 1 (exclusive)
-  const randomDecimal = Math.random();
 
-  // Scale the decimal to the desired range (10000-99999) and convert to an integer
-  const randomInt = Math.floor(randomDecimal * 90000) + 10000;
-
-  return randomInt;
-}
 
 
 productsRoute.post("/create-product-variants",zValidator("form",CreateProductVariantDto), async (c) => {
