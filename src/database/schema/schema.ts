@@ -153,12 +153,11 @@ export const productsVariant = mysqlTable('products_variant', {
   name: varchar('name',{length:256}),
   description: varchar('description',{length:256}).unique(), 
   price: decimal('price').default(sql`NULL`),
-
   productCode: int('prodcut_code').unique(),
 	barCode: varchar("bar_code", { length: 256 }).unique(),
-	vendorId: int("vendor_id"),
+	vendorId: int("vendor_id").default(sql`NULL`),
   productId: int("product_id"),
-     createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 },(products_variant) => ({
 	idIndex: uniqueIndex('id_idx').on(products_variant.id),
@@ -173,10 +172,10 @@ export const productsVariantRelations = relations(productsVariant, ({ one, many 
     fields: [productsVariant.productId],
     references: [products.id],
   }),
-	vendor: one(vendors, {
-		fields: [productsVariant.vendorId],
-		references: [vendors.id]
-	}),
+	// vendor: one(vendors, {
+	// 	fields: [productsVariant.vendorId],
+	// 	references: [vendors.id]
+	// }),
   unitsToProductVariants: many(unitsToProductVariants),
   images: many(media)
 }));

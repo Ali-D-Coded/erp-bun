@@ -10,5 +10,6 @@ export const CreateProductVariantDto =  z.object({
 
 export const CreateProductDto = z.object({
 	name: z.string(),
-
+	categoryId: z.number().optional(),
+	subCategoryId: z.number().optional(),
 })

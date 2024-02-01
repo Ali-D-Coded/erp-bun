@@ -11,6 +11,8 @@ import purchaseRoute from "./purchase/purchase.routes";
 import productsRoute from "./products/products.routes";
 import unitsRoutes from "./products/units.routes";
 import vendorRoutes from "./vendors/vendor.routes";
+import categoryRoute from "./products/categories.routes";
+import subCategoryRoute from "./products/subCategories.routes";
 
 
 const api = new Hono()
@@ -54,6 +56,8 @@ api.route("/employees", employeeApi)
 api.route("/purchase", purchaseRoute)
 api.route("/products", productsRoute)
 api.route("/units", unitsRoutes)
+api.route("/category", categoryRoute)
+api.route("/sub-category", subCategoryRoute )
 
 
 export default api

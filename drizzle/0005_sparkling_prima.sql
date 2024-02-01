@@ -1,0 +1,1 @@
+ALTER TABLE `products_variant` MODIFY COLUMN `vendor_id` int DEFAULT NULL;
