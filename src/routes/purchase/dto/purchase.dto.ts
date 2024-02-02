@@ -5,11 +5,12 @@ export const CreatePurchaseDto = z.object({
 	vendorId: z.number(),
 	purchaseItems: z.array(z.object({
 		productVariantId: z.number(),
-		purchasePrice: z.number(),
-		minimumSellingPrice: z.number(),
-		maximumRetailPrice: z.number(),
-		commissionPercentage: z.number(),
+		purchasePrice: z.string(),
+		minimumSellingPrice: z.string(),
+		maximumRetailPrice: z.string(),
+		commissionPercentage: z.string(),
 		quantity: z.number(),
+		unitId: z.number()
 	}))
 
 })

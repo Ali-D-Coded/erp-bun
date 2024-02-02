@@ -5,43 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1706604626838,
-      "tag": "0000_overconfident_chamber",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1706682876534,
-      "tag": "0001_fair_franklin_richards",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1706683067658,
-      "tag": "0002_deep_scarecrow",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1706702964783,
-      "tag": "0003_silent_crusher_hogan",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1706762442097,
-      "tag": "0004_zippy_nemesis",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "5",
-      "when": 1706763088871,
-      "tag": "0005_sparkling_prima",
+      "when": 1706851414035,
+      "tag": "0000_last_lenny_balinger",
       "breakpoints": true
     }
   ]

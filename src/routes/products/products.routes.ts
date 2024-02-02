@@ -43,7 +43,7 @@ productsRoute.get("/all", async (c) => {
 				 productVariant: {
 					with: {
 						 images: true,
-						unitsToProductVariants: true
+						// unitsToProductVariants: true
 					}
 				}
 			}

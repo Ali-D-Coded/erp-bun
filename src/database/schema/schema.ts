@@ -176,7 +176,7 @@ export const productsVariantRelations = relations(productsVariant, ({ one, many 
 	// 	fields: [productsVariant.vendorId],
 	// 	references: [vendors.id]
 	// }),
-  unitsToProductVariants: many(unitsToProductVariants),
+  // unitsToProductVariants: many(unitsToProductVariants),
   images: many(media)
 }));
 
@@ -285,6 +285,7 @@ export const subcategoriesRelations = relations(subCategories,({one,many}) => ({
 export const units = mysqlTable('unit', {
 	id: int("id").primaryKey().autoincrement(),
   name: varchar("name", { length: 256 }),
+  value: int("value"),
    createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -293,34 +294,31 @@ export type Unit = typeof units.$inferSelect; // return type when queried
 export type NewUnit = typeof units.$inferInsert; // insert type
 
 export const unitsRelations = relations(units, ({many}) => ({
-	unitsToProduct: many(unitsToProductVariants),
+  // unitsToProduct: many(unitsToPurchaseItems),
+  purchaseItems: many(purchaseItems)
 }))
 
 
 // units Pivots
-export const unitsToProductVariants = mysqlTable('users_to_groups', {
-    unitId: int('unit_id').notNull().references(() => units.id),
-    productVariantId: int('product_variant_id').notNull().references(() => productsVariant.id),
-    purchaseItemId: int('purchase_item_id').notNull().references(() => purchaseItems.id),
-  }, (t) => ({
-    pk: primaryKey({columns:[t.unitId, t.productVariantId]}),
-  }),
-);
+// export const unitsToPurchaseItems = mysqlTable('users_to_groups', {
+//     unitId: int('unit_id').notNull().references(() => units.id),
+//     // productVariantId: int('product_variant_id').notNull().references(() => productsVariant.id),
+//     purchaseItemsId: int('purchase_item_id').notNull().references(() => purchaseItems.id),
+//   }, (t) => ({
+//     pk: primaryKey({columns:[t.unitId, t.purchaseItemsId]}),
+//   }),
+// );
 
-export const unitsToProductVariantsRelations = relations(unitsToProductVariants, ({ one }) => ({
-  productVariant: one(productsVariant, {
-    fields: [unitsToProductVariants.productVariantId],
-    references: [productsVariant.id],
-  }),
-  unit: one(units, {
-    fields: [unitsToProductVariants.unitId],
-    references: [units.id],
-  }),
-  purchaseItem: one(purchaseItems, {
-    fields: [unitsToProductVariants.productVariantId],
-    references:[purchaseItems.id]
-  })
-}));
+// export const unitsToProductVariantsRelations = relations(unitsToPurchaseItems, ({ one }) => ({
+//   productVariant: one(purchaseItems, {
+//     fields: [unitsToPurchaseItems.purchaseItemsId],
+//     references: [purchaseItems.id],
+//   }),
+//   unit: one(units, {
+//     fields: [unitsToPurchaseItems.unitId],
+//     references: [units.id],
+//   }),
+// }));
 
 // //Departments 
 export const departments = mysqlTable('departments', {
@@ -444,7 +442,8 @@ id: int("id").primaryKey().autoincrement(),
 	maximumRetailPrice: decimal("maximum_retail_price"),
 	commissionPercentage: decimal("commission_percentage"),
 	quantity: int("quantity"),
-	productVariantId: int("product_variant_id").references(() => productsVariant.id), 
+  productVariantId: int("product_variant_id").references(() => productsVariant.id), 
+  unitId: int("unit_id").references(() => units.id),
   // unitId: int("unit_id").references(() => uni.id)
    createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -463,7 +462,11 @@ export const purchaseItemsRleations = relations(purchaseItems, ({ one, many}) =>
     fields: [purchaseItems.productVariantId], 
     references:[productsVariant.id]
   }),
-	unitsToPurchaseItems: many(unitsToProductVariants)
+  unit: one(units,{
+    fields:[purchaseItems.unitId],
+    references:[units.id]
+  })
+	// unitsToPurchaseItems: many(unitsToPurchaseItems)
 }))
 
 
