@@ -3,6 +3,7 @@ import { z } from "zod";
 export const CreatePurchaseDto = z.object({
 	date: z.string(),
 	vendorId: z.number(),
+	purchaseBillNo: z.string(),
 	purchaseItems: z.array(z.object({
 		productVariantId: z.number(),
 		purchasePrice: z.string(),

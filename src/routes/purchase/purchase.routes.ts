@@ -28,57 +28,49 @@ purchaseRoute.post("/create",zValidator("json",CreatePurchaseDto) ,async (c) => 
 	try {
 		const dto = await CreatePurchaseDto.parseAsync(c.req.json())
 		
-		const purchaseBillNo = generateRandomNumber(10000000,99999999).toString()
 		const totalAmount = dto.purchaseItems.reduce((acc, it) => {
 			return acc + +it.purchasePrice
 		},0).toFixed(2)
-		const batchnumber = generateRandomNumber(100000,999999).toString()
-
+		const batchnumber = generateRandomNumber(100000, 999999).toString()
+		
+		const stocks = await Promise.all(dto.purchaseItems.map(async pur => {
+				const unitRes = await db.select({
+					tot: sql<number>`${units.value} * ${pur.quantity}`
+				}).from(units).where(eq(units.id, +pur.unitId))
+				console.log({ unitRes });
+				return {
+					productVariantId: pur.productVariantId,
+					quantityInStock: unitRes[0].tot
+				}
+			}))
+		
+		console.log({stocks});
+		
 		await db.transaction(async (tx) => {
+			//insert purchase data
 			const purchaseRes = await tx.insert(purchase).values({
 				vendorId: dto.vendorId,
-				purchaseBillNo: purchaseBillNo,
+				purchaseBillNo: dto.purchaseBillNo,
 				date: new Date(dto.date),
 				totalAmount: totalAmount
 			})
 
-		const purchaseItemsDto = dto.purchaseItems.map(pur => {
-			return {
-				...pur,
-				purchaseId: purchaseRes[0].insertId,
-				batchNumber: batchnumber,
-			}
-		})
-		
+			//inserting purchaseItems
+			const purchaseItemsDto = dto.purchaseItems.map(pur => {
+				return {
+					...pur,
+					purchaseId: purchaseRes[0].insertId,
+					batchNumber: batchnumber,
+				}
+			})
 			await tx.insert(purchaseItems).values(purchaseItemsDto)
-			
-			// const stocks = dto.purchaseItems.map(pur => {
-			// 	const unitRes = await tx.select({
-			// 		tot: sql<number>`${+units.value * pur.quantity}`
-			// 	}).from(units).limit(1)
-			// 	// const qtt = unitRes.tot
-			// 	return {
-			// 		productsVariantId: pur.productVariantId,
-			// 		quantityInStock: 
-			// 	}
-			// })
-			// await tx.insert(productStocks).values()
-
-			
-
-
-			
-
-
-
-			// await db.insert(productStocks).values({
-			// 	productVariantId: 
-			// })
-
-
+			 console.log();
+			 
+			//inserting productStocks
+			await tx.insert(productStocks).values(stocks)
 
 		})
-		return c.json({body: {dto,totalAmount,purchaseBillNo,batchnumber }})
+		return c.json("purchase added")
 	} catch (error:any) {
 		return c.newResponse(error, 400)
 	}

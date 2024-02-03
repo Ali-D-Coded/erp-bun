@@ -13,6 +13,7 @@ import unitsRoutes from "./products/units.routes";
 import vendorRoutes from "./vendors/vendor.routes";
 import categoryRoute from "./products/categories.routes";
 import subCategoryRoute from "./products/subCategories.routes";
+import stocksRoute from "./products/stocks.routes";
 
 
 const api = new Hono()
@@ -58,6 +59,7 @@ api.route("/products", productsRoute)
 api.route("/units", unitsRoutes)
 api.route("/category", categoryRoute)
 api.route("/sub-category", subCategoryRoute )
+api.route("/stocks", stocksRoute )
 
 
 export default api
