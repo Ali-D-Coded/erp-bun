@@ -540,7 +540,7 @@ export const salesRelations = relations(sales,({many}) => ({
 export const salesProducts = mysqlTable('salesProducts', {
     id: int("id").primaryKey().autoincrement(),
     saleId:int("sale_id").references(() => sales.id),
-  productId: int("product_id").references(() => products.id),
+  productVariantId: int("product_variant_id").references(() => products.id),
      createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   });

@@ -3,7 +3,7 @@ import { Hono } from "hono";
 import { CreateDepartment } from "./dto/departments.dto";
 import { db } from "../../database/db";
 import { departments } from "../../database/schema/schema";
-import { eq } from "drizzle-orm";
+import { eq, like } from "drizzle-orm";
 
 const departmentsApi = new Hono()
 
@@ -23,7 +23,18 @@ departmentsApi.post("/create", zValidator("json", CreateDepartment),async (c) =>
 departmentsApi.get("/all",async (c) => {
 	try {
 		const {dep} = c.req.query()
-		const deps = await db.query.departments.findMany()
+	const deps = await db.query.departments.findMany({
+  		...(dep ? {
+    	where: (departments, { like }) => like(departments.name, `%${dep}%`),
+		} : {}),
+		with: {
+			employees: {
+				with: {
+					user: true
+				}
+			}
+		}
+		});
 		return c.json(
 			deps
 		)

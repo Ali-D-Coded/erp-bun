@@ -10,7 +10,7 @@ import { User, permissions, userPermissions, users } from "../../database/schema
 
 
 
-const auth = new Hono()
+const authRoute = new Hono()
 
 type AdminAuthDto = {
 	email: string,
@@ -24,7 +24,7 @@ const schema = z.object({
 
 
 
-auth.post("admin/seeder", async (c) => {
+authRoute.post("admin/seeder", async (c) => {
 	try {
 		const hash = await Bun.password.hash("12356")
 		const user = await db.insert(users).values({
@@ -57,7 +57,7 @@ auth.post("admin/seeder", async (c) => {
 
 })
 
-auth.post("local/login", zValidator("json", schema), async (c) => {
+authRoute.post("local/login", zValidator("json", schema), async (c) => {
 	const jwtHandler = new JwtHandler()
 	try {
 		const data   = await c.req.json()
@@ -88,4 +88,4 @@ auth.post("local/login", zValidator("json", schema), async (c) => {
 
 
 
-export default auth
+export default authRoute

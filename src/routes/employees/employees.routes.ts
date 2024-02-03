@@ -9,9 +9,9 @@ import { CreateEmployeeDto, UpdateEmployeeDto } from "./dto/employee.dto";
 
 
 
-export const employeeApi = new Hono()
+const employeeRoutes = new Hono()
 
-employeeApi.post("/create", zValidator("json", CreateEmployeeDto),async (c) => {
+employeeRoutes.post("/create", zValidator("json", CreateEmployeeDto),async (c) => {
 	try {
 		const paredBody = await CreateEmployeeDto.parseAsync(c.req.json())
 	console.log({ paredBody });
@@ -32,7 +32,7 @@ employeeApi.post("/create", zValidator("json", CreateEmployeeDto),async (c) => {
 	}
 })
 
-employeeApi.get("/all", async (c) => {
+employeeRoutes.get("/all", async (c) => {
 	try {
 		const employeesdata = await db.query.employees.findMany({
 			with: {
@@ -52,7 +52,7 @@ employeeApi.get("/all", async (c) => {
 	}
 })
 
-employeeApi.patch("/update/:id",zValidator("json", UpdateEmployeeDto), async (c) => {
+employeeRoutes.patch("/update/:id",zValidator("json", UpdateEmployeeDto), async (c) => {
 	try {
 		const { id } = c.req.param()
 		
@@ -86,3 +86,6 @@ employeeApi.patch("/update/:id",zValidator("json", UpdateEmployeeDto), async (c)
 		return c.newResponse(error, 400)
 	}
 })
+
+
+export default employeeRoutes

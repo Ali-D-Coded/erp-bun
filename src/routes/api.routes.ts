@@ -2,18 +2,20 @@ import { Hono } from "hono";
 import { jwt } from "hono/jwt";
 import { usersApi } from "./users/users.routes";
 import { JwtHandler } from "../utils/jwt";
-import auth from "./auth/auth.routes";
+import authRoute from "./auth/auth.routes";
 import permissionsRoute from "./permissions/permissions.routes";
 import { db } from "../database/db";
 import departmentsApi from "./departments/departments.routes";
-import { employeeApi } from "./employees/employees.routes";
-import route from "./purchase/purchase.routes";
+import employeeRoutes from "./employees/employees.routes";
+
 import productsRoute from "./products/products.routes";
 import unitsRoutes from "./products/units.routes";
 import vendorRoutes from "./vendors/vendor.routes";
 import categoryRoute from "./products/categories.routes";
 import subCategoryRoute from "./products/subCategories.routes";
 import stocksRoute from "./products/stocks.routes";
+import salesRoutes from "./sales/sales.routes";
+import purchaseRoute from "./purchase/purchase.routes";
 
 
 const api = new Hono()
@@ -37,24 +39,14 @@ const api = new Hono()
 //   }
 // )
 
-api.get("/data", async (c) => {
-	// const admin = await db.query.users.
-	return c.json({
-		msg: "Hello user you are authenticared"
-	})
-})
-
-
-
-
-
 api.route("/users", usersApi)
 api.route("/vendors", vendorRoutes)
-api.route("/auth", auth)
+api.route("/auth", authRoute)
 api.route("/permissions", permissionsRoute)
 api.route("/departments", departmentsApi)
-api.route("/employees", employeeApi)
-api.route("/purchase", route)
+api.route("/employees", employeeRoutes)
+api.route("/purchase", purchaseRoute)
+api.route("/sales", salesRoutes)
 api.route("/products", productsRoute)
 api.route("/units", unitsRoutes)
 api.route("/category", categoryRoute)
