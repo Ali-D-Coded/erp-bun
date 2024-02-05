@@ -9,7 +9,7 @@ export const users = mysqlTable('users', {
   email: varchar('email',{length:256}).unique(),
   password: varchar('password',{length: 256}),
   phone: varchar('phone', { length: 256 }).unique(),
-  role: mysqlEnum("role", ["ADMIN", "MANAGER", "SALESMAN", "ACCOUNTANT"]).default("SALESMAN"),
+  role: mysqlEnum("role", ["ADMIN", "MANAGER", "SALESMAN", "ACCOUNTANT"]),
   employeeId: int("employee_id").references(() => employees.id),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -84,7 +84,7 @@ export const custmers = mysqlTable('customers', {
   email: varchar('email',{length:256}).unique(),
   phone: varchar('phone', { length: 256 }).unique(),
   address: varchar('address', { length: 256 }),
-   createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 },(customers) => ({
 	idIndex: uniqueIndex('id_idx').on(customers.id),
@@ -93,6 +93,7 @@ export const custmers = mysqlTable('customers', {
 
 export type Customer = typeof custmers.$inferSelect; // return type when queried
 export type NewCustomer = typeof custmers.$inferInsert; // insert type
+
 
 
 // Vendors
@@ -518,13 +519,15 @@ export const purchaseRelations = relations(purchase, ({many, one}) => ({
 export const sales = mysqlTable('sales', {
     id: int("id").primaryKey().autoincrement(),
     date: date('date'),
-    accountantId:int("accountantId").references(() => employees.id ),
+    accountantId:int("accountant_Id").references(() => employees.id ),
+    salesmanId:int("salesman_Id").references(() => employees.id ),
     customerId: int("customer_id").references(() => custmers.id),
-    totalAmount: decimal("total_amount"),
-    discountAmount: decimal("discount_amount"),
-  grandTotal: decimal("grandTotal"),
+  totalAmount: decimal("total_amount"),
+    additionalDisocunt:decimal("additional_discount").default("0"),
+    totalDiscountAmount: decimal("total_discount_amount").default("0"),
+    grandTotal: decimal("grandTotal"),
      createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
   });
 
   
@@ -539,9 +542,11 @@ export const salesRelations = relations(sales,({many}) => ({
 // sales products
 export const salesProducts = mysqlTable('salesProducts', {
     id: int("id").primaryKey().autoincrement(),
-    saleId:int("sale_id").references(() => sales.id),
+  saleId: int("sale_id").references(() => sales.id),
+    discountAmount:decimal("discount_amount").default("0"),
   productVariantId: int("product_variant_id").references(() => products.id),
-     createdAt: timestamp("created_at").defaultNow(),
+    quantity:int("quantity"),
+    createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   });
 

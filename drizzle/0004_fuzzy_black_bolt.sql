@@ -1,0 +1,1 @@
+ALTER TABLE `salesProducts` ADD `quantity` int;

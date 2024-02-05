@@ -1,0 +1,1 @@
+ALTER TABLE `sales` ADD `additional_discount` decimal DEFAULT '0';
