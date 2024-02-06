@@ -1,11 +1,12 @@
 import { Hono } from "hono";
 import { db } from "../../database/db";
 
-import { eq, getTableColumns } from "drizzle-orm";
-import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
+import { eq } from "drizzle-orm";
+import { z } from "zod";
+
 import { JwtHandler } from "../../utils/jwt";
-import { User, permissions, userPermissions, users } from "../../database/schema/schema";
+import { Admin, admins } from "../../database/schema/schema";
 
 
 
@@ -27,24 +28,15 @@ const schema = z.object({
 authRoute.post("admin/seeder", async (c) => {
 	try {
 		const hash = await Bun.password.hash("12356")
-		const user = await db.insert(users).values({
-			userName:"admin",
+	 await db.insert(admins).values({
 			email: "admin@gmail.com",
+			userName:"admin",
 			fullName: "admin",
 			phone: "896578465",
-			role: "ADMIN",
 			password: hash,
+			roleId:1
 		})
-		// const perm = await db.query.permissions.findFirst({
-		// 	where: eq(permissions.type,"ADMIN")
-		// })
-
-		// await db.insert(userPermissions).values([
-		// 	{
-		// 		userId: user[0].insertId,
-		// 		permissionId: perm?.id || 1
-		// 	}
-		// ])
+	
 
 		return c.json({
 			msg: "admin created",
@@ -57,18 +49,18 @@ authRoute.post("admin/seeder", async (c) => {
 
 })
 
-authRoute.post("local/login", zValidator("json", schema), async (c) => {
+authRoute.post("local/admin/login", zValidator("json", schema), async (c) => {
 	const jwtHandler = new JwtHandler()
 	try {
 		const data   = await c.req.json()
 		// const { password, ...nonPwCols } = getTableColumns(users);
-		const userData = await db.select().from(users).where(eq(users.email, data.email))
-		const user : User | any = userData[0]
-		if (!user) {
+		const adminData = await db.select().from(admins).where(eq(admins.email, data.email))
+		const admin : Admin | any = adminData[0]
+		if (!admin) {
 			 throw new Error("Incorrect username or passowrd")
 		}
 		
-		const passmatched = await Bun.password.verify(data.password, user.password)
+		const passmatched = await Bun.password.verify(data.password, admin.password)
 
 		console.log({passmatched,});
 		
@@ -76,8 +68,8 @@ authRoute.post("local/login", zValidator("json", schema), async (c) => {
 			throw new Error("Incorrect username or passowrd")
 		}
 
-		const token = jwtHandler.generateToken({id: user.id, userName: user.userName, email: user.email, role: user.role})
-		const {password, ...rest} = user
+		const token = jwtHandler.generateToken({id: admin.id, userName: admin.userName, email: admin.email, role: admin.role})
+		const {password, ...rest} = admin
 		return c.json({user:rest, token})
 	} catch (error: any) {
 		return c.newResponse(error,400)

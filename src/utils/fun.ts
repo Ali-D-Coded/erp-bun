@@ -9,18 +9,10 @@ export function generateRandomNumber(n1: number = 90000, n2: number = 10000) {
 }
 
 
-export enum CalcType {
-  Flat = "Flat",
-  Percent = "Percent"
-}
 
-export async function calculateDisc(type: CalcType, discamount: number , productPrice:  any) {
-  console.log({type, discamount, productPrice});
-  
-  if (type === CalcType.Flat) {
-    return +productPrice - discamount
-  }
-  if (type === CalcType.Percent) {
+
+export async function calculateDisc(discamount: number , productPrice:  any) {
+  console.log({ discamount, productPrice});
     return +productPrice * discamount / 100
-  }
+  
 }

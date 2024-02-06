@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { jwt } from "hono/jwt";
-import { usersApi } from "./users/users.routes";
+
 import { JwtHandler } from "../utils/jwt";
 import authRoute from "./auth/auth.routes";
 import permissionsRoute from "./permissions/permissions.routes";
@@ -40,7 +40,7 @@ const api = new Hono()
 //   }
 // )
 
-api.route("/users", usersApi)
+
 api.route("/customer", customerRoutes)
 api.route("/vendors", vendorRoutes)
 api.route("/auth", authRoute)

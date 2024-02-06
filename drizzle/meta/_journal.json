@@ -5,43 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1706851414035,
-      "tag": "0000_last_lenny_balinger",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1707115112631,
-      "tag": "0001_previous_ares",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1707118987912,
-      "tag": "0002_cool_spacker_dave",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1707124165653,
-      "tag": "0003_massive_magdalene",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1707128150219,
-      "tag": "0004_fuzzy_black_bolt",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "5",
-      "when": 1707134352533,
-      "tag": "0005_loose_groot",
+      "when": 1707206734578,
+      "tag": "0000_long_gwen_stacy",
       "breakpoints": true
     }
   ]

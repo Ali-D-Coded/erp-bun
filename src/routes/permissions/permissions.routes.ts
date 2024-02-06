@@ -15,20 +15,20 @@ permissionsRoute.post("/create", async (c) => {
 		const body = c.req.json()
 		await insertPermissions([
 			{
-			type: "ADMIN",
-			canDo:["create:all","read:all","update:all","delete:all"]
+			permissionName: "ADMIN",
+			description:'["create:all","read:all","update:all","delete:all"]'
 			},
 			{
-			type: "MANAGER",
-			canDo:["read","update","delete"]
+			permissionName: "MANAGER",
+			description:'["read","update","delete"]'
 			},
 			{
-			type: "ACCOUNTANT",
-			canDo:["read"]
+			permissionName: "ACCOUNTANT",
+			description:'["read"]'
 			},
 			{
-			type: "SALESMAN",
-			canDo:["read"]
+			permissionName: "SALESMAN",
+			description:'["read"]'
 			},
 		])
 		return c.json({

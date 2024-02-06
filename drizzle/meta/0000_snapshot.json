@@ -1,9 +1,145 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "36a2858d-9a8f-455a-9c71-fe357a0ae270",
+  "id": "9de0f899-6de3-4f0a-8490-14a4fe066de0",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
+    "admin": {
+      "name": "admin",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "full_name": {
+          "name": "full_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "user_name": {
+          "name": "user_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "password": {
+          "name": "password",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "phone": {
+          "name": "phone",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "role_id": {
+          "name": "role_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {
+        "id_idx": {
+          "name": "id_idx",
+          "columns": [
+            "id"
+          ],
+          "isUnique": true
+        },
+        "username_idx": {
+          "name": "username_idx",
+          "columns": [
+            "user_name"
+          ],
+          "isUnique": true
+        },
+        "email_idx": {
+          "name": "email_idx",
+          "columns": [
+            "email"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "admin_role_id_roles_id_fk": {
+          "name": "admin_role_id_roles_id_fk",
+          "tableFrom": "admin",
+          "tableTo": "roles",
+          "columnsFrom": [
+            "role_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "admin_id": {
+          "name": "admin_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "admin_user_name_unique": {
+          "name": "admin_user_name_unique",
+          "columns": [
+            "user_name"
+          ]
+        },
+        "admin_email_unique": {
+          "name": "admin_email_unique",
+          "columns": [
+            "email"
+          ]
+        },
+        "admin_phone_unique": {
+          "name": "admin_phone_unique",
+          "columns": [
+            "phone"
+          ]
+        }
+      }
+    },
     "attendance": {
       "name": "attendance",
       "columns": {
@@ -304,6 +440,48 @@
           "notNull": true,
           "autoincrement": true
         },
+        "full_name": {
+          "name": "full_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "user_name": {
+          "name": "user_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "password": {
+          "name": "password",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "phone": {
+          "name": "phone",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "role_id": {
+          "name": "role_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "job_title": {
           "name": "job_title",
           "type": "varchar(256)",
@@ -314,6 +492,13 @@
         "department_id": {
           "name": "department_id",
           "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "joining_date": {
+          "name": "joining_date",
+          "type": "date",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -337,6 +522,19 @@
       },
       "indexes": {},
       "foreignKeys": {
+        "employees_role_id_roles_id_fk": {
+          "name": "employees_role_id_roles_id_fk",
+          "tableFrom": "employees",
+          "tableTo": "roles",
+          "columnsFrom": [
+            "role_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
         "employees_department_id_departments_id_fk": {
           "name": "employees_department_id_departments_id_fk",
           "tableFrom": "employees",
@@ -359,7 +557,26 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "employees_user_name_unique": {
+          "name": "employees_user_name_unique",
+          "columns": [
+            "user_name"
+          ]
+        },
+        "employees_email_unique": {
+          "name": "employees_email_unique",
+          "columns": [
+            "email"
+          ]
+        },
+        "employees_phone_unique": {
+          "name": "employees_phone_unique",
+          "columns": [
+            "phone"
+          ]
+        }
+      }
     },
     "expenseTypes": {
       "name": "expenseTypes",
@@ -745,16 +962,16 @@
           "notNull": true,
           "autoincrement": true
         },
-        "type": {
-          "name": "type",
-          "type": "enum('ADMIN','MANAGER','SALESMAN','ACCOUNTANT')",
+        "permission_name": {
+          "name": "permission_name",
+          "type": "varchar(256)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "can_do": {
-          "name": "can_do",
-          "type": "json",
+        "description": {
+          "name": "description",
+          "type": "varchar(256)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -786,14 +1003,7 @@
           ]
         }
       },
-      "uniqueConstraints": {
-        "permissions_type_unique": {
-          "name": "permissions_type_unique",
-          "columns": [
-            "type"
-          ]
-        }
-      }
+      "uniqueConstraints": {}
     },
     "products_stocks": {
       "name": "products_stocks",
@@ -1460,6 +1670,101 @@
       },
       "uniqueConstraints": {}
     },
+    "role_permissions": {
+      "name": "role_permissions",
+      "columns": {
+        "permission_id": {
+          "name": "permission_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "role_id": {
+          "name": "role_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "role_permissions_permission_id_permissions_id_fk": {
+          "name": "role_permissions_permission_id_permissions_id_fk",
+          "tableFrom": "role_permissions",
+          "tableTo": "permissions",
+          "columnsFrom": [
+            "permission_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "role_permissions_role_id_roles_id_fk": {
+          "name": "role_permissions_role_id_roles_id_fk",
+          "tableFrom": "role_permissions",
+          "tableTo": "roles",
+          "columnsFrom": [
+            "role_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "role_permissions_permission_id_role_id_pk": {
+          "name": "role_permissions_permission_id_role_id_pk",
+          "columns": [
+            "permission_id",
+            "role_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "roles": {
+      "name": "roles",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "role_name": {
+          "name": "role_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "roles_id": {
+          "name": "roles_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
     "sales": {
       "name": "sales",
       "columns": {
@@ -1477,8 +1782,15 @@
           "notNull": false,
           "autoincrement": false
         },
-        "accountantId": {
-          "name": "accountantId",
+        "accountant_Id": {
+          "name": "accountant_Id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "salesman_Id": {
+          "name": "salesman_Id",
           "type": "int",
           "primaryKey": false,
           "notNull": false,
@@ -1498,12 +1810,21 @@
           "notNull": false,
           "autoincrement": false
         },
-        "discount_amount": {
-          "name": "discount_amount",
+        "additional_discount": {
+          "name": "additional_discount",
           "type": "decimal",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "'0'"
+        },
+        "total_discount_amount": {
+          "name": "total_discount_amount",
+          "type": "decimal",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'0'"
         },
         "grandTotal": {
           "name": "grandTotal",
@@ -1531,12 +1852,25 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "sales_accountantId_employees_id_fk": {
-          "name": "sales_accountantId_employees_id_fk",
+        "sales_accountant_Id_employees_id_fk": {
+          "name": "sales_accountant_Id_employees_id_fk",
           "tableFrom": "sales",
           "tableTo": "employees",
           "columnsFrom": [
-            "accountantId"
+            "accountant_Id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "sales_salesman_Id_employees_id_fk": {
+          "name": "sales_salesman_Id_employees_id_fk",
+          "tableFrom": "sales",
+          "tableTo": "employees",
+          "columnsFrom": [
+            "salesman_Id"
           ],
           "columnsTo": [
             "id"
@@ -1585,8 +1919,23 @@
           "notNull": false,
           "autoincrement": false
         },
-        "product_id": {
-          "name": "product_id",
+        "discount_amount": {
+          "name": "discount_amount",
+          "type": "decimal",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'0'"
+        },
+        "product_variant_id": {
+          "name": "product_variant_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "quantity": {
+          "name": "quantity",
           "type": "int",
           "primaryKey": false,
           "notNull": false,
@@ -1624,12 +1973,12 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "salesProducts_product_id_products_id_fk": {
-          "name": "salesProducts_product_id_products_id_fk",
+        "salesProducts_product_variant_id_products_id_fk": {
+          "name": "salesProducts_product_variant_id_products_id_fk",
           "tableFrom": "salesProducts",
           "tableTo": "products",
           "columnsFrom": [
-            "product_id"
+            "product_variant_id"
           ],
           "columnsTo": [
             "id"
@@ -1905,208 +2254,6 @@
         }
       },
       "uniqueConstraints": {}
-    },
-    "user_permissions": {
-      "name": "user_permissions",
-      "columns": {
-        "permission_id": {
-          "name": "permission_id",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "user_permissions_permission_id_permissions_id_fk": {
-          "name": "user_permissions_permission_id_permissions_id_fk",
-          "tableFrom": "user_permissions",
-          "tableTo": "permissions",
-          "columnsFrom": [
-            "permission_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "user_permissions_user_id_users_id_fk": {
-          "name": "user_permissions_user_id_users_id_fk",
-          "tableFrom": "user_permissions",
-          "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "user_permissions_permission_id_user_id_pk": {
-          "name": "user_permissions_permission_id_user_id_pk",
-          "columns": [
-            "permission_id",
-            "user_id"
-          ]
-        }
-      },
-      "uniqueConstraints": {}
-    },
-    "users": {
-      "name": "users",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": true
-        },
-        "full_name": {
-          "name": "full_name",
-          "type": "varchar(256)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "user_name": {
-          "name": "user_name",
-          "type": "varchar(256)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "email": {
-          "name": "email",
-          "type": "varchar(256)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "password": {
-          "name": "password",
-          "type": "varchar(256)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "phone": {
-          "name": "phone",
-          "type": "varchar(256)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "role": {
-          "name": "role",
-          "type": "enum('ADMIN','MANAGER','SALESMAN','ACCOUNTANT')",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'SALESMAN'"
-        },
-        "employee_id": {
-          "name": "employee_id",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "(now())"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "(now())"
-        }
-      },
-      "indexes": {
-        "id_idx": {
-          "name": "id_idx",
-          "columns": [
-            "id"
-          ],
-          "isUnique": true
-        },
-        "username_idx": {
-          "name": "username_idx",
-          "columns": [
-            "user_name"
-          ],
-          "isUnique": true
-        },
-        "email_idx": {
-          "name": "email_idx",
-          "columns": [
-            "email"
-          ],
-          "isUnique": true
-        }
-      },
-      "foreignKeys": {
-        "users_employee_id_employees_id_fk": {
-          "name": "users_employee_id_employees_id_fk",
-          "tableFrom": "users",
-          "tableTo": "employees",
-          "columnsFrom": [
-            "employee_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "users_id": {
-          "name": "users_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
-      "uniqueConstraints": {
-        "users_user_name_unique": {
-          "name": "users_user_name_unique",
-          "columns": [
-            "user_name"
-          ]
-        },
-        "users_email_unique": {
-          "name": "users_email_unique",
-          "columns": [
-            "email"
-          ]
-        },
-        "users_phone_unique": {
-          "name": "users_phone_unique",
-          "columns": [
-            "phone"
-          ]
-        }
-      }
     },
     "vendors": {
       "name": "vendors",

@@ -1,20 +1,16 @@
 import { zValidator } from "@hono/zod-validator";
-import { Hono } from "hono";
-import { CreateSalesDto } from "./dto/sales.dto";
-import { db } from "../../database/db";
-import { productStocks, productsVariant, purchaseItems } from "../../database/schema/schema";
 import { eq } from "drizzle-orm";
-import { CalcType, calculateDisc } from "../../utils/fun";
+import { Hono } from "hono";
+import { db } from "../../database/db";
+import { productStocks, purchaseItems } from "../../database/schema/schema";
+import { calculateDisc } from "../../utils/fun";
+import { CreateSalesDto } from "./dto/sales.dto";
 
 const salesRoutes = new Hono()
 
 salesRoutes.post("/create", zValidator("json",CreateSalesDto),async (c) => {
 	try {
 		const dto = await CreateSalesDto.parseAsync(c.req.json())
-		
-		//totalAmount
-		//totalDiscountAmount
-		//grandTotal
 
 		const productsData = await Promise.all(dto.products.map(async (item) => {
 			const prod = await db.select({
@@ -28,7 +24,7 @@ salesRoutes.post("/create", zValidator("json",CreateSalesDto),async (c) => {
 			const flatAmt = item.discountFlat ? item.discountFlat : 0
 			const percentAmt = item.discountPercentage ? item.discountPercentage : 0
 			
-			const discountAmount = item.discountFlat ? await calculateDisc(CalcType.Flat, flatAmt, productAmount) : await calculateDisc(CalcType.Percent,percentAmt,productAmount)
+			const discountAmount = item.discountFlat ? flatAmt : await calculateDisc(percentAmt,productAmount)
 			
 			return {
 			productAmount,
@@ -39,10 +35,21 @@ salesRoutes.post("/create", zValidator("json",CreateSalesDto),async (c) => {
 		})) 
 
 
-		// const totalAmount = productsData.reduce((a,b) => +a.productamount + +b.productamount  ,0)
+		const {totalAmount, totalDiscountAmount} = productsData.reduce((acc, item) => {
+			acc.totalAmount += +item.productAmount 
+			acc.totalDiscountAmount += item.discountAmount ? item.discountAmount : 0 
+			return acc
+		}, {
+			totalAmount:0,
+			totalDiscountAmount:0,
+		})
+
+		const additionalDiscountedAmount = dto.additionalDiscountFlat ? +dto.additionalDiscountFlat : dto.additionalDiscountPercent ? await calculateDisc(+dto.additionalDiscountPercent, totalAmount) : 0
+
+		const grandTotal = totalAmount - (totalDiscountAmount + additionalDiscountedAmount)
 		
 		
-		return c.json(productsData)
+		return c.json({productsData,totalAmount, totalDiscountAmount,  additionalDiscountedAmount, grandTotal})
 	} catch (error) {
 		return c.newResponse(error,400)
 	}

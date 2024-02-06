@@ -28,11 +28,7 @@ departmentsApi.get("/all",async (c) => {
     	where: (departments, { like }) => like(departments.name, `%${dep}%`),
 		} : {}),
 		with: {
-			employees: {
-				with: {
-					user: true
-				}
-			}
+			employees:true
 		}
 		});
 		return c.json(

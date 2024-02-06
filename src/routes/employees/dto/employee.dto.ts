@@ -7,10 +7,9 @@ export const CreateEmployeeDto = z.object({
   email: z.string().regex(emailRegex),
   password: z.string().min(8),
   phone: z.string().min(10),
-  role: z.enum(["SALESMAN", "MANAGER", "ACCOUNTANT"]),
+  roleId: z.number(),
   jobTitle: z.string(),
   departmentId: z.number(),
-  permissionId: z.number().optional(),
 
 })
 
@@ -20,9 +19,9 @@ export const UpdateEmployeeDto = z.object({
   email: z.string().regex(emailRegex).optional(),
   password: z.string().min(8).optional(),
   phone: z.string().min(10).optional(),
-  role: z.enum(["SALESMAN", "MANAGER", "ACCOUNTANT"]).optional(),
+   roleId: z.number(),
   jobTitle: z.string().optional(),
   departmentId: z.number().optional(),
-  permissionId: z.number().optional(),
+
 
 })

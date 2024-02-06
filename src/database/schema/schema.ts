@@ -1,16 +1,15 @@
-import { relations, sql } from "drizzle-orm";
+import { Many, relations, sql } from "drizzle-orm";
 import { date, decimal, int, json, mysqlEnum, mysqlTable, primaryKey, time, timestamp, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
 
 // Users
-export const users = mysqlTable('users', {
+export const admins = mysqlTable('admin', {
   id: int("id").primaryKey().autoincrement(),
   fullName: varchar('full_name',{length:256}),
   userName: varchar('user_name',{length: 256}).unique(),
   email: varchar('email',{length:256}).unique(),
   password: varchar('password',{length: 256}),
   phone: varchar('phone', { length: 256 }).unique(),
-  role: mysqlEnum("role", ["ADMIN", "MANAGER", "SALESMAN", "ACCOUNTANT"]),
-  employeeId: int("employee_id").references(() => employees.id),
+  roleId: int("role_id").references(() => roles.id),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 },(users) => ({
@@ -19,23 +18,37 @@ export const users = mysqlTable('users', {
 	emailIndex: uniqueIndex('email_idx').on(users.email),
 }));
 
-export type User = typeof users.$inferSelect; // return type when queried
-export type NewUser = typeof users.$inferInsert; // insert type
+export type Admin = typeof admins.$inferSelect; // return type when queried
+export type NewAdmin = typeof admins.$inferInsert; // insert type
 
-export const usersRelations = relations(users, ({ one,many }) => ({
-  employee: one(employees, {
-    fields: [users.employeeId],
-    references:[employees.id]
-  }),
-  userPermissions: many(userPermissions)
+export const adminRelations = relations(admins, ({ one,many }) => ({
+  role: one(roles, {
+    fields: [admins.roleId],
+    references:[roles.id]
+  })
 }));
+
+
+//user roles
+export const roles = mysqlTable("roles", {
+   id: int("id").primaryKey().autoincrement(),
+  roleName: varchar('role_name', { length: 256 }),
+  description: varchar('description', { length: 256 }),
+})
+
+export type Role = typeof roles.$inferSelect; // return type when queried
+export type NewRole = typeof roles.$inferInsert; // insert type
+
+export const roleRelations = relations(roles, ({ many }) => ({
+  rolePermissions: many(rolePermissions)
+}))
 
 
 // Permissions
 export const permissions = mysqlTable('permissions', {
-    id: int("id").primaryKey().autoincrement(),
-    type: mysqlEnum("type", ["ADMIN", "MANAGER", "SALESMAN", "ACCOUNTANT"]).unique(),
-  canDo: json("can_do"),
+  id: int("id").primaryKey().autoincrement(),
+  permissionName: varchar("permission_name",{length:256}) ,
+  description: varchar('description', { length: 256 }),
      createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   });
@@ -45,32 +58,32 @@ export type Permission = typeof permissions.$inferSelect; // return type when qu
 export type NewPermission = typeof permissions.$inferInsert; // insert type
 
 export const permissionRelations = relations(permissions, ({ many }) => ({
-  userPermissions:many(userPermissions)
+  rolePermissions:many(rolePermissions)
 }))
 
 
 
-// UserPermissions
-export const userPermissions = mysqlTable('user_permissions', {
+// RolePermissions
+export const rolePermissions = mysqlTable('role_permissions', {
     permissionId: int('permission_id').notNull().references(() => permissions.id),
-    userId: int('user_id').notNull().references(() => users.id),
+    roleId: int('role_id').notNull().references(() => roles.id),
    
-  },(userPermissions) => ({
-      pk: primaryKey({columns:[userPermissions.permissionId, userPermissions.userId]})
+  },(rp) => ({
+      pk: primaryKey({columns:[rp.permissionId, rp.roleId]})
   }));
 
   
-export type UserPermission = typeof userPermissions.$inferSelect; // return type when queried
-export type NewUserPermission = typeof userPermissions.$inferInsert; // insert type
+export type RolePermission = typeof rolePermissions.$inferSelect; // return type when queried
+export type NewRolePermission = typeof rolePermissions.$inferInsert; // insert type
 
 
-export const userPermissionsRelations = relations(userPermissions, ({ one }) => ({
-    user: one(users, {
-      fields: [userPermissions.userId],
-      references: [users.id],
+export const rolePermissionsRelations = relations(rolePermissions, ({ one }) => ({
+    role: one(roles, {
+      fields: [rolePermissions.roleId],
+      references: [roles.id],
     }),
     permission: one(permissions, {
-      fields: [userPermissions.permissionId],
+      fields: [rolePermissions.permissionId],
       references: [permissions.id],
     }),
    
@@ -300,26 +313,6 @@ export const unitsRelations = relations(units, ({many}) => ({
 }))
 
 
-// units Pivots
-// export const unitsToPurchaseItems = mysqlTable('users_to_groups', {
-//     unitId: int('unit_id').notNull().references(() => units.id),
-//     // productVariantId: int('product_variant_id').notNull().references(() => productsVariant.id),
-//     purchaseItemsId: int('purchase_item_id').notNull().references(() => purchaseItems.id),
-//   }, (t) => ({
-//     pk: primaryKey({columns:[t.unitId, t.purchaseItemsId]}),
-//   }),
-// );
-
-// export const unitsToProductVariantsRelations = relations(unitsToPurchaseItems, ({ one }) => ({
-//   productVariant: one(purchaseItems, {
-//     fields: [unitsToPurchaseItems.purchaseItemsId],
-//     references: [purchaseItems.id],
-//   }),
-//   unit: one(units, {
-//     fields: [unitsToPurchaseItems.unitId],
-//     references: [units.id],
-//   }),
-// }));
 
 // //Departments 
 export const departments = mysqlTable('departments', {
@@ -339,8 +332,15 @@ export const departmentsRelations = relations(departments, ({ many }) => ({
 // Employees
 export const employees = mysqlTable('employees', {
   id: int("id").primaryKey().autoincrement(),
+  fullName: varchar('full_name',{length:256}),
+  userName: varchar('user_name',{length: 256}).unique(),
+  email: varchar('email',{length:256}).unique(),
+  password: varchar('password',{length: 256}),
+  phone: varchar('phone', { length: 256 }).unique(),
+  roleId: int("role_id").references(() => roles.id),
   jobTitle: varchar("job_title", { length: 256 }),
   departmentId: int("department_id").references(() => departments.id),
+  joiningDate:date("joining_date"),
    createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -351,12 +351,15 @@ export type NewEmployee = typeof employees.$inferInsert; // insert type
 
 export const employeesRelations = relations(employees, ({ many,one }) => ({
   attendances: many(attendance),
-  user:one(users),
 	leaves: many(leaves),
 	payrolls: many(leaves),
   department: one(departments, {
     fields: [employees.departmentId],
     references:[departments.id]
+  }),
+  role: one(roles, {
+    fields: [employees.roleId],
+    references:[roles.id]
   })
 	
 }));
