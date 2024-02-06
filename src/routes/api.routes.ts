@@ -17,6 +17,7 @@ import stocksRoute from "./products/stocks.routes";
 import salesRoutes from "./sales/sales.routes";
 import purchaseRoute from "./purchase/purchase.routes";
 import customerRoutes from "./users/customer.routes";
+import roleRoutes from "./auth/roles.routes";
 
 
 const api = new Hono()
@@ -41,9 +42,10 @@ const api = new Hono()
 // )
 
 
+api.route("/auth", authRoute)
+api.route("/roles", roleRoutes)
 api.route("/customer", customerRoutes)
 api.route("/vendors", vendorRoutes)
-api.route("/auth", authRoute)
 api.route("/permissions", permissionsRoute)
 api.route("/departments", departmentsApi)
 api.route("/employees", employeeRoutes)

@@ -3,6 +3,7 @@ import { db } from "../../database/db";
 
 import { eq } from "drizzle-orm";
 import { NewPermission, permissions } from "../../database/schema/schema";
+import { permissionsList } from "../../utils/constants";
 
  const permissionsRoute = new Hono()
 
@@ -13,24 +14,7 @@ const insertPermissions = async (permission: NewPermission[]) => {
 permissionsRoute.post("/create", async (c) => {
 	try {
 		const body = c.req.json()
-		await insertPermissions([
-			{
-			permissionName: "ADMIN",
-			description:'["create:all","read:all","update:all","delete:all"]'
-			},
-			{
-			permissionName: "MANAGER",
-			description:'["read","update","delete"]'
-			},
-			{
-			permissionName: "ACCOUNTANT",
-			description:'["read"]'
-			},
-			{
-			permissionName: "SALESMAN",
-			description:'["read"]'
-			},
-		])
+		await insertPermissions(permissionsList)
 		return c.json({
 			msg: "permission created"
 		})	

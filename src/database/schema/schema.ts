@@ -47,9 +47,10 @@ export const roleRelations = relations(roles, ({ many }) => ({
 // Permissions
 export const permissions = mysqlTable('permissions', {
   id: int("id").primaryKey().autoincrement(),
-  permissionName: varchar("permission_name",{length:256}) ,
+  permissionName: varchar("permission_name", { length: 256 }),
+  endpoint:varchar("endpoint",{length:255}),
   description: varchar('description', { length: 256 }),
-     createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   });
 
@@ -89,6 +90,9 @@ export const rolePermissionsRelations = relations(rolePermissions, ({ one }) => 
    
 }));
   
+
+
+
 
 // Customers
 export const custmers = mysqlTable('customers', {
