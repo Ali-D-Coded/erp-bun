@@ -1,8 +1,8 @@
 import { zValidator } from "@hono/zod-validator";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { Hono } from "hono";
 import { db } from "../../database/db";
-import { productStocks, purchaseItems } from "../../database/schema/schema";
+import { NewSalesProduct, productStocks, purchaseItems, sales, salesProducts } from "../../database/schema/schema";
 import { calculateDisc } from "../../utils/fun";
 import { CreateSalesDto } from "./dto/sales.dto";
 
@@ -20,14 +20,18 @@ salesRoutes.post("/create", zValidator("json",CreateSalesDto),async (c) => {
 			
 			}).from(productStocks).leftJoin(purchaseItems, eq(productStocks.productVariantId, purchaseItems.productVariantId)).where(eq(productStocks.productVariantId, +item.productVariantId)) 
 
-			const productAmount = prod ? prod[0].purchaseItem?.maximumRetailPrice * item.quantity : 0
+			const productAmount = prod ? +prod[0].purchaseItem?.maximumRetailPrice * item.quantity : 0
+			const productCommissionPercent = prod ? +prod[0].purchaseItem?.commissionPercentage : 0
 			const flatAmt = item.discountFlat ? item.discountFlat : 0
 			const percentAmt = item.discountPercentage ? item.discountPercentage : 0
 			
 			const discountAmount = item.discountFlat ? flatAmt : await calculateDisc(percentAmt,productAmount)
+			const productCommission = await calculateDisc(productCommissionPercent, productAmount) 
 			
 			return {
-			productAmount,
+		
+				productAmount,
+				productCommission,
 				discountAmount,
 				productVariantId: item.productVariantId,
 				quantity: item.quantity,
@@ -47,6 +51,42 @@ salesRoutes.post("/create", zValidator("json",CreateSalesDto),async (c) => {
 		const additionalDiscountedAmount = dto.additionalDiscountFlat ? +dto.additionalDiscountFlat : dto.additionalDiscountPercent ? await calculateDisc(+dto.additionalDiscountPercent, totalAmount) : 0
 
 		const grandTotal = totalAmount - (totalDiscountAmount + additionalDiscountedAmount)
+
+		await db.transaction(async (tx) => {
+			const saleRes = await tx.insert(sales).values({
+				date: new Date(dto.date),
+				accountantId: dto.accountantId,
+				salesmanId: dto.salesmanId,
+				customerId: dto.customerId,
+				totalAmount: totalAmount.toFixed(2),
+				additionalDisocunt: additionalDiscountedAmount.toFixed(2),
+				totalDiscountAmount: totalDiscountAmount.toFixed(2),
+				grandTotal: grandTotal.toFixed(2)
+			})
+
+			const salesProductsData : NewSalesProduct[] = productsData.map(it => {
+				return {
+					saleId: saleRes[0].insertId,
+					discountAmount: it.discountAmount.toFixed(2),
+					productVariantId: it.productVariantId,
+					quantity:it.quantity
+				}
+			})
+			await tx.insert(salesProducts).values(salesProductsData)
+
+			for (const prod of productsData) {
+				await tx.update(productStocks).set({
+					quantityInStock: sql`${productStocks.quantityInStock} - ${prod.quantity}`
+				}).where(eq(productStocks.productVariantId, prod.productVariantId));
+			}
+
+			//add the commission to salesman
+
+			
+
+
+		})
+		
 		
 		
 		return c.json({productsData,totalAmount, totalDiscountAmount,  additionalDiscountedAmount, grandTotal})

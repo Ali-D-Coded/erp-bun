@@ -22,6 +22,27 @@
       "when": 1707220846940,
       "tag": "0002_ambitious_robin_chapel",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1707293106685,
+      "tag": "0003_tiny_namora",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1707293223885,
+      "tag": "0004_petite_newton_destine",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1707293306292,
+      "tag": "0005_oval_blacklash",
+      "breakpoints": true
     }
   ]
 }

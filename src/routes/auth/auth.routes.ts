@@ -55,6 +55,7 @@ authRoute.post("local/admin/login", zValidator("json", schema), async (c) => {
 		const data   = await c.req.json()
 		// const { password, ...nonPwCols } = getTableColumns(users);
 		const adminData = await db.select().from(admins).where(eq(admins.email, data.email))
+		
 		const admin : Admin | any = adminData[0]
 		if (!admin) {
 			 throw new Error("Incorrect username or passowrd")

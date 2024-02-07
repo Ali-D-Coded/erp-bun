@@ -138,7 +138,7 @@ export const vendorRelations = relations(vendors, ({many}) => ({
 // Products
 export const products = mysqlTable('products', {
   id: int("id").primaryKey().autoincrement(),
-  name: varchar('name', { length: 256 }),
+  name: varchar('name', { length: 500 }),
   categoryId: int("category_id").references(() => categories.id),
   subCategoryId: int("sub_category_id").references(() => subCategories.id),
    createdAt: timestamp("created_at").defaultNow(),
@@ -168,8 +168,8 @@ export const productRelations = relations(products, ({many,one}) => ({
 // Product variants
 export const productsVariant = mysqlTable('products_variant', {
   id: int("id").primaryKey().autoincrement(),
-  name: varchar('name',{length:256}),
-  description: varchar('description',{length:256}).unique(), 
+  name: varchar('name',{length:500}),
+  description: json('description'), 
   price: decimal('price').default(sql`NULL`),
   productCode: int('prodcut_code').unique(),
 	barCode: varchar("bar_code", { length: 256 }).unique(),

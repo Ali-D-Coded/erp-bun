@@ -2,7 +2,8 @@
   "scripts": {
     "dev": "bun run --hot src/index.ts ",
     "gen": "bunx drizzle-kit generate:mysql",
-    "mig": "bun src/database/migrate.ts"
+    "mig": "bun src/database/migrate.ts",
+    "seed": "bun src/database/seed/seed.ts"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.1.11",

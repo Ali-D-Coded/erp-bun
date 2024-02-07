@@ -19,9 +19,7 @@ export const UpdateEmployeeDto = z.object({
   email: z.string().regex(emailRegex).optional(),
   password: z.string().min(8).optional(),
   phone: z.string().min(10).optional(),
-   roleId: z.number(),
+   roleId: z.number().optional(),
   jobTitle: z.string().optional(),
   departmentId: z.number().optional(),
-
-
 })
