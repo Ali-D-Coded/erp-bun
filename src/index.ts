@@ -2,9 +2,12 @@ import { Hono } from 'hono'
 import { logger } from 'hono/logger'
 import { poweredBy } from 'hono/powered-by'
 import api from './routes/api.routes'
+import { cors } from 'hono/cors'
+
 
 
 const app = new Hono()
+app.use('/api/*',cors())
 app.use("*", logger())
 app.use('*', poweredBy())
 

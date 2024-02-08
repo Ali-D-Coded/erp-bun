@@ -2,8 +2,8 @@ import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { CreateDepartment } from "./dto/departments.dto";
 import { db } from "../../database/db";
-import { departments } from "../../database/schema/schema";
-import { eq, like } from "drizzle-orm";
+import { departments, employees } from "../../database/schema/schema";
+import { eq, like, sql } from "drizzle-orm";
 
 const departmentsApi = new Hono()
 
@@ -30,9 +30,16 @@ departmentsApi.get("/all",async (c) => {
 		with: {
 			employees:true
 		}
-		});
+	});
+		const departmentsWithEmployeeCount = await db.select({
+		departmentId: departments.id,
+		employeeCount: sql<number>`COUNT(${employees.id})`
+		})
+		.from(departments)
+		.leftJoin(employees, eq(departments.id, employees.departmentId)) // You need to adjust this condition based on your schema
+		.groupBy(departments.id);
 		return c.json(
-			deps
+			{deps, departmentsWithEmployeeCount}
 		)
 	} catch (error:any) {
 		return c.newResponse(error, 400)
