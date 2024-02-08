@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "9de0f899-6de3-4f0a-8490-14a4fe066de0",
+  "id": "4a1e88a0-bdd7-408c-be5e-1e3b6c8a5232",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "admin": {
@@ -500,7 +500,14 @@
           "name": "joining_date",
           "type": "date",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "salary": {
+          "name": "salary",
+          "type": "decimal",
+          "primaryKey": false,
+          "notNull": true,
           "autoincrement": false
         },
         "created_at": {
@@ -969,6 +976,13 @@
           "notNull": false,
           "autoincrement": false
         },
+        "endpoint": {
+          "name": "endpoint",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "description": {
           "name": "description",
           "type": "varchar(256)",
@@ -1022,6 +1036,13 @@
           "notNull": false,
           "autoincrement": false
         },
+        "purchase_item_id": {
+          "name": "purchase_item_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "quantity_in_stock": {
           "name": "quantity_in_stock",
           "type": "int",
@@ -1047,21 +1068,7 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {
-        "products_stocks_product_variant_id_products_variant_id_fk": {
-          "name": "products_stocks_product_variant_id_products_variant_id_fk",
-          "tableFrom": "products_stocks",
-          "tableTo": "products_variant",
-          "columnsFrom": [
-            "product_variant_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {
         "products_stocks_id": {
           "name": "products_stocks_id",
@@ -1084,7 +1091,7 @@
         },
         "name": {
           "name": "name",
-          "type": "varchar(256)",
+          "type": "varchar(500)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1186,14 +1193,14 @@
         },
         "name": {
           "name": "name",
-          "type": "varchar(256)",
+          "type": "varchar(500)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "description": {
           "name": "description",
-          "type": "varchar(256)",
+          "type": "json",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1278,12 +1285,6 @@
         }
       },
       "uniqueConstraints": {
-        "products_variant_description_unique": {
-          "name": "products_variant_description_unique",
-          "columns": [
-            "description"
-          ]
-        },
         "products_variant_prodcut_code_unique": {
           "name": "products_variant_prodcut_code_unique",
           "columns": [
@@ -1895,6 +1896,94 @@
       "compositePrimaryKeys": {
         "sales_id": {
           "name": "sales_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "sales_commission": {
+      "name": "sales_commission",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "salesman_id": {
+          "name": "salesman_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "sales_id": {
+          "name": "sales_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "sale_date": {
+          "name": "sale_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "commission_earned": {
+          "name": "commission_earned",
+          "type": "decimal",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "sales_commission_salesman_id_employees_id_fk": {
+          "name": "sales_commission_salesman_id_employees_id_fk",
+          "tableFrom": "sales_commission",
+          "tableTo": "employees",
+          "columnsFrom": [
+            "salesman_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "sales_commission_id": {
+          "name": "sales_commission_id",
           "columns": [
             "id"
           ]

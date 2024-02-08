@@ -2,7 +2,7 @@ import { zValidator } from "@hono/zod-validator";
 import { eq, sql } from "drizzle-orm";
 import { Hono } from "hono";
 import { db } from "../../database/db";
-import { NewSalesProduct, productStocks, purchaseItems, sales, salesProducts } from "../../database/schema/schema";
+import { NewSalesProduct, productStocks, purchaseItems, sales, salesCommission, salesProducts } from "../../database/schema/schema";
 import { calculateDisc } from "../../utils/fun";
 import { CreateSalesDto } from "./dto/sales.dto";
 
@@ -20,13 +20,13 @@ salesRoutes.post("/create", zValidator("json",CreateSalesDto),async (c) => {
 			
 			}).from(productStocks).leftJoin(purchaseItems, eq(productStocks.productVariantId, purchaseItems.productVariantId)).where(eq(productStocks.productVariantId, +item.productVariantId)) 
 
-			const productAmount = prod ? +prod[0].purchaseItem?.maximumRetailPrice * item.quantity : 0
-			const productCommissionPercent = prod ? +prod[0].purchaseItem?.commissionPercentage : 0
+			const productAmount = prod?.[0]?.purchaseItem?.maximumRetailPrice ?? 0;
+			const productCommissionPercent = prod?.[0]?.purchaseItem?.commissionPercentage ?? 0;
 			const flatAmt = item.discountFlat ? item.discountFlat : 0
 			const percentAmt = item.discountPercentage ? item.discountPercentage : 0
 			
 			const discountAmount = item.discountFlat ? flatAmt : await calculateDisc(percentAmt,productAmount)
-			const productCommission = await calculateDisc(productCommissionPercent, productAmount) 
+			const productCommission = await calculateDisc(+productCommissionPercent, productAmount) 
 			
 			return {
 		
@@ -39,18 +39,23 @@ salesRoutes.post("/create", zValidator("json",CreateSalesDto),async (c) => {
 		})) 
 
 
-		const {totalAmount, totalDiscountAmount} = productsData.reduce((acc, item) => {
+		const {totalAmount, totalDiscountAmount,totalProductCommission} = productsData.reduce((acc, item) => {
 			acc.totalAmount += +item.productAmount 
 			acc.totalDiscountAmount += item.discountAmount ? item.discountAmount : 0 
+			acc.totalProductCommission += item.productCommission ? item.productCommission : 0 
 			return acc
 		}, {
 			totalAmount:0,
-			totalDiscountAmount:0,
+			totalDiscountAmount: 0,
+			totalProductCommission:0
 		})
 
 		const additionalDiscountedAmount = dto.additionalDiscountFlat ? +dto.additionalDiscountFlat : dto.additionalDiscountPercent ? await calculateDisc(+dto.additionalDiscountPercent, totalAmount) : 0
 
 		const grandTotal = totalAmount - (totalDiscountAmount + additionalDiscountedAmount)
+
+		console.log({productsData,totalAmount, totalDiscountAmount,  additionalDiscountedAmount,totalProductCommission, grandTotal});
+		
 
 		await db.transaction(async (tx) => {
 			const saleRes = await tx.insert(sales).values({
@@ -81,15 +86,31 @@ salesRoutes.post("/create", zValidator("json",CreateSalesDto),async (c) => {
 			}
 
 			//add the commission to salesman
-
-			
-
+			await tx.insert(salesCommission).values({
+				salesmanId: dto.salesmanId,
+				saleId: saleRes[0].insertId,
+				saleDate: new Date(dto.date),
+				commissionEarned: totalProductCommission.toFixed(2),
+				notes:"sales commission"
+			})
 
 		})
 		
 		
-		
-		return c.json({productsData,totalAmount, totalDiscountAmount,  additionalDiscountedAmount, grandTotal})
+		return c.json("sales added")
+	} catch (error) {
+		return c.newResponse(error,400)
+	}
+})
+
+salesRoutes.get("/all", async(c) => {
+	try {
+		const salesRes = await db.query.sales.findMany({
+			with: {
+				salesProducts: true
+			}
+		})
+		return c.json(salesRes)
 	} catch (error) {
 		return c.newResponse(error,400)
 	}

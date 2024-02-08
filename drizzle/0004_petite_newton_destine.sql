@@ -1,1 +1,0 @@
-ALTER TABLE `products_variant` DROP INDEX `products_variant_description_unique`;

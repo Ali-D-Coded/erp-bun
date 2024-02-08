@@ -1,1 +1,0 @@
-ALTER TABLE `products_variant` MODIFY COLUMN `description` json;

@@ -37,8 +37,10 @@ export const employeesData: NewEmployee[] = [
 		password: '$argon2id$v=19$m=65536,t=2,p=1$aUFybAfCq1dQNSbxM0xCeZnBTpz72ee1Nbl4GAxx0AM$7fpfdbXF65Upk0J7MomRiRUTQQ6cJ8MadVPFEsH+bQM',
 		phone: '9685451256',
 		roleId: 2,
-		jobTitle: 'accountant',
+		jobTitle: 'salesman',
 		departmentId: 1,
+		joiningDate: new Date("2024-01-01T00:00:00.000Z"),
+		salary:"20000.00"
 	},
 	{
 		fullName: 'Sreya',
@@ -49,6 +51,8 @@ export const employeesData: NewEmployee[] = [
 		roleId: 3,
 		jobTitle: 'accountant',
 		departmentId: 2,
+		joiningDate: new Date("2024-01-01T00:00:00.000Z"),
+		salary:"20000.00"
 	},
 ]
 

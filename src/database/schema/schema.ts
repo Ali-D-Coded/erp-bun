@@ -202,8 +202,9 @@ export const productsVariantRelations = relations(productsVariant, ({ one, many 
 //Stock
 export const productStocks = mysqlTable("products_stocks", {
   id: int("id").primaryKey().autoincrement(),
-  productVariantId: int("product_variant_id").references(() => productsVariant.id),
-  quantityInStock: int('quantity_in_stock'),
+  productVariantId: int("product_variant_id").notNull(),
+  purchaseItemId:int("purchase_item_id").notNull(),
+  quantityInStock: int('quantity_in_stock').notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 })
@@ -344,7 +345,8 @@ export const employees = mysqlTable('employees', {
   roleId: int("role_id").references(() => roles.id),
   jobTitle: varchar("job_title", { length: 256 }),
   departmentId: int("department_id").references(() => departments.id),
-  joiningDate:date("joining_date"),
+  joiningDate: date("joining_date").notNull(),
+  salary: decimal("salary").notNull(),
    createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -356,7 +358,7 @@ export type NewEmployee = typeof employees.$inferInsert; // insert type
 export const employeesRelations = relations(employees, ({ many,one }) => ({
   attendances: many(attendance),
 	leaves: many(leaves),
-	payrolls: many(leaves),
+	payrolls: many(payroll),
   department: one(departments, {
     fields: [employees.departmentId],
     references:[departments.id]
@@ -364,7 +366,8 @@ export const employeesRelations = relations(employees, ({ many,one }) => ({
   role: one(roles, {
     fields: [employees.roleId],
     references:[roles.id]
-  })
+  }),
+  salesCommissions: many(salesCommission)
 	
 }));
 
@@ -594,6 +597,29 @@ export const salesReturnRelations = relations(salesReturn,({one}) => ({
     })
 }))
 
+
+//sales commission
+
+export const salesCommission = mysqlTable("sales_commission", {
+  id: int("id").primaryKey().autoincrement(),
+  salesmanId: int("salesman_id").references(() => employees.id),
+  saleId: int("sales_id"),
+  saleDate: date("sale_date"),
+  commissionEarned: decimal("commission_earned"),
+  notes: varchar("notes",{length:256}),
+  	createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+})
+
+export type SalesCommission = typeof salesCommission.$inferSelect
+export type NewSalesCommission = typeof salesCommission.$inferInsert
+
+export const salesCommissionRelation = relations(salesCommission, ({one}) => ({
+  salesman: one(employees, {
+    fields: [salesCommission.salesmanId],
+    references:[employees.id]
+  })
+}))
 
 // Expense
 export const expenses = mysqlTable('expenses', {
