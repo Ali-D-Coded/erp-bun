@@ -22,24 +22,25 @@ departmentsApi.post("/create", zValidator("json", CreateDepartment),async (c) =>
 
 departmentsApi.get("/all",async (c) => {
 	try {
-		const {dep} = c.req.query()
-	const deps = await db.query.departments.findMany({
-  		...(dep ? {
-    	where: (departments, { like }) => like(departments.name, `%${dep}%`),
-		} : {}),
-		with: {
-			employees:true
-		}
-	});
+//		const {dep} = c.req.query()
+//	const deps = await db.query.departments.findMany({
+  //		...(dep ? {
+  //  	where: (departments, { like }) => like(departments.name, `%${dep}%`),
+//		} : {}),
+//		with: {
+//			employees:true
+//		}
+//	});
 		const departmentsWithEmployeeCount = await db.select({
-		departmentId: departments.id,
+		id: departments.id,
+		name: departments.name,
 		employeeCount: sql<number>`COUNT(${employees.id})`
 		})
 		.from(departments)
 		.leftJoin(employees, eq(departments.id, employees.departmentId)) // You need to adjust this condition based on your schema
 		.groupBy(departments.id);
 		return c.json(
-			{deps, departmentsWithEmployeeCount}
+			 departmentsWithEmployeeCount
 		)
 	} catch (error:any) {
 		return c.newResponse(error, 400)
