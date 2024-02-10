@@ -3,7 +3,7 @@ import { Hono } from "hono"
 import { CreateRoleDto, UpdateRoleDto } from "./dto/role.dto"
 import { db } from "../../database/db"
 import { roles } from "../../database/schema/schema"
-import { eq } from "drizzle-orm"
+import { eq, ne } from "drizzle-orm"
 
 const roleRoutes = new Hono()
 
@@ -19,7 +19,9 @@ roleRoutes.post("/create",zValidator("json", CreateRoleDto), async (c) => {
 
 roleRoutes.get("/all", async (c) => {
 	try {
-		const rolesRes = await db.query.roles.findMany()
+		const rolesRes = await db.query.roles.findMany({
+		where:ne(roles.roleName, 'ADMIN')
+		});
 		return c.json(rolesRes)
 	} catch (error:any) {
 		return c.newResponse(error, 400)

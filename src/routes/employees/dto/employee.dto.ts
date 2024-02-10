@@ -10,6 +10,8 @@ export const CreateEmployeeDto = z.object({
   roleId: z.number(),
   jobTitle: z.string(),
   departmentId: z.number(),
+  joiningDate: z.string(),
+  salary: z.string()
 
 })
 
@@ -22,4 +24,6 @@ export const UpdateEmployeeDto = z.object({
    roleId: z.number().optional(),
   jobTitle: z.string().optional(),
   departmentId: z.number().optional(),
+  joiningDate: z.string().optional(),
+  salary: z.string().optional()
 })

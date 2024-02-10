@@ -20,6 +20,17 @@ departmentsApi.post("/create", zValidator("json", CreateDepartment),async (c) =>
 
 })
 
+departmentsApi.patch("/update/:id",async (c) => {
+	try{
+	 const {id} = await c.req.param()
+	 const body = await c.req.json();
+	 await db.update(departments).set(body).where(eq(departments.id,+id))
+	 return c.json("department updated")
+	}catch(error){
+	return c.newResponse(error,400)
+	}
+})
+
 departmentsApi.get("/all",async (c) => {
 	try {
 //		const {dep} = c.req.query()

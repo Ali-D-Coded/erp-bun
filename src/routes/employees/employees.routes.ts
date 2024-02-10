@@ -56,19 +56,23 @@ employeeRoutes.patch("/update/:id",zValidator("json", UpdateEmployeeDto), async 
 			
 			hash = await Bun.password.hash(password)
 		}
-	
-		if (paredBody.jobTitle || paredBody.departmentId) {
-			const empy = await db.update(employees).set({ jobTitle: paredBody.jobTitle , departmentId: paredBody.departmentId}).where(eq(employees.id, +id))
-			
-			console.log({empy});
-		}
 		
-		if (paredBody.fullName || paredBody.email || paredBody.roleId || paredBody.phone || password) {
-			
-			 await db.update(employees).set({...paredBody, password: hash}).where(eq(employees,+id))
-			
-			
-		}
+		await db.update(employees)
+			 .set({ ...paredBody, password: hash })
+			 .where(eq(employees.id, +id));
+
+//		if (paredBody.jobTitle || paredBody.departmentId) {
+///			const empy = await db.update(employees).set({ jobTitle: paredBody.jobTitle , departmentId: paredBody.departmentId}).where(eq(employees.id, +id))
+//			
+//			console.log({empy});
+//		}
+//		
+//		if (paredBody.fullName || paredBody.email || paredBody.roleId || paredBody.phone || password) {
+//			
+//			 await db.update(employees).set({...paredBody, password: hash}).where(eq(employees,+id))
+//			
+//			
+//		}
 
 	return c.json("employee updated")
 	} catch (error:any) {
@@ -76,5 +80,15 @@ employeeRoutes.patch("/update/:id",zValidator("json", UpdateEmployeeDto), async 
 	}
 })
 
+
+employeeRoutes.delete("/delete/:id",async (c) => {
+	try{
+	const {id} = await c.req.param();
+	await db.delete(employees).where(eq(employees.id, +id))
+	return c.json("employee deleted");
+	}catch(error){
+	return c.newRespons(error,400)
+	}
+})
 
 export default employeeRoutes
