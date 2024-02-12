@@ -3,7 +3,7 @@ import { Hono } from "hono";
 import { CreateCustomerDto } from "./dto/customer.dto";
 import { db } from "../../database/db";
 import { custmers } from "../../database/schema/schema";
-
+import {eq} from "drizzle-orm"
 const customerRoutes = new Hono()
 
 customerRoutes.post("/create",zValidator("json",CreateCustomerDto), async (c) => {
@@ -16,6 +16,22 @@ customerRoutes.post("/create",zValidator("json",CreateCustomerDto), async (c) =>
 	}
 })
 
+
+customerRoutes.patch("/update/:id",async (c) => {
+	try {
+		const {id} = c.req.param()
+		const data = await c.req.json()
+		console.log({data});
+		
+		await db.update(custmers).set(data).where(eq(custmers.id, +id))
+		return c.json("customer updated")
+	} catch (error:any) {
+		return c.newResponse(error,400)
+		
+	}	
+})
+
+
 customerRoutes.get("/all", async (c) => {
 	try {
 		const customersRes = await db.query.custmers.findMany()
@@ -24,5 +40,18 @@ customerRoutes.get("/all", async (c) => {
 		return c.newResponse(error,400)
 	}
 })
+
+
+customerRoutes.delete("/delete/:id", async (c) => {
+	try {
+		const {id} = c.req.param()
+		await db.delete(custmers).where(eq(custmers.id, +id))
+		return c.json("vendor deleted")
+	} catch (error:any) {
+		return c.newResponse(error,400)
+		
+	}
+})
+
 
 export default customerRoutes

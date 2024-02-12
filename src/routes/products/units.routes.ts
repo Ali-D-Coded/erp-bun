@@ -41,7 +41,7 @@ unitsRoutes.patch("/update/:id",async (c) => {
 unitsRoutes.delete("/delete/:id", async (c) => {
 	try {
 		const {id} = c.req.param()
-		db.delete(units).where(eq(units.id, +id))
+		 await db.delete(units).where(eq(units.id, +id))
 		return c.json("deleted")
 	} catch (error:any) {
 		return c.newResponse(error,400)

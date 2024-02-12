@@ -6,7 +6,7 @@ import { randomUUID } from "crypto";
 import { NewMedia, media, products, productsVariant } from "../../database/schema/schema";
 import { CreateProductDto, CreateProductVariantDto } from "./dto/products.dto";
 import { generateRandomNumber } from "../../utils/fun";
-
+import {eq} from "drizzle-orm"
 const productsRoute = new Hono()
 
 
@@ -40,6 +40,7 @@ productsRoute.get("/all", async (c) => {
 		 const prods = await db.query.products.findMany({
 			 with: {
 				category: true,
+				subCategory: true,
 				 productVariant: {
 					with: {
 						 images: true,
@@ -54,6 +55,15 @@ productsRoute.get("/all", async (c) => {
 	}
 })
 
+
+productsRoute.get("/product-variants/all", async (c) => {
+	try{
+		const prodctVarinats = await db.query.productsVariant.findMany()
+		return c.json(prodctVarinats)
+	}catch(error){
+		return c.newResponse(error,400)
+	}
+})
 
 
 
@@ -106,5 +116,15 @@ productsRoute.post("/create-product-variants",zValidator("form",CreateProductVar
 	}
 })
 
+
+productsRoute.delete("/delete/:id", async(c) =>{
+	try{
+		const {id} = await c.req.param()
+		await db.delete(products).where(eq(products.id, +id))
+		return c.json("product deleted")
+	}catch(error){
+		return c.newResponse(error,400)
+	}
+} )
 
 export default productsRoute
