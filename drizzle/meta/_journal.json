@@ -15,6 +15,13 @@
       "when": 1707375837141,
       "tag": "0001_mysterious_madripoor",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1707815522329,
+      "tag": "0002_demonic_radioactive_man",
+      "breakpoints": true
     }
   ]
 }

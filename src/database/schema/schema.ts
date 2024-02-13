@@ -10,8 +10,8 @@ export const admins = mysqlTable('admin', {
   password: varchar('password',{length: 256}),
   phone: varchar('phone', { length: 256 }).unique(),
   roleId: int("role_id").references(() => roles.id),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
 },(users) => ({
 	idIndex: uniqueIndex('id_idx').on(users.id),
 	usernameIndex: uniqueIndex('username_idx').on(users.userName),
@@ -50,8 +50,8 @@ export const permissions = mysqlTable('permissions', {
   permissionName: varchar("permission_name", { length: 256 }),
   endpoint:varchar("endpoint",{length:255}),
   description: varchar('description', { length: 256 }),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+ createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
   });
 
   
@@ -101,8 +101,8 @@ export const custmers = mysqlTable('customers', {
   email: varchar('email',{length:256}).unique(),
   phone: varchar('phone', { length: 256 }).unique(),
   address: varchar('address', { length: 256 }),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+ createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
 },(customers) => ({
 	idIndex: uniqueIndex('id_idx').on(customers.id),
 	emailIndex: uniqueIndex('email_idx').on(customers.email),
@@ -121,8 +121,8 @@ export const vendors = mysqlTable('vendors', {
   contactPerson: varchar('contact_person',{length: 256}),
 	phone: varchar('phone', { length: 256 }).unique(),
   address: varchar('address', { length: 256 }),
-     createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+    createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
 },(vendors) => ({
 	idIndex: uniqueIndex('id_idx').on(vendors.id),
 	emailIndex: uniqueIndex('email_idx').on(vendors.email),
@@ -141,8 +141,8 @@ export const products = mysqlTable('products', {
   name: varchar('name', { length: 500 }),
   categoryId: int("category_id").references(() => categories.id),
   subCategoryId: int("sub_category_id").references(() => subCategories.id),
-   createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
 },(products) => ({
 	idIndex: uniqueIndex('id_idx').on(products.id),
 	nameIndex: uniqueIndex('name_idx').on(products.name),
@@ -175,8 +175,8 @@ export const productsVariant = mysqlTable('products_variant', {
 	barCode: varchar("bar_code", { length: 256 }).unique(),
 	vendorId: int("vendor_id").default(sql`NULL`),
   productId: int("product_id"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+ createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
 },(products_variant) => ({
 	idIndex: uniqueIndex('id_idx').on(products_variant.id),
 	nameIndex: uniqueIndex('name_idx').on(products_variant.name),
@@ -205,8 +205,8 @@ export const productStocks = mysqlTable("products_stocks", {
   productVariantId: int("product_variant_id").notNull(),
   purchaseItemId:int("purchase_item_id").notNull(),
   quantityInStock: int('quantity_in_stock').notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+ createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
 })
 
 export type ProductStock = typeof productStocks.$inferSelect; // return type when queried
@@ -226,8 +226,8 @@ export const media = mysqlTable("media", {
   name: varchar("name", { length: 256 }),
   url: varchar("url", { length: 256 }),
   productId: int("product_id").references(() => productsVariant.id, { onDelete: "cascade" }),
-   createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
 })
 
 export type Media = typeof media.$inferSelect
@@ -245,8 +245,8 @@ export const mediaRelations = relations(media, ({ one }) => ({
 export const raks = mysqlTable('raks', {
     id: int("id").primaryKey().autoincrement(),
   name: varchar('name', { length: 256 }),
-     createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+    createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
   });
 
   
@@ -258,8 +258,8 @@ export type NewRaks = typeof raks.$inferInsert; // insert type
 export const categories = mysqlTable('categories', {
     id: int("id").primaryKey().autoincrement(),
     name: varchar('name', { length: 256 }),
-     createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+    createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
   },(categories) => ({
       idIndex: uniqueIndex('id_idx').on(categories.id),
       nameIndex: uniqueIndex('name_idx').on(categories.name),
@@ -281,8 +281,8 @@ export const subCategories = mysqlTable('subCategories', {
     id: int("id").primaryKey().autoincrement(),
     name: varchar('name',{length:256}),
   categoryId: int("catrgory_id").references(() => categories.id),
-     createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+    createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
   },(subCategories) => ({
       idIndex: uniqueIndex('id_idx').on(subCategories.id),
       nameIndex: uniqueIndex('name_idx').on(subCategories.name),
@@ -305,8 +305,8 @@ export const units = mysqlTable('unit', {
 	id: int("id").primaryKey().autoincrement(),
   name: varchar("name", { length: 256 }),
   value: int("value"),
-   createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
 });
 
 export type Unit = typeof units.$inferSelect; // return type when queried
@@ -323,8 +323,8 @@ export const unitsRelations = relations(units, ({many}) => ({
 export const departments = mysqlTable('departments', {
 	id: int("id").primaryKey().autoincrement(),
   name: varchar("name", { length: 256 }).unique(),
-   createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
 });
 
 export type Department = typeof departments.$inferSelect; // return type when queried
@@ -347,8 +347,8 @@ export const employees = mysqlTable('employees', {
   departmentId: int("department_id").references(() => departments.id),
   joiningDate: date("joining_date").notNull(),
   salary: decimal("salary").notNull(),
-   createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
 });
 
 export type Employee = typeof employees.$inferSelect; // return type when queried
@@ -380,8 +380,8 @@ export const attendance = mysqlTable('attendance', {
 	date: date("date"),
 	check_in_time: time("check_in_time"),
   check_out_time: time("check_out_time"),
-   createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
 	
 });
 
@@ -405,8 +405,8 @@ id: int("id").primaryKey().autoincrement(),
 	startDate: date("start_date"),
 	endDate: date("end_date"),
   status: mysqlEnum("status", ["APPROVED", "PENDING"]),
-   createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
 });
 
 export type Leaves = typeof leaves.$inferSelect; // return type when queried
@@ -428,8 +428,8 @@ export const payroll = mysqlTable('payroll', {
 	gross_pay: decimal("gross_pay"),
 	deductions: decimal("deductions"),
   netPay: decimal("net_pay"),
-   createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
 });
 
 export type Payroll = typeof payroll.$inferSelect; // return type when queried
@@ -456,8 +456,8 @@ id: int("id").primaryKey().autoincrement(),
   productVariantId: int("product_variant_id").references(() => productsVariant.id), 
   unitId: int("unit_id").references(() => units.id),
   // unitId: int("unit_id").references(() => uni.id)
-   createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
 
 });
 
@@ -490,8 +490,8 @@ export const purchaseReturn = mysqlTable('purchaseReturn', {
 	reason: varchar("reason", { length: 256 }), 
 	returnType: mysqlEnum("return_type", ["REPLACE", "REFUND"]).default(sql`NULL`),
   status: mysqlEnum("status", ["PENDING", "ACCEPTED", "REJECTED", "RETURNED"]).default("PENDING"),
-   createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
 	 
   });
 
@@ -509,8 +509,8 @@ id: int("id").primaryKey().autoincrement(),
 	purchaseBillNo: varchar("purchase_bill_no", { length: 256 }),
 	date: date("date"),
   totalAmount: decimal("total_amount"),
-   createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
 });
 
 export type Purchase = typeof purchase.$inferSelect; // return type when queried
@@ -556,8 +556,8 @@ export const salesProducts = mysqlTable('salesProducts', {
     discountAmount:decimal("discount_amount").default("0"),
   productVariantId: int("product_variant_id").references(() => products.id),
     quantity:int("quantity"),
-    createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
   });
 
   
@@ -582,8 +582,8 @@ export const salesReturn = mysqlTable('salesReturn', {
 	reason: varchar("reason", { length: 256 }), 
 	returnType: mysqlEnum("return_type", ["REPLACE", "REFUND"]).default(sql`NULL`),
 	status: mysqlEnum("status", ["PENDING", "ACCEPTED", "REJECTED","RETURNED"]).default("PENDING"),
-	  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+	 createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
   });
 
   
@@ -628,8 +628,8 @@ export const expenses = mysqlTable('expenses', {
     employeeId: int("employee_id").references(() => employees.id),
     amount: decimal("amount"),
   expenseTypeId: int("expense_type_id").references(() => expenseTypes.id),
-     createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+    createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
   });
 
   
