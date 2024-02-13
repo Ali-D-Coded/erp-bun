@@ -6,8 +6,8 @@ CREATE TABLE `admin` (
 	`password` varchar(256),
 	`phone` varchar(256),
 	`role_id` int,
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `admin_id` PRIMARY KEY(`id`),
 	CONSTRAINT `admin_user_name_unique` UNIQUE(`user_name`),
 	CONSTRAINT `admin_email_unique` UNIQUE(`email`),
@@ -23,16 +23,16 @@ CREATE TABLE `attendance` (
 	`date` date,
 	`check_in_time` time,
 	`check_out_time` time,
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `attendance_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `categories` (
 	`id` int AUTO_INCREMENT NOT NULL,
 	`name` varchar(256),
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `categories_id` PRIMARY KEY(`id`),
 	CONSTRAINT `id_idx` UNIQUE(`id`),
 	CONSTRAINT `name_idx` UNIQUE(`name`)
@@ -44,8 +44,8 @@ CREATE TABLE `customers` (
 	`email` varchar(256),
 	`phone` varchar(256),
 	`address` varchar(256),
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `customers_id` PRIMARY KEY(`id`),
 	CONSTRAINT `customers_email_unique` UNIQUE(`email`),
 	CONSTRAINT `customers_phone_unique` UNIQUE(`phone`),
@@ -56,8 +56,8 @@ CREATE TABLE `customers` (
 CREATE TABLE `departments` (
 	`id` int AUTO_INCREMENT NOT NULL,
 	`name` varchar(256),
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `departments_id` PRIMARY KEY(`id`),
 	CONSTRAINT `departments_name_unique` UNIQUE(`name`)
 );
@@ -74,8 +74,8 @@ CREATE TABLE `employees` (
 	`department_id` int,
 	`joining_date` date NOT NULL,
 	`salary` decimal NOT NULL,
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `employees_id` PRIMARY KEY(`id`),
 	CONSTRAINT `employees_user_name_unique` UNIQUE(`user_name`),
 	CONSTRAINT `employees_email_unique` UNIQUE(`email`),
@@ -94,8 +94,8 @@ CREATE TABLE `expenses` (
 	`employee_id` int,
 	`amount` decimal,
 	`expense_type_id` int,
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `expenses_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -106,8 +106,8 @@ CREATE TABLE `leaves` (
 	`start_date` date,
 	`end_date` date,
 	`status` enum('APPROVED','PENDING'),
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `leaves_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -116,8 +116,8 @@ CREATE TABLE `media` (
 	`name` varchar(256),
 	`url` varchar(256),
 	`product_id` int,
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `media_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -128,8 +128,8 @@ CREATE TABLE `payroll` (
 	`gross_pay` decimal,
 	`deductions` decimal,
 	`net_pay` decimal,
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `payroll_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -138,18 +138,18 @@ CREATE TABLE `permissions` (
 	`permission_name` varchar(256),
 	`endpoint` varchar(255),
 	`description` varchar(256),
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `permissions_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `products_stocks` (
 	`id` int AUTO_INCREMENT NOT NULL,
-	`product_variant_id` int,
-	`purchase_item_id` int,
-	`quantity_in_stock` int,
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`product_variant_id` int NOT NULL,
+	`purchase_item_id` int NOT NULL,
+	`quantity_in_stock` int NOT NULL,
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `products_stocks_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -158,8 +158,8 @@ CREATE TABLE `products` (
 	`name` varchar(500),
 	`category_id` int,
 	`sub_category_id` int,
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `products_id` PRIMARY KEY(`id`),
 	CONSTRAINT `id_idx` UNIQUE(`id`),
 	CONSTRAINT `name_idx` UNIQUE(`name`)
@@ -174,8 +174,8 @@ CREATE TABLE `products_variant` (
 	`bar_code` varchar(256),
 	`vendor_id` int DEFAULT NULL,
 	`product_id` int,
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `products_variant_id` PRIMARY KEY(`id`),
 	CONSTRAINT `products_variant_prodcut_code_unique` UNIQUE(`prodcut_code`),
 	CONSTRAINT `products_variant_bar_code_unique` UNIQUE(`bar_code`),
@@ -189,8 +189,8 @@ CREATE TABLE `purchase` (
 	`purchase_bill_no` varchar(256),
 	`date` date,
 	`total_amount` decimal,
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `purchase_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -205,8 +205,8 @@ CREATE TABLE `purchaseItems` (
 	`quantity` int,
 	`product_variant_id` int,
 	`unit_id` int,
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `purchaseItems_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -217,16 +217,16 @@ CREATE TABLE `purchaseReturn` (
 	`reason` varchar(256),
 	`return_type` enum('REPLACE','REFUND') DEFAULT NULL,
 	`status` enum('PENDING','ACCEPTED','REJECTED','RETURNED') DEFAULT 'PENDING',
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `purchaseReturn_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `raks` (
 	`id` int AUTO_INCREMENT NOT NULL,
 	`name` varchar(256),
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `raks_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -276,8 +276,8 @@ CREATE TABLE `salesProducts` (
 	`discount_amount` decimal DEFAULT '0',
 	`product_variant_id` int,
 	`quantity` int,
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `salesProducts_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -289,8 +289,8 @@ CREATE TABLE `salesReturn` (
 	`reason` varchar(256),
 	`return_type` enum('REPLACE','REFUND') DEFAULT NULL,
 	`status` enum('PENDING','ACCEPTED','REJECTED','RETURNED') DEFAULT 'PENDING',
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `salesReturn_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -298,8 +298,8 @@ CREATE TABLE `subCategories` (
 	`id` int AUTO_INCREMENT NOT NULL,
 	`name` varchar(256),
 	`catrgory_id` int,
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `subCategories_id` PRIMARY KEY(`id`),
 	CONSTRAINT `id_idx` UNIQUE(`id`),
 	CONSTRAINT `name_idx` UNIQUE(`name`)
@@ -309,8 +309,8 @@ CREATE TABLE `unit` (
 	`id` int AUTO_INCREMENT NOT NULL,
 	`name` varchar(256),
 	`value` int,
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `unit_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -321,8 +321,8 @@ CREATE TABLE `vendors` (
 	`contact_person` varchar(256),
 	`phone` varchar(256),
 	`address` varchar(256),
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `vendors_id` PRIMARY KEY(`id`),
 	CONSTRAINT `vendors_email_unique` UNIQUE(`email`),
 	CONSTRAINT `vendors_phone_unique` UNIQUE(`phone`),

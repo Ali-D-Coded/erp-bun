@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1707375738953,
-      "tag": "0000_huge_red_wolf",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1707375837141,
-      "tag": "0001_mysterious_madripoor",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1707815522329,
-      "tag": "0002_demonic_radioactive_man",
+      "when": 1707821430861,
+      "tag": "0000_lethal_kang",
       "breakpoints": true
     }
   ]

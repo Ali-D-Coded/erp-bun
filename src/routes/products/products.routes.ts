@@ -3,7 +3,7 @@ import { db } from "../../database/db";
 
 import { zValidator } from "@hono/zod-validator";
 import { randomUUID } from "crypto";
-import { NewMedia, media, products, productsVariant } from "../../database/schema/schema";
+import { NewMedia, categories, media, products, productsVariant, subCategories } from "../../database/schema/schema";
 import { CreateProductDto, CreateProductVariantDto } from "./dto/products.dto";
 import { generateRandomNumber } from "../../utils/fun";
 import {eq} from "drizzle-orm"
@@ -49,7 +49,19 @@ productsRoute.get("/all", async (c) => {
 				}
 			}
 		 })
-		return c.json(prods)
+		const prods2 = await db.select({
+			id: products.id,
+			name: products.name,
+			categoryId:products.categoryId ,
+			subCategoryId: products.subCategoryId,
+			subCategories: subCategories,
+			categories:categories
+		}).from(products)
+			.leftJoin(categories, eq(products.categoryId, categories.id))
+			.leftJoin(subCategories, eq(products.subCategoryId, subCategories.id))
+		 	// .rightJoin(productsVariant, eq(productsVariant.productId, products.id))
+		
+		return c.json(prods2)
 	} catch (error:any) {
 		return c.newResponse(error, 400)
 	}
@@ -58,7 +70,16 @@ productsRoute.get("/all", async (c) => {
 
 productsRoute.get("/product-variants/all", async (c) => {
 	try{
-		const prodctVarinats = await db.query.productsVariant.findMany()
+		const prodctVarinats = await db.select({
+  id: productsVariant.id,
+  name: productsVariant.name,
+  description: productsVariant.description,
+  productCode: productsVariant.productCode,
+  barCode: productsVariant.barCode,
+  productId: productsVariant.productId,
+  media: media
+}).from(productsVariant)
+  .leftJoin(media, eq(productsVariant.id, media.productId));
 		return c.json(prodctVarinats)
 	}catch(error){
 		return c.newResponse(error,400)
