@@ -536,8 +536,8 @@ export const sales = mysqlTable('sales', {
     additionalDisocunt:decimal("additional_discount").default("0"),
     totalDiscountAmount: decimal("total_discount_amount").default("0"),
     grandTotal: decimal("grandTotal"),
-     createdAt: timestamp("created_at").defaultNow(),
-    updatedAt: timestamp("updated_at").defaultNow(),
+     createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
   });
 
   
@@ -607,8 +607,8 @@ export const salesCommission = mysqlTable("sales_commission", {
   saleDate: date("sale_date"),
   commissionEarned: decimal("commission_earned"),
   notes: varchar("notes",{length:256}),
-  	createdAt: timestamp("created_at").defaultNow(),
-    updatedAt: timestamp("updated_at").defaultNow(),
+  	 createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
 })
 
 export type SalesCommission = typeof salesCommission.$inferSelect
