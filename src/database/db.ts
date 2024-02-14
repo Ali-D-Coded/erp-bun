@@ -7,7 +7,7 @@ import * as schema from "./schema/schema";
 export const connection = await mysql.createConnection({
   host: "localhost",
 	user: "root",
-  password:"123",
+  password: "123",
   database: "erpelec",
 });
 

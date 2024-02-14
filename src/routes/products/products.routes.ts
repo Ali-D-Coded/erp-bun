@@ -70,16 +70,12 @@ productsRoute.get("/all", async (c) => {
 
 productsRoute.get("/product-variants/all", async (c) => {
 	try{
-		const prodctVarinats = await db.select({
-  id: productsVariant.id,
-  name: productsVariant.name,
-  description: productsVariant.description,
-  productCode: productsVariant.productCode,
-  barCode: productsVariant.barCode,
-  productId: productsVariant.productId,
-  media: media
-}).from(productsVariant)
-  .leftJoin(media, eq(productsVariant.id, media.productId));
+			const prodctVarinats = await db.query.productsVariant.findMany({
+		    with: {
+						 images: true,
+						// unitsToProductVariants: true
+					}
+		})
 		return c.json(prodctVarinats)
 	}catch(error){
 		return c.newResponse(error,400)
