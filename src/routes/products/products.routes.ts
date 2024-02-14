@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { db } from "../../database/db";
-
+import { stream, streamText, streamSSE } from 'hono/streaming'
 import { zValidator } from "@hono/zod-validator";
 import { randomUUID } from "crypto";
 import { NewMedia, categories, media, products, productsVariant, subCategories } from "../../database/schema/schema";
@@ -8,6 +8,7 @@ import { CreateProductDto, CreateProductVariantDto } from "./dto/products.dto";
 import { generateRandomNumber } from "../../utils/fun";
 import {eq} from "drizzle-orm"
 const productsRoute = new Hono()
+
 
 
 productsRoute.post("/create-product",zValidator("json", CreateProductDto), async (c) => {
@@ -144,4 +145,32 @@ productsRoute.delete("/delete/:id", async(c) =>{
 	}
 } )
 
+
+
+productsRoute.get("/product-variant/:image", async (c) => {
+	try {
+		const { image} = await c.req.param()
+ 		const path = `uploads/products/${image}`;
+		const file = Bun.file(path);
+	
+		const arrBuffer = await file.arrayBuffer();
+		const byteArray = new Uint8Array(arrBuffer);
+		return stream(c, async (stream) => {
+    // Write a process to be executed when aborted.
+    stream.onAbort(() => {
+      console.log('Aborted!')
+    })
+    // Write a Uint8Array.
+    await stream.write(byteArray)
+  })
+	} catch (error) {
+		return c.newResponse(error,400)
+		
+	}
+})
+
+
+
 export default productsRoute
+
+
