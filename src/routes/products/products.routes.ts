@@ -79,19 +79,7 @@ productsRoute.get("/all", async (c) => {
 				}
 			}
 		 })
-		const prods2 = await db.select({
-			id: products.id,
-			name: products.name,
-			categoryId:products.categoryId ,
-			subCategoryId: products.subCategoryId,
-			subCategories: subCategories,
-			categories:categories
-		}).from(products)
-			.leftJoin(categories, eq(products.categoryId, categories.id))
-			.leftJoin(subCategories, eq(products.subCategoryId, subCategories.id))
-		 	// .rightJoin(productsVariant, eq(productsVariant.productId, products.id))
-		
-		return c.json(prods2)
+		return c.json(prods)
 	} catch (error:any) {
 		return c.newResponse(error, 400)
 	}
