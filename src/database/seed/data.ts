@@ -217,42 +217,42 @@ export const productVariantsData : NewProductVariant[] = [
 export const mediaData : NewMedia[] = [
 	{
 		name: "-original-imagxhd5gqhzszeb.jpeg",
-		url: "/uploads/products/-original-imagxhd5gqhzszeb.jpeg",
+		url: "-original-imagxhd5gqhzszeb.jpeg",
 		productId:1
 	},
 	{
 		name: "-original-imagxhd5mux3vmra.jpeg",
-		url: "/uploads/products/-original-imagxhd5mux3vmra.jpeg",
+		url: "-original-imagxhd5mux3vmra.jpeg",
 		productId:1
 	},
 	{
 		name: "12-pro-5g-rmx3840-realme-original-imagxgnk9zzrs9y6.jpeg",
-		url: "/uploads/products/12-pro-5g-rmx3840-realme-original-imagxgnk9zzrs9y6.jpeg",
+		url: "12-pro-5g-rmx3840-realme-original-imagxgnk9zzrs9y6.jpeg",
 		productId:1
 	},
 	{
 		name: "-original-imagxhd5gqhzszeb.jpeg",
-		url: "/uploads/products/-original-imagxhd5gqhzszeb.jpeg",
+		url: "-original-imagxhd5gqhzszeb.jpeg",
 		productId:2
 	},
 	{
 		name: "-original-imagxhd5mux3vmra.jpeg",
-		url: "/uploads/products/-original-imagxhd5mux3vmra.jpeg",
+		url: "-original-imagxhd5mux3vmra.jpeg",
 		productId:2
 	},
 	{
 		name: "12-pro-5g-rmx3840-realme-original-imagxgnk9zzrs9y6.jpeg",
-		url: "/uploads/products/12-pro-5g-rmx3840-realme-original-imagxgnk9zzrs9y6.jpeg",
+		url: "12-pro-5g-rmx3840-realme-original-imagxgnk9zzrs9y6.jpeg",
 		productId:2
 	},
 	{
 		name: "-original-imagqkqnfzpvkdvf.jpeg",
-		url: "uploads/products/-original-imagqkqnfzpvkdvf.jpeg",
+		url: "-original-imagqkqnfzpvkdvf.jpeg",
 		productId:3
 	},
 	{
 		name: "-original-imagqkqnvnzb7gwa.jpeg",
-		url: "uploads/products/-original-imagqkqnvnzb7gwa.jpeg",
+		url: "-original-imagqkqnvnzb7gwa.jpeg",
 		productId:3
 	},
 ]

@@ -1,3 +1,5 @@
+import { unlinkSync } from "node:fs";
+
 export function generateRandomNumber(n1: number = 90000, n2: number = 10000) {
   // Use Math.random() to get a random decimal between 0 (inclusive) and 1 (exclusive)
   const randomDecimal = Math.random();
@@ -15,4 +17,14 @@ export async function calculateDisc(discamount: number , productPrice:  any) {
   console.log({ discamount, productPrice});
     return +productPrice * discamount / 100
   
+}
+
+
+export async function removefile(path: string) {
+  try {
+    unlinkSync(path);
+    console.log("file deleted")
+  } catch (error) {
+    console.error(error)
+  }
 }

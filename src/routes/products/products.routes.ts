@@ -1,12 +1,12 @@
-import { Hono } from "hono";
-import { db } from "../../database/db";
-import { stream, streamText, streamSSE } from 'hono/streaming'
 import { zValidator } from "@hono/zod-validator";
 import { randomUUID } from "crypto";
-import { NewMedia, categories, media, products, productsVariant, subCategories } from "../../database/schema/schema";
-import { CreateProductDto, CreateProductVariantDto } from "./dto/products.dto";
-import { generateRandomNumber } from "../../utils/fun";
-import {eq} from "drizzle-orm"
+import { eq } from "drizzle-orm";
+import { Hono } from "hono";
+import { stream } from 'hono/streaming';
+import { db } from "../../database/db";
+import { NewMedia, media, products, productsVariant } from "../../database/schema/schema";
+import { generateRandomNumber, removefile } from "../../utils/fun";
+import { CreateProductDto, CreateProductVariantDto, UpdateProductDto, UpdateProductVariantDto } from "./dto/products.dto";
 const productsRoute = new Hono()
 
 
@@ -25,7 +25,7 @@ productsRoute.post("/create-product",zValidator("json", CreateProductDto), async
 		console.log({ dto, data });
 		
 		
-		const productRes = await db.insert(products).values(dto)
+		const productRes = await db.insert(products).values(data)
 		return c.json({
 			msg: "product created",
 			prodId: productRes[0].insertId
@@ -35,6 +35,35 @@ productsRoute.post("/create-product",zValidator("json", CreateProductDto), async
 		return c.newResponse(error,400)
 	}
 })
+
+productsRoute.patch("/update-product/:id",zValidator("json", UpdateProductDto), async (c) => {
+	try {
+		const {id} = await c.req.param()
+		const dto = await UpdateProductDto.parseAsync(c.req.json())
+		const data = {
+			...Object.entries(dto).reduce((acc, [key, value]) => {
+				if (value !== undefined) {
+					acc[key] = value
+				}
+				return acc
+			},{})
+		}
+		console.log({ dto, data });
+		
+		
+		const productRes = await db.update(products).set(data).where(eq(products.id, +id))
+		return c.json({
+			msg: "product updated",
+			prodId: productRes[0].insertId
+		})
+
+	} catch (error:any) {
+		return c.newResponse(error,400)
+	}
+})
+
+
+
 
 productsRoute.get("/all", async (c) => {
 	try {
@@ -50,19 +79,7 @@ productsRoute.get("/all", async (c) => {
 				}
 			}
 		 })
-		const prods2 = await db.select({
-			id: products.id,
-			name: products.name,
-			categoryId:products.categoryId ,
-			subCategoryId: products.subCategoryId,
-			subCategories: subCategories,
-			categories:categories
-		}).from(products)
-			.leftJoin(categories, eq(products.categoryId, categories.id))
-			.leftJoin(subCategories, eq(products.subCategoryId, subCategories.id))
-		 	// .rightJoin(productsVariant, eq(productsVariant.productId, products.id))
-		
-		return c.json(prods2)
+		return c.json(prods)
 	} catch (error:any) {
 		return c.newResponse(error, 400)
 	}
@@ -71,13 +88,13 @@ productsRoute.get("/all", async (c) => {
 
 productsRoute.get("/product-variants/all", async (c) => {
 	try{
-			const prodctVarinats = await db.query.productsVariant.findMany({
+			const productVariants = await db.query.productsVariant.findMany({
 		    with: {
 						 images: true,
 						// unitsToProductVariants: true
 					}
 		})
-		return c.json(prodctVarinats)
+		return c.json(productVariants)
 	}catch(error){
 		return c.newResponse(error,400)
 	}
@@ -85,7 +102,7 @@ productsRoute.get("/product-variants/all", async (c) => {
 
 
 
-const saveFile = async (files: any[], path: string, productId: number) => {
+const saveFile = async (files: any[], path: string, productId: number | null) => {
 	
 	console.log("31", { file: files });
 	const fileNames :any[] = []
@@ -129,6 +146,57 @@ productsRoute.post("/create-product-variants",zValidator("form",CreateProductVar
 		return c.json({
 			msg: "product created"
 		})
+	} catch (error:any) {
+		return c.newResponse(error, 400)
+	}
+})
+
+
+
+productsRoute.patch("/update-product-variants/:id",zValidator("json",UpdateProductVariantDto), async (c) => {
+	try {
+
+		const { id } = await c.req.param()
+		
+		const data = await UpdateProductVariantDto.parseAsync(await c.req.json())
+
+		 await db.update(productsVariant).set({...data}).where(eq(productsVariant.id, +id))
+		
+		return c.json({
+			msg: "product updated"
+		})
+	} catch (error:any) {
+		return c.newResponse(error, 400)
+	}
+})
+
+
+productsRoute.patch("/update-product-variants-image/:id", async (c) => {
+	try {
+		const { id } =  c.req.param()
+		const STORE_PATH = "uploads/products";
+		const formData = await c.req.formData()
+		
+		
+		const mediaPrev = await db.query.media.findFirst({
+			where: eq(media.id, +id)
+		})
+
+		if (mediaPrev) {
+			console.log({mediaPrev});
+			
+			const fileNames: NewMedia[] = formData.getAll("files").length > 0 ? await saveFile(formData.getAll("files"), STORE_PATH, mediaPrev.productId) : []
+			console.log({fileNames});
+			
+			await db.update(media).set(fileNames[0]).where(eq(media.id, +id))
+
+			await removefile(`${STORE_PATH}/${mediaPrev.url}`)
+			return c.json({
+				msg: "product updated"
+			})
+		} else {
+			throw new Error("No media found")
+		}
 	} catch (error:any) {
 		return c.newResponse(error, 400)
 	}
