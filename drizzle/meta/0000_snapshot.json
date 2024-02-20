@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "599263b6-0a51-44f0-ae42-de8bb25bf0fa",
+  "id": "f40b9cb8-5ace-4859-ae1a-589487e538ca",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "admin": {
@@ -1840,7 +1840,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "(now())"
+          "default": "CURRENT_TIMESTAMP"
         },
         "updated_at": {
           "name": "updated_at",
@@ -1848,7 +1848,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "(now())"
+          "default": "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
         }
       },
       "indexes": {},
@@ -1954,7 +1954,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "(now())"
+          "default": "CURRENT_TIMESTAMP"
         },
         "updated_at": {
           "name": "updated_at",
@@ -1962,7 +1962,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "(now())"
+          "default": "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
         }
       },
       "indexes": {},

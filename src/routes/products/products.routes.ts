@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { stream } from 'hono/streaming';
 import { db } from "../../database/db";
-import { NewMedia, media, products, productsVariant } from "../../database/schema/schema";
+import { NewMedia, media, media, media, products, productsVariant } from "../../database/schema/schema";
 import { generateRandomNumber, removefile } from "../../utils/fun";
 import { CreateProductDto, CreateProductVariantDto, UpdateProductDto, UpdateProductVariantDto } from "./dto/products.dto";
 const productsRoute = new Hono()
@@ -125,7 +125,9 @@ const saveFile = async (files: any[], path: string, productId: number | null) =>
 
 
 
-productsRoute.post("/create-product-variants",zValidator("form",CreateProductVariantDto), async (c) => {
+productsRoute.post("/create-product-variants", zValidator("form", CreateProductVariantDto), async (c) => {
+	console.log("creating product");
+	
 	try {
 		const STORE_PATH = "uploads/products";
 		const formData = await c.req.formData()
@@ -136,12 +138,18 @@ productsRoute.post("/create-product-variants",zValidator("form",CreateProductVar
 		const productCode = generateRandomNumber()
 		const barCode = `${countryCode}${manuCode}${productCode}`
 
+		// console.log({formData: formData.getAll("files").length});
+		
+
 		const productVariant = await db.insert(productsVariant).values({...data, productId: +data.productId, productCode, barCode})
 		
-		const fileNames : NewMedia[] =formData.getAll("files").length > 1 ? await saveFile(formData.getAll("files"), STORE_PATH, productVariant[0].insertId) : []	
+		const fileNames: NewMedia[] = formData.getAll("files").length > 0 ? await saveFile(formData.getAll("files"), STORE_PATH, productVariant[0].insertId) : []	
+		
+		console.log({fileNames});
+		
 
 		await db.insert(media).values(fileNames)
-		// console.log({barcode});
+
 
 		return c.json({
 			msg: "product created"
@@ -160,6 +168,9 @@ productsRoute.patch("/update-product-variants/:id",zValidator("json",UpdateProdu
 		
 		const data = await UpdateProductVariantDto.parseAsync(await c.req.json())
 
+		console.log({data});
+		
+
 		 await db.update(productsVariant).set({...data}).where(eq(productsVariant.id, +id))
 		
 		return c.json({
@@ -171,33 +182,55 @@ productsRoute.patch("/update-product-variants/:id",zValidator("json",UpdateProdu
 })
 
 
-productsRoute.patch("/update-product-variants-image/:id", async (c) => {
+productsRoute.patch("/update-product-variants-image/:productId", async (c) => {
 	try {
-		const { id } =  c.req.param()
+		const { productId } =  c.req.param()
 		const STORE_PATH = "uploads/products";
 		const formData = await c.req.formData()
 		
 		
-		const mediaPrev = await db.query.media.findFirst({
-			where: eq(media.id, +id)
-		})
+		// const mediaPrev = await db.query.media.findFirst({
+		// 	where: eq(media.id, +id)
+		// })
 
-		if (mediaPrev) {
-			console.log({mediaPrev});
+		// if (mediaPrev) {
+			// console.log({mediaPrev});
 			
-			const fileNames: NewMedia[] = formData.getAll("files").length > 0 ? await saveFile(formData.getAll("files"), STORE_PATH, mediaPrev.productId) : []
+			const fileNames: NewMedia[] = formData.getAll("files").length > 0 ? await saveFile(formData.getAll("files"), STORE_PATH, +productId) : []
 			console.log({fileNames});
 			
-			await db.update(media).set(fileNames[0]).where(eq(media.id, +id))
-
-			await removefile(`${STORE_PATH}/${mediaPrev.url}`)
+			// await db.update(media).set(fileNames[0])
+			await db.insert(media).values(fileNames)
+			
+			// await removefile(`${STORE_PATH}/${mediaPrev.url}`)
 			return c.json({
 				msg: "product updated"
 			})
-		} else {
-			throw new Error("No media found")
-		}
+		// } else {
+			// throw new Error("No media found")
+		// }
 	} catch (error:any) {
+		return c.newResponse(error, 400)
+	}
+})
+
+productsRoute.delete("/delete/product-variant-image/:id", async (c) => {
+	try {
+		const STORE_PATH = "uploads/products";
+		const {id} = await c.req.param()
+		const mediadata = await db.query.media.findFirst({
+			where:eq(media.id, +id)
+		})
+
+		await db.delete(media).where(eq(media.id, +id))
+
+		await removefile(`${STORE_PATH}/${mediadata?.url}`)
+
+		return c.json({
+				msg: "image deleted"
+			})
+
+	} catch (error) {
 		return c.newResponse(error, 400)
 	}
 })
@@ -207,6 +240,16 @@ productsRoute.delete("/delete/:id", async(c) =>{
 	try{
 		const {id} = await c.req.param()
 		await db.delete(products).where(eq(products.id, +id))
+		return c.json("product deleted")
+	}catch(error){
+		return c.newResponse(error,400)
+	}
+} )
+
+productsRoute.delete("/delete-product-variants/:id", async(c) =>{
+	try{
+		const {id} = await c.req.param()
+		await db.delete(productsVariant).where(eq(productsVariant.id, +id))
 		return c.json("product deleted")
 	}catch(error){
 		return c.newResponse(error,400)

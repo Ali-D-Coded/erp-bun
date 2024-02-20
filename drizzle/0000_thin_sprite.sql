@@ -253,8 +253,8 @@ CREATE TABLE `sales` (
 	`additional_discount` decimal DEFAULT '0',
 	`total_discount_amount` decimal DEFAULT '0',
 	`grandTotal` decimal,
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `sales_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -265,8 +265,8 @@ CREATE TABLE `sales_commission` (
 	`sale_date` date,
 	`commission_earned` decimal,
 	`notes` varchar(256),
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
+	`created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `sales_commission_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint

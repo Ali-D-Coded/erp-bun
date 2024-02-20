@@ -7,7 +7,7 @@ export default {
  schema: "./src/database/schema/schema.ts",
   driver: 'mysql2',
   dbCredentials: {
-   host: "localhost",
+   host: "192.168.1.43",
     user: "root",
     password: "123",
     database: "erpelec",

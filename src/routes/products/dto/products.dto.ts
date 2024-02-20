@@ -4,14 +4,19 @@ export const CreateProductVariantDto =  z.object({
 	name: z.string(),
 	description: z.string().optional(),
 	productId: z.string(),
-	barcode: z.string().optional(),
-	files: z.any()
+	barCode: z.string().optional(),
+	// files: z.any()
+})
+
+export const UpdateProdutImage =  z.object({
+	productId: z.string(),
+
 })
 
 export const UpdateProductVariantDto =  z.object({
 	name: z.string().optional(),
 	description: z.string().optional(),
-	barcode: z.string().optional(),
+	barCode: z.string().optional(),
 	productCode: z.number().optional(),
 })
 
