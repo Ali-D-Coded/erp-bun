@@ -13,7 +13,12 @@ purchaseRoute.get("/all", async (c) => {
 	try {
 		const purchaseList = await db.query.purchase.findMany({
 			with: {
-				purchaseItems: true,
+				purchaseItems: {
+					with: {
+						product: true,
+						unit: true
+					}
+				},
 				vendor: true
 			}
 		})
@@ -76,14 +81,14 @@ purchaseRoute.post("/create",zValidator("json",CreatePurchaseDto) ,async (c) => 
 			
 			
 			//inserting productStocks
-			// await tx.insert(productStocks).values(stocks).onDuplicateKeyUpdate({
-			// 	set: {
-			// 	quantityInStock: sql`${productStocks.quantityInStock} + VALUES(quantity_in_stock)`
-			// }})
+			await tx.insert(productStocks).values(stocks).onDuplicateKeyUpdate({
+				set: {
+				quantityInStock: sql`${productStocks.quantityInStock} + VALUES(quantity_in_stock)`
+			}})
 
 			
 			
-			await tx.insert(productStocks).values(stocks)
+			// await tx.insert(productStocks).values(stocks)
 
 		})
 		return c.json("purchase added")

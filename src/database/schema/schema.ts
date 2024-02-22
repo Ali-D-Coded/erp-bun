@@ -202,12 +202,12 @@ export const productsVariantRelations = relations(productsVariant, ({ one, many 
 //Stock
 export const productStocks = mysqlTable("products_stocks", {
   id: int("id").primaryKey().autoincrement(),
-  productVariantId: int("product_variant_id").notNull(),
+  productVariantId: int("product_variant_id").unique().notNull(),
   purchaseItemId:int("purchase_item_id").notNull(),
   quantityInStock: int('quantity_in_stock').notNull(),
- createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
   updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
-})
+}) 
 
 export type ProductStock = typeof productStocks.$inferSelect; // return type when queried
 export type NewProductStock = typeof productStocks.$inferInsert; // insert type

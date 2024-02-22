@@ -1,0 +1,1 @@
+ALTER TABLE `products_stocks` ADD CONSTRAINT `products_stocks_product_variant_id_unique` UNIQUE(`product_variant_id`);
