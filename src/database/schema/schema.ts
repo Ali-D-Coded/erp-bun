@@ -531,7 +531,7 @@ export const sales = mysqlTable('sales', {
     date: date('date'),
     accountantId:int("accountant_Id").references(() => employees.id ),
     salesmanId:int("salesman_Id").references(() => employees.id ),
-    customerId: int("customer_id").references(() => custmers.id),
+    customerId: int("customer_id").references(() => custmers.id).default(1),
   totalAmount: decimal("total_amount"),
     additionalDisocunt:decimal("additional_discount").default("0"),
     totalDiscountAmount: decimal("total_discount_amount").default("0"),
@@ -544,8 +544,12 @@ export const sales = mysqlTable('sales', {
 export type Sale = typeof sales.$inferSelect; // return type when queried
 export type NewSale = typeof sales.$inferInsert; // insert type
 
-export const salesRelations = relations(sales,({many}) => ({
+export const salesRelations = relations(sales,({many, one}) => ({
     salesProducts: many(salesProducts),
+  customer: one(custmers, {
+    fields: [sales.customerId],
+    references: [custmers.id]
+    }),
 }))
 
 

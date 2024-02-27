@@ -75,6 +75,12 @@ export const vendorsData: NewVendor[] = [
 
 export const customersData: NewCustomer[] = [
 		{
+		fullName: 'Walk In Customer',
+		email: 'walkin@gmail.com',
+		phone: '0000000000',
+		address: 'walk in',
+		},
+		{
 		fullName: 'Norman',
 		email: 'norman@gmail.com',
 		phone: '1245125678',

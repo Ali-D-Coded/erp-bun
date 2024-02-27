@@ -1,0 +1,1 @@
+ALTER TABLE `sales` MODIFY COLUMN `customer_id` int DEFAULT 1;

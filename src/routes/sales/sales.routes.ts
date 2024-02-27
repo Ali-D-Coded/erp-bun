@@ -20,6 +20,13 @@ salesRoutes.post("/create", zValidator("json",CreateSalesDto),async (c) => {
 			
 			}).from(productStocks).leftJoin(purchaseItems, eq(productStocks.productVariantId, purchaseItems.productVariantId)).where(eq(productStocks.productVariantId, +item.productVariantId)) 
 
+			if (prod.length < 1) {
+				throw new Error("No products")
+			}
+
+			console.log({prod});
+			
+
 			const productAmount = prod?.[0]?.purchaseItem?.maximumRetailPrice ?? 0;
 			const productCommissionPercent = prod?.[0]?.purchaseItem?.commissionPercentage ?? 0;
 			const flatAmt = item.discountFlat ? item.discountFlat : 0
@@ -29,7 +36,6 @@ salesRoutes.post("/create", zValidator("json",CreateSalesDto),async (c) => {
 			const productCommission = await calculateDisc(+productCommissionPercent, productAmount) 
 			
 			return {
-		
 				productAmount,
 				productCommission,
 				discountAmount,
@@ -37,6 +43,8 @@ salesRoutes.post("/create", zValidator("json",CreateSalesDto),async (c) => {
 				quantity: item.quantity,
 			}
 		})) 
+
+
 
 
 		const {totalAmount, totalDiscountAmount,totalProductCommission} = productsData.reduce((acc, item) => {
@@ -57,6 +65,7 @@ salesRoutes.post("/create", zValidator("json",CreateSalesDto),async (c) => {
 		console.log({productsData,totalAmount, totalDiscountAmount,  additionalDiscountedAmount,totalProductCommission, grandTotal});
 		
 
+		
 		await db.transaction(async (tx) => {
 			const saleRes = await tx.insert(sales).values({
 				date: new Date(dto.date),
@@ -93,11 +102,10 @@ salesRoutes.post("/create", zValidator("json",CreateSalesDto),async (c) => {
 				commissionEarned: totalProductCommission.toFixed(2),
 				notes:"sales commission"
 			})
-
+			
 		})
-		
-		
 		return c.json("sales added")
+		
 	} catch (error) {
 		return c.newResponse(error,400)
 	}
@@ -107,7 +115,9 @@ salesRoutes.get("/all", async(c) => {
 	try {
 		const salesRes = await db.query.sales.findMany({
 			with: {
-				salesProducts: true
+				salesProducts: true,
+				customer: true
+				
 			}
 		})
 		return c.json(salesRes)
