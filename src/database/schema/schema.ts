@@ -484,10 +484,11 @@ export const purchaseItemsRleations = relations(purchaseItems, ({ one, many}) =>
 
 // purchase return
 export const purchaseReturn = mysqlTable('purchaseReturn', {
-    id: int("id").primaryKey().autoincrement(),
-    purchseItemId:int("ourchase_item_id").references(() => purchaseItems.id),
+  id: int("id").primaryKey().autoincrement(),
+  purchseItemId:int("ourchase_item_id").references(() => purchaseItems.id),
 	vendorId: int("vendor_id").references(() => vendors.id),
-	reason: varchar("reason", { length: 256 }), 
+  reason: varchar("reason", { length: 256 }), 
+  quantity: int(),
 	returnType: mysqlEnum("return_type", ["REPLACE", "REFUND"]).default(sql`NULL`),
   status: mysqlEnum("status", ["PENDING", "ACCEPTED", "REJECTED", "RETURNED"]).default("PENDING"),
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
