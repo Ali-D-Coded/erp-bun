@@ -488,7 +488,7 @@ export const purchaseReturn = mysqlTable('purchaseReturn', {
   purchseItemId:int("ourchase_item_id").references(() => purchaseItems.id),
 	vendorId: int("vendor_id").references(() => vendors.id),
   reason: varchar("reason", { length: 256 }), 
-  quantity: int(),
+  quantity: int('quantity'),
 	returnType: mysqlEnum("return_type", ["REPLACE", "REFUND"]).default(sql`NULL`),
   status: mysqlEnum("status", ["PENDING", "ACCEPTED", "REJECTED", "RETURNED"]).default("PENDING"),
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),

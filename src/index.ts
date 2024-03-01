@@ -27,6 +27,11 @@ app.notFound((c) => {
 
 
 app.route("/api", api)
+app.get("/test", (c) => {
+  return c.json({
+    message:"HEllo Testing"
+  })
+})
 
 
 export default {
