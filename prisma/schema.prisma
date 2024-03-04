@@ -1,0 +1,351 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Roles {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  roleName    String @unique
+  description String
+
+  admins    Admins[]
+  employees Employees[]
+}
+
+model Admins {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  fullName String
+  userName String @unique
+  email    String @unique
+  password String
+  phone    String @unique
+  Roles    Roles? @relation(fields: [rolesId], references: [id])
+  rolesId  Int?
+
+  @@index([id, userName, email])
+}
+
+model Customers {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  fullName String
+  email    String  @unique
+  phone    String  @unique
+  address  Json
+  Sales    Sales[]
+
+  @@index([email])
+}
+
+model Vendors {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  name          String
+  email         String @unique
+  contactPerson String
+  phone         String @unique
+  address       Json
+
+  @@index([email])
+}
+
+model Categories {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  name String @unique
+
+  subCategories SubCategories[]
+  Products      Products[]
+}
+
+model SubCategories {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  name         String      @unique
+  Categories   Categories? @relation(fields: [categoriesId], references: [id])
+  categoriesId Int?
+
+  Products Products[]
+}
+
+model Products {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  name String @unique
+
+  Categories      Categories?    @relation(fields: [categoriesId], references: [id])
+  categoriesId    Int?
+  SubCategories   SubCategories? @relation(fields: [subCategoriesId], references: [id])
+  subCategoriesId Int?
+
+  variants ProductsVariant[]
+
+  @@index([name])
+}
+
+model ProductsVariant {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  name        String
+  description Json
+  // price       Decimal
+  productCode Int       @unique
+  barCode     Int       @unique
+  Products    Products? @relation(fields: [productsId], references: [id])
+  productsId  Int?
+  images      Media[]
+
+  @@index([name])
+}
+
+model Media {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  name String
+  url  String
+
+  ProductsVariant   ProductsVariant? @relation(fields: [productsVariantId], references: [id])
+  productsVariantId Int?
+}
+
+model Raks {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  name String
+}
+
+model Units {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  name         String         @unique
+  value        Int
+  PurchaseItem PurchaseItem[]
+}
+
+model PurchaseItem {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  batchNumber          String
+  purchasePrice        Decimal
+  minimumSellingPrice  Decimal
+  maximumRetailPrice   Decimal
+  commissionPercentage Decimal
+  quantity             Int
+
+  productVariantId String
+
+  Units      Units?    @relation(fields: [unitsId], references: [id])
+  unitsId    Int?
+  Purchase   Purchase? @relation(fields: [purchaseId], references: [id])
+  purchaseId Int?
+}
+
+model Purchase {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  purchaseBillNo String
+  date           DateTime
+  totalAmount    Decimal
+
+  purchaseItems PurchaseItem[]
+}
+
+model PurchaseReturn {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  purchseItemId String
+}
+
+model Sales {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  date                DateTime
+  accountantId        String
+  salesManId          String
+  customerId          String
+  totalAmount         Decimal
+  additionalDisocunt  Decimal
+  totalDiscountAmount Decimal
+  grandTotal          Decimal
+
+  customer    Customers? @relation(fields: [customersId], references: [id])
+  customersId Int?
+
+  salesProducts SalesProducts[]
+}
+
+model SalesProducts {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  Sales            Sales?  @relation(fields: [salesId], references: [id])
+  salesId          Int?
+  discountAmount   Decimal
+  productVariantId String
+  quantity         Int
+}
+
+model SalesReturn {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  salesProductId String
+  customerId     String
+  reason         String
+}
+
+model SalesCommission {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  salesManId       String
+  saleId           String
+  saleDate         DateTime
+  commissionEarned Decimal
+  notes            String?
+}
+
+model Expenses {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  date       DateTime
+  employeeId String
+  amount     Decimal
+
+  ExpensType   ExpensType? @relation(fields: [expensTypeId], references: [id])
+  expensTypeId Int?
+}
+
+model ExpensType {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  name     String
+  expenses Expenses[]
+}
+
+model Departments {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  name      String
+  employees Employees[]
+}
+
+model Employees {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  fullName String
+  userName String @unique
+  email    String @unique
+  password String
+  phone    String @unique
+
+  jobTitle String
+
+  joiningDate   DateTime
+  salary        Decimal
+  Departments   Departments? @relation(fields: [departmentsId], references: [id])
+  departmentsId Int?
+
+  attendances Attendance[]
+  Leaves      Leaves[]
+  Payroll     Payroll[]
+  Roles       Roles?       @relation(fields: [rolesId], references: [id])
+  rolesId     Int?
+}
+
+model Attendance {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  date           DateTime
+  check_in_time  DateTime   @db.Time()
+  check_out_time DateTime   @db.Time()
+  Employees      Employees? @relation(fields: [employeesId], references: [id])
+  employeesId    Int?
+}
+
+model Leaves {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  leaveType   String
+  startDate   DateTime
+  endDate     DateTime
+  status      STATUS     @default(PENDING)
+  Employees   Employees? @relation(fields: [employeesId], references: [id])
+  employeesId Int?
+}
+
+enum STATUS {
+  APPROVED
+  PENDING
+}
+
+model Payroll {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  paymentDate DateTime
+  gross_pay   Decimal
+  deductions  Decimal
+  netPay      Decimal
+
+  Employees   Employees? @relation(fields: [employeesId], references: [id])
+  employeesId Int?
+}

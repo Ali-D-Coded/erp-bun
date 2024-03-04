@@ -612,7 +612,7 @@ export const salesCommission = mysqlTable("sales_commission", {
   saleDate: date("sale_date"),
   commissionEarned: decimal("commission_earned"),
   notes: varchar("notes",{length:256}),
-  	 createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
   updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
 })
 
