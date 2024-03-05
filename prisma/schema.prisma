@@ -17,9 +17,10 @@ model Roles {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
-  roleName    String @unique
-  description String
+  roleName    String  @unique
+  description String?
 
   admins    Admins[]
   employees Employees[]
@@ -29,6 +30,7 @@ model Admins {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
   fullName String
   userName String @unique
@@ -45,6 +47,7 @@ model Customers {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
   fullName String
   email    String  @unique
@@ -59,6 +62,7 @@ model Vendors {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
   name          String
   email         String @unique
@@ -73,6 +77,7 @@ model Categories {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
   name String @unique
 
@@ -84,6 +89,7 @@ model SubCategories {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
   name         String      @unique
   Categories   Categories? @relation(fields: [categoriesId], references: [id])
@@ -96,6 +102,7 @@ model Products {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
   name String @unique
 
@@ -113,15 +120,17 @@ model ProductsVariant {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
-  name        String
-  description Json
+  name          String
+  description   Json?
   // price       Decimal
-  productCode Int       @unique
-  barCode     Int       @unique
-  Products    Products? @relation(fields: [productsId], references: [id])
-  productsId  Int?
-  images      Media[]
+  productCode   Int            @unique
+  barCode       Int            @unique
+  Products      Products?      @relation(fields: [productsId], references: [id])
+  productsId    Int?
+  images        Media[]
+  ProductStocks ProductStocks?
 
   @@index([name])
 }
@@ -130,6 +139,7 @@ model Media {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
   name String
   url  String
@@ -142,6 +152,7 @@ model Raks {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
   name String
 }
@@ -150,6 +161,7 @@ model Units {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
   name         String         @unique
   value        Int
@@ -160,6 +172,7 @@ model PurchaseItem {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
   batchNumber          String
   purchasePrice        Decimal
@@ -174,12 +187,15 @@ model PurchaseItem {
   unitsId    Int?
   Purchase   Purchase? @relation(fields: [purchaseId], references: [id])
   purchaseId Int?
+
+  ProductStocks ProductStocks?
 }
 
 model Purchase {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
   purchaseBillNo String
   date           DateTime
@@ -188,10 +204,26 @@ model Purchase {
   purchaseItems PurchaseItem[]
 }
 
+model ProductStocks {
+  id        String   @id @unique @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
+
+  productVariant    ProductsVariant? @relation(fields: [productsVariantId], references: [id])
+  productsVariantId Int?             @unique
+
+  purchaseItem   PurchaseItem? @relation(fields: [purchaseItemId], references: [id])
+  purchaseItemId Int?          @unique
+
+  quantityInStock Int
+}
+
 model PurchaseReturn {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
   purchseItemId String
 }
@@ -200,6 +232,7 @@ model Sales {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
   date                DateTime
   accountantId        String
@@ -220,6 +253,7 @@ model SalesProducts {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
   Sales            Sales?  @relation(fields: [salesId], references: [id])
   salesId          Int?
@@ -232,6 +266,7 @@ model SalesReturn {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
   salesProductId String
   customerId     String
@@ -242,6 +277,7 @@ model SalesCommission {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
   salesManId       String
   saleId           String
@@ -254,6 +290,7 @@ model Expenses {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
   date       DateTime
   employeeId String
@@ -267,6 +304,7 @@ model ExpensType {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
   name     String
   expenses Expenses[]
@@ -276,6 +314,7 @@ model Departments {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
   name      String
   employees Employees[]
@@ -285,6 +324,7 @@ model Employees {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
   fullName String
   userName String @unique
@@ -310,6 +350,7 @@ model Attendance {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
   date           DateTime
   check_in_time  DateTime   @db.Time()
@@ -322,6 +363,7 @@ model Leaves {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
   leaveType   String
   startDate   DateTime
@@ -340,6 +382,7 @@ model Payroll {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
 
   paymentDate DateTime
   gross_pay   Decimal

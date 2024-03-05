@@ -1,13 +1,10 @@
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
+import prisma from "../../database/prisma";
 import { CreateDepartment } from "./dto/departments.dto";
-import { db } from "../../database/db";
-import { departments, employees } from "../../database/schema/schema";
-import { eq, like, sql } from "drizzle-orm";
-import { PrismaClient } from "@prisma/client";
 
 const departmentsApi = new Hono()
-const prisma = new PrismaClient()
+
 
 departmentsApi.post("/create", zValidator("json", CreateDepartment),async (c) => {
 	try {
@@ -84,7 +81,7 @@ departmentsApi.get("/all",async (c) => {
 departmentsApi.delete("/delete/:id",async (c) => {
 	try {
 		const {id} = await c.req.param()
-		const deps = (await db.delete(departments).where(eq(departments.id, +id)))
+		const deps = await prisma.departments.softDelete(+id)
 		return c.json(
 			deps
 		)

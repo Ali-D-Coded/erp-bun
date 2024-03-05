@@ -4,13 +4,17 @@ import { CreateRoleDto, UpdateRoleDto } from "./dto/role.dto"
 import { db } from "../../database/db"
 import { roles } from "../../database/schema/schema"
 import { eq, ne } from "drizzle-orm"
+import prisma from "../../database/prisma"
 
 const roleRoutes = new Hono()
 
 roleRoutes.post("/create",zValidator("json", CreateRoleDto), async (c) => {
 	try {
 		const body = await CreateRoleDto.parseAsync(c.req.json())
-		await db.insert(roles).values(body)
+	
+		await prisma.roles.createMany({
+			data: body
+		})
 		return c.json("role created")
 	} catch (error:any) {
 		return c.newResponse(error, 400)
@@ -19,8 +23,14 @@ roleRoutes.post("/create",zValidator("json", CreateRoleDto), async (c) => {
 
 roleRoutes.get("/all", async (c) => {
 	try {
-		const rolesRes = await db.query.roles.findMany({
-		where:ne(roles.roleName, 'ADMIN')
+	
+		const rolesRes = await prisma.roles.findMany({
+			where: {
+				NOT: {
+				roleName: "ADMIN"
+				},	
+			},
+
 		});
 		return c.json(rolesRes)
 	} catch (error:any) {
@@ -33,7 +43,12 @@ roleRoutes.patch("/update/:id",zValidator("json", UpdateRoleDto), async (c) => {
 		const { id } = c.req.param()
 		const body = await UpdateRoleDto.parseAsync(c.req.json())
 
-		await db.update(roles).set(body).where(eq(roles.id, +id))
+		await prisma.roles.update({
+			where: {
+				id: +id
+			},
+			data:body
+		})
 		return c.json(`role updated`)
 	} catch (error:any) {
 		return c.newResponse(error, 400)
@@ -43,7 +58,7 @@ roleRoutes.patch("/update/:id",zValidator("json", UpdateRoleDto), async (c) => {
 roleRoutes.delete("/delete/:id", async (c) => {
 	try {
 		const { id } = c.req.param()
-		await db.delete(roles).where(eq(roles.id,+id))
+		await prisma.roles.softDelete(+id)
 		return c.json(`role deleted`)
 	} catch (error:any) {
 		return c.newResponse(error, 400)

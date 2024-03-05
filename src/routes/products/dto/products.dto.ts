@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const CreateProductVariantDto =  z.object({
+export const CreateProductVariantDto = z.object({
 	name: z.string(),
 	description: z.string().optional(),
 	productId: z.string(),
@@ -8,15 +8,15 @@ export const CreateProductVariantDto =  z.object({
 	// files: z.any()
 })
 
-export const UpdateProdutImage =  z.object({
+export const UpdateProdutImage = z.object({
 	productId: z.string(),
 
 })
 
-export const UpdateProductVariantDto =  z.object({
+export const UpdateProductVariantDto = z.object({
 	name: z.string().optional(),
 	description: z.string().optional(),
-	barCode: z.string().optional(),
+	barCode: z.number().optional(),
 	productCode: z.number().optional(),
 })
 
