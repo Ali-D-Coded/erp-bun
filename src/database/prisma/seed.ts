@@ -1,24 +1,26 @@
-import {PrismaClient} from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { categoryData, customersData, departmentsData, employeesData, mediaData, productVariantsData, subCategoriesData, unitsData, vendorsData } from "./data";
 
 
 const prisma = new PrismaClient()
 
-async function main() {
+export async function mainSeeder() {
+	console.log("started", { departmentsData });
+
 	try {
 		const hash = await Bun.password.hash("12356")
 		await prisma.admins.create({
 			data: {
 				email: "admin@gmail.com",
-				userName:"admin",
+				userName: "admin",
 				fullName: "admin",
 				phone: "896578465",
 				password: hash,
-				rolesId:1
-				}
+				rolesId: 1
+			}
 		})
-	
-	
+
+
 		await prisma.departments.createMany({
 			data: departmentsData
 		})
@@ -31,9 +33,11 @@ async function main() {
 		await prisma.customers.createMany({
 			data: customersData
 		})
-		await prisma.units.createMany({
+		const unts = await prisma.units.createMany({
 			data: unitsData
 		})
+		console.log({ unts });
+
 		await prisma.categories.createMany({
 			data: categoryData
 		})
@@ -55,15 +59,15 @@ async function main() {
 
 }
 
-main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
-  });
+mainSeeder()
+	.then(async () => {
+		await prisma.$disconnect();
+	})
+	.catch(async (e) => {
+		console.error(e);
+		await prisma.$disconnect();
+		process.exit(1);
+	});
 
 
 

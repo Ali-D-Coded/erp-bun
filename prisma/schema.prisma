@@ -70,6 +70,8 @@ model Vendors {
   phone         String @unique
   address       Json
 
+  purchases Purchase[]
+
   @@index([email])
 }
 
@@ -126,7 +128,7 @@ model ProductsVariant {
   description   Json?
   // price       Decimal
   productCode   Int            @unique
-  barCode       Int            @unique
+  barCode       String         @unique
   Products      Products?      @relation(fields: [productsId], references: [id])
   productsId    Int?
   images        Media[]
@@ -181,7 +183,7 @@ model PurchaseItem {
   commissionPercentage Decimal
   quantity             Int
 
-  productVariantId String
+  productVariantId Int
 
   Units      Units?    @relation(fields: [unitsId], references: [id])
   unitsId    Int?
@@ -202,6 +204,8 @@ model Purchase {
   totalAmount    Decimal
 
   purchaseItems PurchaseItem[]
+  Vendors       Vendors?       @relation(fields: [vendorsId], references: [id])
+  vendorsId     Int?
 }
 
 model ProductStocks {
@@ -234,10 +238,8 @@ model Sales {
   updatedAt DateTime @updatedAt()
   deleted   Boolean  @default(false)
 
-  date                DateTime
-  accountantId        String
-  salesManId          String
-  customerId          String
+  date DateTime
+
   totalAmount         Decimal
   additionalDisocunt  Decimal
   totalDiscountAmount Decimal
@@ -247,6 +249,12 @@ model Sales {
   customersId Int?
 
   salesProducts SalesProducts[]
+
+  accountant   Employees? @relation("accountant", fields: [accountantId], references: [id])
+  accountantId Int?
+
+  salesman   Employees? @relation("salesman", fields: [salesManId], references: [id])
+  salesManId Int?
 }
 
 model SalesProducts {
@@ -258,7 +266,7 @@ model SalesProducts {
   Sales            Sales?  @relation(fields: [salesId], references: [id])
   salesId          Int?
   discountAmount   Decimal
-  productVariantId String
+  productVariantId Int
   quantity         Int
 }
 
@@ -279,8 +287,9 @@ model SalesCommission {
   updatedAt DateTime @updatedAt()
   deleted   Boolean  @default(false)
 
-  salesManId       String
-  saleId           String
+  salesMan         Employees? @relation("salesman", fields: [salesmanId], references: [id])
+  salesmanId       Int?
+  saleId           Int
   saleDate         DateTime
   commissionEarned Decimal
   notes            String?
@@ -344,6 +353,11 @@ model Employees {
   Payroll     Payroll[]
   Roles       Roles?       @relation(fields: [rolesId], references: [id])
   rolesId     Int?
+
+  salesManSales   Sales[] @relation("salesman")
+  accountantSales Sales[] @relation("accountant")
+
+  salesCommission SalesCommission[] @relation("salesman")
 }
 
 model Attendance {

@@ -3,11 +3,12 @@ import { logger } from 'hono/logger'
 import { poweredBy } from 'hono/powered-by'
 import api from './routes/api.routes'
 import { cors } from 'hono/cors'
+import { mainSeeder } from './database/prisma/seed'
 
 
 
 const app = new Hono()
-app.use('/api/*',cors())
+app.use('/api/*', cors())
 app.use("*", logger())
 app.use('*', poweredBy())
 
@@ -29,12 +30,18 @@ app.notFound((c) => {
 app.route("/api", api)
 app.get("/test", (c) => {
   return c.json({
-    message:"HEllo Testing"
+    message: "HEllo Testing"
   })
 })
+// app.get("/seed", async (c) => {
+//   await mainSeeder()
+//   return c.json({
+//     message: "Seeding complete"
+//   })
+// })
 
 
 export default {
   port: 4000,
-  fetch : app.fetch
+  fetch: app.fetch
 }

@@ -18,9 +18,14 @@ employeeRoutes.post("/create", zValidator("json", CreateEmployeeDto), async (c) 
 		console.log({ paredBody });
 		await Bun.password.hash(paredBody.password)
 
+		const department = await prisma.departments.findUniqueOrThrow({ where: { id: +paredBody.departmentsId } })
+		const roleName = department.name == "Sales" ? "SALESMAN" : department.name == "Accounts" ? "ACCOUNTANT" : ""
+
+		const role = await prisma.roles.findFirstOrThrow({ where: { roleName } })
+
 		//  await db.insert(employees).values(paredBody)
 		await prisma.employees.create({
-			data: paredBody
+			data: { ...paredBody, rolesId: role?.id }
 		})
 
 

@@ -123,7 +123,7 @@ const saveFile = async (files: any[], path: string, productId: number | null) =>
 		fileNames.push({
 			name: fileName,
 			url: fileName,
-			productId: productId
+			productsVariantId: productId
 		})
 		// console.log("35",{fileName});
 		console.log("data:", file);
@@ -156,13 +156,13 @@ productsRoute.post("/create-product-variants", zValidator("form", CreateProductV
 		const productVariant = await prisma.productsVariant.create({
 			data: {
 				...data,
-				productsId: +data.productId,
-				productCode, barCode: +barCode
+				productsId: +data.productsId,
+				productCode, barCode: barCode
 
 			}
 		})
 
-		const fileNames: any[] = formData.getAll("files").length > 0 ? await saveFile(formData.getAll("files"), STORE_PATH, productVariant[0].insertId) : []
+		const fileNames: any[] = formData.getAll("files").length > 0 ? await saveFile(formData.getAll("files"), STORE_PATH, productVariant.id) : []
 
 		console.log({ fileNames });
 

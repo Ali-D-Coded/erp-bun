@@ -26,7 +26,13 @@ subCategoryRoute.post("/update/:id", zValidator("json", CreateSubCategoryDto), a
 	try {
 		const { id } = c.req.param()
 		const data = await CreateSubCategoryDto.parseAsync(c.req.json())
-		await db.update(subCategories).set(data).where(eq(subCategories.id, +id))
+
+		await prisma.subCategories.update({
+			where: {
+				id: +id
+			},
+			data
+		})
 		return c.json("sub category updated")
 	} catch (error) {
 		return c.newResponse(error, 400)
@@ -36,7 +42,7 @@ subCategoryRoute.post("/update/:id", zValidator("json", CreateSubCategoryDto), a
 
 subCategoryRoute.get("/all", async (c) => {
 	try {
-		const data = await db.query.subCategories.findMany()
+		const data = await prisma.subCategories.findMany()
 		return c.json(data)
 	} catch (error) {
 		return c.newResponse(error, 400)
@@ -47,7 +53,7 @@ subCategoryRoute.get("/all", async (c) => {
 subCategoryRoute.delete("/delete/:id", async (c) => {
 	try {
 		const { id } = c.req.param()
-		await db.delete(subCategories).where(eq(subCategories.id, +id))
+		await prisma.subCategories.softDelete(+id)
 		return c.json("deleted sub category")
 	} catch (error) {
 		return c.newResponse(error, 400)

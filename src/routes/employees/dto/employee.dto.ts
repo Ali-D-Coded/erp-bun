@@ -7,7 +7,7 @@ export const CreateEmployeeDto = z.object({
   email: z.string().regex(emailRegex),
   password: z.string().min(8),
   phone: z.string().min(10),
-  rolesId: z.number(),
+  // rolesId: z.number(),
   jobTitle: z.string(),
   departmentsId: z.number(),
   joiningDate: z.string(),
