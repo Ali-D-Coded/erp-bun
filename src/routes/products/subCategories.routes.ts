@@ -1,10 +1,7 @@
 import { zValidator } from "@hono/zod-validator"
 import { Hono } from "hono"
-import { CreateSubCategoryDto } from "./dto/category.dtos"
-import { subCategories } from "../../database/schema/schema"
-import { db } from "../../database/db"
-import { eq } from "drizzle-orm"
 import prisma from "../../database/prisma"
+import { CreateSubCategoryDto } from "./dto/category.dtos"
 
 const subCategoryRoute = new Hono()
 

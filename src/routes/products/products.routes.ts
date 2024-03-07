@@ -1,13 +1,10 @@
 import { zValidator } from "@hono/zod-validator";
 import { randomUUID } from "crypto";
-import { eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { stream } from 'hono/streaming';
-import { db } from "../../database/db";
-import { NewMedia, products, productsVariant } from "../../database/schema/schema";
+import prisma from "../../database/prisma";
 import { generateRandomNumber, removefile } from "../../utils/fun";
 import { CreateProductDto, CreateProductVariantDto, UpdateProductDto, UpdateProductVariantDto } from "./dto/products.dto";
-import prisma from "../../database/prisma";
 const productsRoute = new Hono()
 
 

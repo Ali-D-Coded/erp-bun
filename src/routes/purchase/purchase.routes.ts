@@ -1,12 +1,9 @@
-import { Hono } from "hono";
-import { db } from "../../database/db";
 import { zValidator } from "@hono/zod-validator";
-import { CreatePurchaseDto } from "./dto/purchase.dto";
-import { generateRandomNumber } from "../../utils/fun";
-import { NewProductStock, productStocks, purchase, purchaseItems, units } from "../../database/schema/schema";
-import { eq, sql } from "drizzle-orm";
-import prisma from "../../database/prisma";
 import { Prisma } from "@prisma/client";
+import { Hono } from "hono";
+import prisma from "../../database/prisma";
+import { generateRandomNumber } from "../../utils/fun";
+import { CreatePurchaseDto } from "./dto/purchase.dto";
 
 
 const purchaseRoute = new Hono()

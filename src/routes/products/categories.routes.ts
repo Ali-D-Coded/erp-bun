@@ -1,10 +1,7 @@
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
-import { CreateCategoryDto } from "./dto/category.dtos";
-import { db } from "../../database/db";
-import { categories } from "../../database/schema/schema";
-import { eq } from "drizzle-orm";
 import prisma from "../../database/prisma";
+import { CreateCategoryDto } from "./dto/category.dtos";
 
 const categoryRoute = new Hono()
 

@@ -1,10 +1,7 @@
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
-import { CreateCustomerDto } from "./dto/customer.dto";
-import { db } from "../../database/db";
-import { custmers } from "../../database/schema/schema";
-import { eq } from "drizzle-orm"
 import prisma from "../../database/prisma";
+import { CreateCustomerDto } from "./dto/customer.dto";
 const customerRoutes = new Hono()
 
 customerRoutes.post("/create", zValidator("json", CreateCustomerDto), async (c) => {

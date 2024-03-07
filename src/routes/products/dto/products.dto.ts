@@ -16,7 +16,7 @@ export const UpdateProdutImage = z.object({
 export const UpdateProductVariantDto = z.object({
 	name: z.string().optional(),
 	description: z.string().optional(),
-	barCode: z.number().optional(),
+	barCode: z.string().optional(),
 	productCode: z.number().optional(),
 })
 

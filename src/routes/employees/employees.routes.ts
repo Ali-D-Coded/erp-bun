@@ -1,10 +1,7 @@
 import { zValidator } from "@hono/zod-validator";
-import { eq } from "drizzle-orm";
 import { Hono } from "hono";
-import { db } from "../../database/db";
-import { employees } from "../../database/schema/schema";
-import { CreateEmployeeDto, UpdateEmployeeDto } from "./dto/employee.dto";
 import prisma from "../../database/prisma";
+import { CreateEmployeeDto, UpdateEmployeeDto } from "./dto/employee.dto";
 
 
 

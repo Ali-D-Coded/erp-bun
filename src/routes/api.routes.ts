@@ -1,23 +1,20 @@
 import { Hono } from "hono";
-import { jwt } from "hono/jwt";
 
-import { JwtHandler } from "../utils/jwt";
 import authRoute from "./auth/auth.routes";
-import permissionsRoute from "./permissions/permissions.routes";
-import { db } from "../database/db";
 import departmentsApi from "./departments/departments.routes";
 import employeeRoutes from "./employees/employees.routes";
+import permissionsRoute from "./permissions/permissions.routes";
 
-import productsRoute from "./products/products.routes";
-import unitsRoutes from "./products/units.routes";
-import vendorRoutes from "./vendors/vendor.routes";
-import categoryRoute from "./products/categories.routes";
-import subCategoryRoute from "./products/subCategories.routes";
-import stocksRoute from "./products/stocks.routes";
-import salesRoutes from "./sales/sales.routes";
-import purchaseRoute from "./purchase/purchase.routes";
-import customerRoutes from "./users/customer.routes";
 import roleRoutes from "./auth/roles.routes";
+import categoryRoute from "./products/categories.routes";
+import productsRoute from "./products/products.routes";
+import stocksRoute from "./products/stocks.routes";
+import subCategoryRoute from "./products/subCategories.routes";
+import unitsRoutes from "./products/units.routes";
+import purchaseRoute from "./purchase/purchase.routes";
+import salesRoutes from "./sales/sales.routes";
+import customerRoutes from "./users/customer.routes";
+import vendorRoutes from "./vendors/vendor.routes";
 
 
 const api = new Hono()

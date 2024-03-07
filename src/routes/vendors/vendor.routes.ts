@@ -1,10 +1,7 @@
-import { Hono } from "hono";
-import { db } from "../../database/db";
-import { vendors } from "../../database/schema/schema";
-import { eq } from "drizzle-orm";
 import { zValidator } from "@hono/zod-validator";
-import { CreateVendorDto } from "./vendor.dto";
+import { Hono } from "hono";
 import prisma from "../../database/prisma";
+import { CreateVendorDto } from "./vendor.dto";
 
 const vendorRoutes = new Hono()
 

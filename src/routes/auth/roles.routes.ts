@@ -1,10 +1,7 @@
 import { zValidator } from "@hono/zod-validator"
 import { Hono } from "hono"
-import { CreateRoleDto, UpdateRoleDto } from "./dto/role.dto"
-import { db } from "../../database/db"
-import { roles } from "../../database/schema/schema"
-import { eq, ne } from "drizzle-orm"
 import prisma from "../../database/prisma"
+import { CreateRoleDto, UpdateRoleDto } from "./dto/role.dto"
 
 const roleRoutes = new Hono()
 

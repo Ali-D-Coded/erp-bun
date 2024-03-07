@@ -1,11 +1,8 @@
 import { zValidator } from "@hono/zod-validator";
-import { eq, sql } from "drizzle-orm";
 import { Hono } from "hono";
-import { db } from "../../database/db";
-import { NewSalesProduct, productStocks, purchaseItems, sales, salesCommission, salesProducts } from "../../database/schema/schema";
+import prisma from "../../database/prisma";
 import { calculateDisc } from "../../utils/fun";
 import { CreateSalesDto } from "./dto/sales.dto";
-import prisma from "../../database/prisma";
 
 const salesRoutes = new Hono()
 

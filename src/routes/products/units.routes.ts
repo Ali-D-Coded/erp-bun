@@ -1,10 +1,7 @@
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
-import { CreateUnitsDto } from "./dto/units.dto";
-import { db } from "../../database/db";
-import { units } from "../../database/schema/schema";
-import { eq } from "drizzle-orm";
 import prisma from "../../database/prisma";
+import { CreateUnitsDto } from "./dto/units.dto";
 
 const unitsRoutes = new Hono()
 unitsRoutes.post("/create", zValidator("json", CreateUnitsDto), async (c) => {
