@@ -4,6 +4,7 @@ import { poweredBy } from 'hono/powered-by'
 import api from './routes/api.routes'
 import { cors } from 'hono/cors'
 import { mainSeeder } from './database/prisma/seed'
+import dbroute from './routes/db.routes'
 
 
 
@@ -26,8 +27,10 @@ app.notFound((c) => {
 })
 
 
+app.route("/database", dbroute)
 
 app.route("/api", api)
+
 app.get("/test", (c) => {
   return c.json({
     message: "HEllo Testing"

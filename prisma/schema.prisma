@@ -106,7 +106,7 @@ model Products {
   updatedAt DateTime @updatedAt()
   deleted   Boolean  @default(false)
 
-  name String @unique
+  name String @unique @db.VarChar(540)
 
   Categories      Categories?    @relation(fields: [categoriesId], references: [id])
   categoriesId    Int?
@@ -124,7 +124,7 @@ model ProductsVariant {
   updatedAt DateTime @updatedAt()
   deleted   Boolean  @default(false)
 
-  name          String
+  name          String         @unique @db.VarChar(540)
   description   Json?
   // price       Decimal
   productCode   Int            @unique
