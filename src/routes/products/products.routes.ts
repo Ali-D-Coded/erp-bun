@@ -62,7 +62,7 @@ productsRoute.patch("/update-product/:id", zValidator("json", UpdateProductDto),
 
 		return c.json({
 			msg: "product updated",
-			prodId: productRes[0].insertId
+			prodId: productRes.id
 		})
 
 	} catch (error: any) {
@@ -103,6 +103,23 @@ productsRoute.get("/product-variants/all", async (c) => {
 			}
 		})
 		return c.json(productVariants)
+	} catch (error) {
+		return c.newResponse(error, 400)
+	}
+})
+
+productsRoute.get("/product-variants/:id", async (c) => {
+	try {
+		const { id } = c.req.param()
+		const productVariant = await prisma.productsVariant.findUnique({
+			where: {
+				id: +id
+			},
+			include: {
+				images: true
+			}
+		})
+		return c.json(productVariant)
 	} catch (error) {
 		return c.newResponse(error, 400)
 	}
