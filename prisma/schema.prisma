@@ -129,7 +129,7 @@ model ProductsVariant {
   // price       Decimal
   productCode   Int            @unique
   barCode       String         @unique
-  Products      Products?      @relation(fields: [productsId], references: [id])
+  Products      Products?      @relation(fields: [productsId], references: [id], onDelete: Cascade)
   productsId    Int?
   images        Media[]
   ProductStocks ProductStocks?
@@ -146,7 +146,7 @@ model Media {
   name String
   url  String
 
-  ProductsVariant   ProductsVariant? @relation(fields: [productsVariantId], references: [id])
+  ProductsVariant   ProductsVariant? @relation(fields: [productsVariantId], references: [id], onDelete: Cascade)
   productsVariantId Int?
 }
 
@@ -187,7 +187,7 @@ model PurchaseItem {
 
   Units      Units?    @relation(fields: [unitsId], references: [id])
   unitsId    Int?
-  Purchase   Purchase? @relation(fields: [purchaseId], references: [id])
+  Purchase   Purchase? @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
   purchaseId Int?
 
   ProductStocks ProductStocks?
@@ -209,7 +209,7 @@ model Purchase {
 }
 
 model ProductStocks {
-  id        String   @id @unique @default(cuid())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
   deleted   Boolean  @default(false)
@@ -246,7 +246,7 @@ model Sales {
   grandTotal          Decimal
 
   customer    Customers? @relation(fields: [customersId], references: [id])
-  customersId Int?
+  customersId Int?       @default(1)
 
   salesProducts SalesProducts[]
 
@@ -263,10 +263,11 @@ model SalesProducts {
   updatedAt DateTime @updatedAt()
   deleted   Boolean  @default(false)
 
-  Sales            Sales?  @relation(fields: [salesId], references: [id])
+  Sales            Sales?  @relation(fields: [salesId], references: [id], onDelete: Cascade)
   salesId          Int?
   discountAmount   Decimal
   productVariantId Int
+  productCode      Int
   quantity         Int
 }
 

@@ -197,7 +197,7 @@ CREATE TABLE `Purchase` (
 
 -- CreateTable
 CREATE TABLE `ProductStocks` (
-    `id` VARCHAR(191) NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `deleted` BOOLEAN NOT NULL DEFAULT false,
@@ -205,7 +205,6 @@ CREATE TABLE `ProductStocks` (
     `purchaseItemId` INTEGER NULL,
     `quantityInStock` INTEGER NOT NULL,
 
-    UNIQUE INDEX `ProductStocks_id_key`(`id`),
     UNIQUE INDEX `ProductStocks_productsVariantId_key`(`productsVariantId`),
     UNIQUE INDEX `ProductStocks_purchaseItemId_key`(`purchaseItemId`),
     PRIMARY KEY (`id`)

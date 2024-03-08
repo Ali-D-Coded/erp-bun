@@ -24,7 +24,15 @@ salesRoutes.post("/create", zValidator("json", CreateSalesDto), async (c) => {
 				},
 				include: {
 					// productVariant: true,
-					purchaseItem: true
+					purchaseItem: {
+						include: {
+							ProductStocks: {
+								include: {
+									productVariant: true
+								}
+							}
+						}
+					}
 				}
 			})
 
@@ -48,11 +56,10 @@ salesRoutes.post("/create", zValidator("json", CreateSalesDto), async (c) => {
 				productCommission,
 				discountAmount,
 				productVariantId: item.productVariantId,
+				productCode: prod1.purchaseItem?.ProductStocks?.productVariant?.productCode,
 				quantity: item.quantity,
 			}
 		}))
-
-
 
 
 		const { totalAmount, totalDiscountAmount, totalProductCommission } = productsData.reduce((acc, item) => {
@@ -131,6 +138,7 @@ salesRoutes.post("/create", zValidator("json", CreateSalesDto), async (c) => {
 					salesId: salesRes.id,
 					discountAmount: it.discountAmount.toFixed(2),
 					productVariantId: it.productVariantId,
+					productCode: it.productCode,
 					quantity: it.quantity
 				}
 			})
@@ -174,7 +182,9 @@ salesRoutes.get("/all", async (c) => {
 		const salesRes = await prisma.sales.findMany({
 			include: {
 				salesProducts: true,
-				customer: true
+				customer: true,
+				salesman: true,
+				accountant: true
 			}
 		})
 		return c.json(salesRes)

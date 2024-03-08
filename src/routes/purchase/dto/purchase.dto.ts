@@ -11,7 +11,7 @@ export const CreatePurchaseDto = z.object({
 		maximumRetailPrice: z.string(),
 		commissionPercentage: z.string(),
 		quantity: z.number(),
-		unitId: z.number()
+		unitsId: z.number()
 	}))
 
 })

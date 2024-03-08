@@ -14,7 +14,11 @@ purchaseRoute.get("/all", async (c) => {
 			include: {
 				purchaseItems: {
 					include: {
-						ProductStocks: true,
+						ProductStocks: {
+							include: {
+								productVariant: true
+							}
+						},
 						Units: true
 					}
 				},
@@ -39,19 +43,19 @@ purchaseRoute.post("/create", zValidator("json", CreatePurchaseDto), async (c) =
 
 		let stocks = await Promise.all(dto.purchaseItems.map(async pur => {
 
-			const unitRes: any = await prisma.$queryRaw`SELECT *, value * ${Prisma.sql`${pur.quantity}`} AS total FROM Units`;
+			const unitRes: any = await prisma.$queryRaw`SELECT *, value * ${Prisma.sql`${pur.quantity}`} AS total FROM Units WHERE id = ${+pur.unitsId} LIMIT 1`;
 			// const unitRes = await db.select({
 			// 	tot: sql<number>`${units.value} * ${pur.quantity}`
 			// }).from(units).where(eq(units.id, +pur.unitId))
-			console.log({ unitRes });
+			console.log({ unitRes: Number(unitRes[0].total) });
 
 			if (unitRes.length < 1) {
 				throw new Error("No units")
 			}
 
 			return {
-				productVariantId: pur.productVariantId,
-				quantityInStock: unitRes.total,
+				productsVariantId: pur.productVariantId,
+				quantityInStock: Number(unitRes[0].total),
 				purchaseItemId: 0
 			}
 		}))
@@ -118,18 +122,22 @@ purchaseRoute.post("/create", zValidator("json", CreatePurchaseDto), async (c) =
 					}
 				})
 
+				console.log({ purchaseItemRes: +purchaseItemRes.id });
 
-				stocks = stocks.map(stock => stock.productVariantId === item.productVariantId ? {
+
+
+				stocks = stocks.map(stock => stock.productsVariantId === item.productVariantId ? {
 					...stock,
 					purchaseItemId: +purchaseItemRes.id
 				} : stock)
 			}
 
+			console.log({ stocks });
 
 			for (const stk of stocks) {
 				await tx.productStocks.upsert({
 					where: {
-						productsVariantId: +stk.productVariantId
+						productsVariantId: +stk.productsVariantId
 					},
 					create: stk,
 					update: stk
