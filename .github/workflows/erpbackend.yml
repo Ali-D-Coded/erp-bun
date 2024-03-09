@@ -1,0 +1,34 @@
+name: erp backend CI
+
+on:
+  push:
+    branches: ['deploy']
+  pull_request:
+    branches: ['deploy']
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        bun-version: [1.x]
+    #     # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+      - name: 'Create env file'
+        run: |
+          touch .env
+          echo DATABASE_URL="mysql://erpelec:kMrCiXnimyGRr4JD@localhost:3306/erpelec?schema=public"  >> .env
+          echo PORT=4040  >> .env
+          echo JWT_SECRET="thisissosecret"  >> .env
+          cat .env
+      - name: Use Bun js ${{ matrix.bun-version }}
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: ${{ matrix.bun-version }}
+          cache: 'bun'
+      - run: bun install
+      - run: systemctl restart erp-hono

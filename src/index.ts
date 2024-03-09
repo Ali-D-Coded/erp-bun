@@ -45,6 +45,6 @@ app.get("/test", (c) => {
 
 
 export default {
-  port: 4000,
+  port: process.env.PORT,
   fetch: app.fetch
 }
