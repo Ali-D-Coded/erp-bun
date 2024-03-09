@@ -34,7 +34,13 @@ employeeRoutes.post("/create", zValidator("json", CreateEmployeeDto), async (c) 
 
 employeeRoutes.get("/all", async (c) => {
 	try {
+		const querydata = c.req.query()
+		console.log({ role: querydata.role });
+
 		const employeesdata = await prisma.employees.findMany({
+			where: {
+				rolesId: querydata.role ? +querydata.role : undefined
+			},
 			include: {
 				Roles: true,
 				Departments: true,
