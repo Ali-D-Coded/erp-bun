@@ -75,6 +75,51 @@ model Vendors {
   @@index([email])
 }
 
+model Stores {
+  id        String   @id @unique @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
+
+  storeName String
+  userName  String @unique
+  password  String
+  phone     String @unique
+  email     String @unique
+
+  active Boolean @default(true)
+}
+
+model WareHouse {
+  id        String   @id @unique @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
+
+  name          String
+  contactPerson String
+  phone         String @unique
+  email         String @unique
+
+  Location Location?
+}
+
+model Location {
+  id        String   @id @unique @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
+
+  address String
+  country String
+  state   String
+  city    String
+  zipcode String
+
+  warehouse   WareHouse @relation(fields: [wareHouseId], references: [id])
+  wareHouseId String    @unique
+}
+
 model Categories {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -100,13 +145,29 @@ model SubCategories {
   Products Products[]
 }
 
+model Brand {
+  id        String   @id @unique @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
+
+  name   String
+  logo   String?
+  active Boolean @default(true)
+
+  products Products[]
+}
+
 model Products {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
   deleted   Boolean  @default(false)
 
-  name String @unique @db.VarChar(540)
+  name String  @unique @db.VarChar(540)
+  description   Json?
+  slug String?
+  sku  String?
 
   Categories      Categories?    @relation(fields: [categoriesId], references: [id])
   categoriesId    Int?
@@ -114,6 +175,12 @@ model Products {
   subCategoriesId Int?
 
   variants ProductsVariant[]
+
+  Brand   Brand?  @relation(fields: [brandId], references: [id])
+  brandId String?
+
+  Units   Units?  @relation(fields: [unitsId], references: [id])
+  unitsId Int?
 
   @@index([name])
 }
@@ -125,7 +192,6 @@ model ProductsVariant {
   deleted   Boolean  @default(false)
 
   name          String         @unique @db.VarChar(540)
-  description   Json?
   // price       Decimal
   productCode   Int            @unique
   barCode       String         @unique
@@ -165,9 +231,9 @@ model Units {
   updatedAt DateTime @updatedAt()
   deleted   Boolean  @default(false)
 
-  name         String         @unique
-  value        Int
-  PurchaseItem PurchaseItem[]
+  name     String     @unique
+  value    Int
+  products Products[]
 }
 
 model PurchaseItem {
@@ -185,8 +251,9 @@ model PurchaseItem {
 
   productVariantId Int
 
-  Units      Units?    @relation(fields: [unitsId], references: [id])
-  unitsId    Int?
+  // Units      Units?    @relation(fields: [unitsId], references: [id])
+  // unitsId    Int?
+  unit       String
   Purchase   Purchase? @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
   purchaseId Int?
 
