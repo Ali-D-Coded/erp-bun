@@ -15,6 +15,9 @@ import purchaseRoute from "./purchase/purchase.routes";
 import salesRoutes from "./sales/sales.routes";
 import customerRoutes from "./users/customer.routes";
 import vendorRoutes from "./vendors/vendor.routes";
+import brandRoutes from "./products/brands.routes";
+import rakRoutes from "./products/raks.routes";
+import VAroutes from "./products/variant-attributes.routes";
 
 
 const api = new Hono()
@@ -53,6 +56,10 @@ api.route("/units", unitsRoutes)
 api.route("/category", categoryRoute)
 api.route("/sub-category", subCategoryRoute)
 api.route("/stocks", stocksRoute)
+api.route("/brands", brandRoutes)
+api.route("/raks", rakRoutes)
+api.route("/variant-attributes", VAroutes)
+
 
 
 

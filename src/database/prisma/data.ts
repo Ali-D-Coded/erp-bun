@@ -47,6 +47,19 @@ export const employeesData = [
 		salary: new Decimal(20000.00)
 	},
 	{
+		fullName: 'Manish',
+		userName: 'oral',
+		email: 'manish@gmail.com',
+		password: '$argon2id$v=19$m=65536,t=2,p=1$aUFybAfCq1dQNSbxM0xCeZnBTpz72ee1Nbl4GAxx0AM$7fpfdbXF65Upk0J7MomRiRUTQQ6cJ8MadVPFEsH+bQM',
+		phone: '6352458956',
+		rolesId: 2,
+
+		jobTitle: 'salesman',
+		departmentsId: 1,
+		joiningDate: new Date("2024-01-01T00:00:00.000Z"),
+		salary: new Decimal(20000.00)
+	},
+	{
 		fullName: 'Sreya',
 		userName: 'sreay110',
 		email: 'sreya@gmail.com',
@@ -67,6 +80,7 @@ export const vendorsData = [
 		contactPerson: 'Manager',
 		phone: '8956235689',
 		address: 'gsdufsjdkhdjhdskgdsgfdsfgds',
+		vatNo: "48768468748948"
 	},
 	{
 		name: 'Spark Tech',
@@ -74,6 +88,7 @@ export const vendorsData = [
 		contactPerson: 'Manager',
 		phone: '9674562356',
 		address: 'gsdufsjdkhdjhdskgdsgfdsfgds',
+		vatNo: "48768468748948"
 	},
 ]
 
@@ -184,24 +199,77 @@ export const subCategoriesData = [
 	},
 ]
 
+export const brandsData = [
+	{
+		name: "realme",
+		logo: "realme.png"
+	},
+	{
+		name: "Asus",
+		logo: "asus.png"
+	},
+	{
+		name: "Nike",
+		logo: "nike.png"
+	},
+	{
+		name: "Apple",
+		logo: "apple.png"
+	},
+	{
+		name: "Boat",
+		logo: "boat.png"
+	},
+	{
+		name: "Lenovo",
+		logo: "lenovo.png"
+	},
+]
+
+export const raks = [
+	{
+		name: "Smartphones rak",
+		salesmanId: 1
+	},
+	{
+		name: "Laptops rak",
+		salesmanId: 2
+	}
+]
+
 export const productsData = [
 	{
 		name: "realme 12 Pro+ 5G (Submarine Blue, 256 GB)  (12 GB RAM)",
+		description: "In a world where innovation reigns supreme, the realme 12 Pro+ 5G stands tall as a beacon of superior technology and design. Elevate your mobile experience, capture moments with unprecedented clarity, and stay connected with seamless performance. Behold this realme smartphone – where every feature is a testament to a commitment to pushing the boundaries of what's possible in a smartphone.",
+		slug: "realme-slug-12-pro-5G",
+		brandId: 1,
+		unitsId: 1,
+		raksId: 1,
 		subCategoriesId: 1
 	},
 	{
 		name: "ASUS ROG Zephyrus G14 (2023) with 76WHr Battery, AI Powered AMD Ryzen 9 Octa Core 7940HS - (16 GB/1 TB SSD/Windows 11 Home/6 GB Graphics/NVIDIA GeForce RTX 4050/165 Hz/120 TGP) GA402XU-N2044WS Gaming Laptop  (14 Inch, Moonlight White AniMe Matrix Version, 1.72 Kg, With MS Office)",
+		description: "With the Zephyrus G14 gaming laptop, you can explore several alternatives and travel a gaming route that enables you to demonstrate your dominance. For gamers who demand incredible motion and image clarity, this gaming laptop has a magnificent Nebula Display with a 165 Hz refresh rate, 100% DCI-P3 coverage, and 2K QHD+ with 500 nits peak brightness. This laptop also uses excellent AMD and NVIDIA graphics cards to provide superb Windows 11 Home gaming performance. The powerful AMD Ryzen 7000 HS-Series CPU and NVIDIA GeForce RTX 40-Series Laptop GPU are installed in this 35.56 cm (14) machine, which aids in providing a fluid gaming experience. An FHD webcam and Windows Hello compatibility also make it possible for you to swiftly and securely unlock your PC. You can quickly charge your laptop up to 50% power in only 30 minutes thanks to Wi-Fi 6E's full compatibility, allowing you to stay engaged while on the move.",
+		slug: "asus-rog-zyphyrus-g14-2023",
+		brandId: 2,
+		unitsId: 1,
+		raksId: 2,
 		subCategoriesId: 5
 	},
 ]
 
 export const productVariantsData = [
 	{
-		name: "realme 12 Pro+ 5G (Submarine Blue, 256 GB)  (12 GB RAM)",
-		description: "In a world where innovation reigns supreme, the realme 12 Pro+ 5G stands tall as a beacon of superior technology and design. Elevate your mobile experience, capture moments with unprecedented clarity, and stay connected with seamless performance. Behold this realme smartphone – where every feature is a testament to a commitment to pushing the boundaries of what's possible in a smartphone.",
+		variantName: "realme 12 Pro+ 5G (Submarine Blue, 256 GB)  (12 GB RAM)",
+		variantValue: "realme 12 Pro+ 5G (Submarine Blue, 256 GB)  (12 GB RAM)",
+		sku: "PASD54754",
+
 		productCode: 55455,
 		barCode: "545455",
 		productsId: 1,
+		price: new Decimal(10000.00),
+		VAT: new Decimal(15.00),
+		
 
 	},
 	{
@@ -214,7 +282,7 @@ export const productVariantsData = [
 	},
 	{
 		name: "rASUS ROG Zephyrus G14 (2023) with 76WHr Battery, AI Powered AMD Ryzen 9 Octa Core 7940HS - (16 GB/1 TB SSD/Windows 11 Home/6 GB Graphics/NVIDIA GeForce RTX 4050/165 Hz/120 TGP) GA402XU-N2044WS Gaming Laptop  (14 Inch, Moonlight White AniMe Matrix Version, 1.72 Kg, With MS Office)",
-		description: "With the Zephyrus G14 gaming laptop, you can explore several alternatives and travel a gaming route that enables you to demonstrate your dominance. For gamers who demand incredible motion and image clarity, this gaming laptop has a magnificent Nebula Display with a 165 Hz refresh rate, 100% DCI-P3 coverage, and 2K QHD+ with 500 nits peak brightness. This laptop also uses excellent AMD and NVIDIA graphics cards to provide superb Windows 11 Home gaming performance. The powerful AMD Ryzen 7000 HS-Series CPU and NVIDIA GeForce RTX 40-Series Laptop GPU are installed in this 35.56 cm (14) machine, which aids in providing a fluid gaming experience. An FHD webcam and Windows Hello compatibility also make it possible for you to swiftly and securely unlock your PC. You can quickly charge your laptop up to 50% power in only 30 minutes thanks to Wi-Fi 6E's full compatibility, allowing you to stay engaged while on the move.",
+		
 		productCode: 4534645,
 		barCode: "54555",
 		productsId: 2,

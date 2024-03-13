@@ -69,6 +69,7 @@ model Vendors {
   contactPerson String
   phone         String @unique
   address       Json
+  vatNo         String
 
   purchases Purchase[]
 
@@ -76,7 +77,7 @@ model Vendors {
 }
 
 model Stores {
-  id        String   @id @unique @default(cuid())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
   deleted   Boolean  @default(false)
@@ -91,7 +92,7 @@ model Stores {
 }
 
 model WareHouse {
-  id        String   @id @unique @default(cuid())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
   deleted   Boolean  @default(false)
@@ -105,7 +106,7 @@ model WareHouse {
 }
 
 model Location {
-  id        String   @id @unique @default(cuid())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
   deleted   Boolean  @default(false)
@@ -117,7 +118,10 @@ model Location {
   zipcode String
 
   warehouse   WareHouse @relation(fields: [wareHouseId], references: [id])
-  wareHouseId String    @unique
+  wareHouseId Int       @unique
+
+  Employees   Employees? @relation(fields: [employeesId], references: [id])
+  employeesId Int?
 }
 
 model Categories {
@@ -146,7 +150,7 @@ model SubCategories {
 }
 
 model Brand {
-  id        String   @id @unique @default(cuid())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
   deleted   Boolean  @default(false)
@@ -164,10 +168,9 @@ model Products {
   updatedAt DateTime @updatedAt()
   deleted   Boolean  @default(false)
 
-  name String  @unique @db.VarChar(540)
-  description   Json?
-  slug String?
-  sku  String?
+  name        String  @unique @db.VarChar(540)
+  description Json?
+  slug        String?
 
   Categories      Categories?    @relation(fields: [categoriesId], references: [id])
   categoriesId    Int?
@@ -176,13 +179,20 @@ model Products {
 
   variants ProductsVariant[]
 
-  Brand   Brand?  @relation(fields: [brandId], references: [id])
-  brandId String?
+  Brand   Brand? @relation(fields: [brandId], references: [id])
+  brandId Int?
 
-  Units   Units?  @relation(fields: [unitsId], references: [id])
+  Units   Units? @relation(fields: [unitsId], references: [id])
   unitsId Int?
+  Raks    Raks?  @relation(fields: [raksId], references: [id])
+  raksId  Int?
 
   @@index([name])
+}
+
+enum DISCTYPE {
+  FLAT
+  PERCENT
 }
 
 model ProductsVariant {
@@ -191,16 +201,37 @@ model ProductsVariant {
   updatedAt DateTime @updatedAt()
   deleted   Boolean  @default(false)
 
-  name          String         @unique @db.VarChar(540)
+  variantName  String
+  variantValue String
+  sku          String
+
   // price       Decimal
-  productCode   Int            @unique
-  barCode       String         @unique
-  Products      Products?      @relation(fields: [productsId], references: [id], onDelete: Cascade)
-  productsId    Int?
+  productCode Int       @unique
+  barCode     String    @unique
+  Products    Products? @relation(fields: [productsId], references: [id], onDelete: Cascade)
+  productsId  Int?
+  price       Decimal?
+
+  VAT           Decimal
+  discountType  DISCTYPE       @default(PERCENT)
+  discountValue Decimal        @default(0.00)
   images        Media[]
   ProductStocks ProductStocks?
 
-  @@index([name])
+  customFields Json?
+
+  @@index([id, productCode, barCode])
+}
+
+model VariantAttributes {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
+
+  name   String
+  values Json
+  active Boolean @default(true)
 }
 
 model Media {
@@ -222,7 +253,11 @@ model Raks {
   updatedAt DateTime @updatedAt()
   deleted   Boolean  @default(false)
 
-  name String
+  name     String
+  products Products[]
+
+  salesman   Employees? @relation(fields: [salesmanId], references: [id])
+  salesmanId Int?       @unique
 }
 
 model Units {
@@ -288,6 +323,7 @@ model ProductStocks {
   purchaseItemId Int?          @unique
 
   quantityInStock Int
+  quantityAlert   Int @default(5)
 }
 
 model PurchaseReturn {
@@ -397,22 +433,37 @@ model Departments {
   employees Employees[]
 }
 
+enum GENDER {
+  MALE
+  FEMALE
+  OTHER
+}
+
 model Employees {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
   deleted   Boolean  @default(false)
 
-  fullName String
-  userName String @unique
-  email    String @unique
-  password String
-  phone    String @unique
+  fullName   String
+  userName   String @unique
+  email      String @unique
+  dob        String
+  password   String
+  phone      String @unique
+  gender     GENDER
+  bloodGroup String
 
-  jobTitle String
+  nationality String
 
-  joiningDate   DateTime
-  salary        Decimal
+  jobTitle    String
+  empCode     String
+  joiningDate DateTime
+  shift       String
+
+  address Location[]
+
+  basicSalary   Decimal
   Departments   Departments? @relation(fields: [departmentsId], references: [id])
   departmentsId Int?
 
@@ -426,6 +477,8 @@ model Employees {
   accountantSales Sales[] @relation("accountant")
 
   salesCommission SalesCommission[] @relation("salesman")
+
+  rak Raks?
 }
 
 model Attendance {
@@ -439,6 +492,18 @@ model Attendance {
   check_out_time DateTime   @db.Time()
   Employees      Employees? @relation(fields: [employeesId], references: [id])
   employeesId    Int?
+}
+
+model Holidays {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
+
+  name     String
+  date     DateTime
+  noOfDays Int
+  active   Boolean  @default(true)
 }
 
 model Leaves {
@@ -467,9 +532,12 @@ model Payroll {
   deleted   Boolean  @default(false)
 
   paymentDate DateTime
-  gross_pay   Decimal
-  deductions  Decimal
-  netPay      Decimal
+  basicSalary Decimal
+
+  allowances Json?
+  deductions Json?
+
+  netSalary Decimal
 
   Employees   Employees? @relation(fields: [employeesId], references: [id])
   employeesId Int?
