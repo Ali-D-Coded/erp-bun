@@ -1,6 +1,5 @@
-import { Employees } from "@prisma/client"
+import { DISCTYPE } from "@prisma/client"
 import { Decimal } from "@prisma/client/runtime/library"
-import { ProductVariant } from "../schema/schema"
 
 
 export const rolesData = [
@@ -239,7 +238,7 @@ export const raks = [
 
 export const productsData = [
 	{
-		name: "realme 12 Pro+ 5G (Submarine Blue, 256 GB)  (12 GB RAM)",
+		name: "realme 12 Pro+ 5G",
 		description: "In a world where innovation reigns supreme, the realme 12 Pro+ 5G stands tall as a beacon of superior technology and design. Elevate your mobile experience, capture moments with unprecedented clarity, and stay connected with seamless performance. Behold this realme smartphone – where every feature is a testament to a commitment to pushing the boundaries of what's possible in a smartphone.",
 		slug: "realme-slug-12-pro-5G",
 		brandId: 1,
@@ -260,35 +259,31 @@ export const productsData = [
 
 export const productVariantsData = [
 	{
-		variantName: "realme 12 Pro+ 5G (Submarine Blue, 256 GB)  (12 GB RAM)",
-		variantValue: "realme 12 Pro+ 5G (Submarine Blue, 256 GB)  (12 GB RAM)",
+		variantName: "realme 12 Pro 5G (Navigator Beige, 128 GB)  (8 GB RAM)",
+
 		sku: "PASD54754",
-
 		productCode: 55455,
-		barCode: "545455",
-		productsId: 1,
-		price: new Decimal(10000.00),
+		barCode: "5454559477",
+		price: new Decimal(0.00),
 		VAT: new Decimal(15.00),
-		
+		discountType: DISCTYPE.PERCENT,
+		discountValue: new Decimal(16.00),
+		customFields: {
 
-	},
-	{
-		name: "realme 12 Pro+ 5G (Navigator Beige, 128 GB)  (8 GB RAM)",
-		description: "In a world where innovation reigns supreme, the realme 12 Pro+ 5G stands tall as a beacon of superior technology and design. Elevate your mobile experience, capture moments with unprecedented clarity, and stay connected with seamless performance. Behold this realme smartphone – where every feature is a testament to a commitment to pushing the boundaries of what's possible in a smartphone.",
-		productCode: 54454515,
-		barCode: "54545",
+		},
 		productsId: 1,
 
-	},
+	}
+
+]
+
+export const varinatComboData = [
 	{
-		name: "rASUS ROG Zephyrus G14 (2023) with 76WHr Battery, AI Powered AMD Ryzen 9 Octa Core 7940HS - (16 GB/1 TB SSD/Windows 11 Home/6 GB Graphics/NVIDIA GeForce RTX 4050/165 Hz/120 TGP) GA402XU-N2044WS Gaming Laptop  (14 Inch, Moonlight White AniMe Matrix Version, 1.72 Kg, With MS Office)",
-		
-		productCode: 4534645,
-		barCode: "54555",
-		productsId: 2,
+		variantType: "",
+		variantValue: "",
+		productsVariantId: 1
 
-	},
-
+	}
 ]
 
 

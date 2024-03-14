@@ -23,13 +23,13 @@ productsRoute.post("/create-product", zValidator("json", CreateProductDto), asyn
 		console.log({ dto, data });
 
 		// const productRes = await db.insert(products).values(data)
-		const productRes = await prisma.products.create({
-			data: dto
-		})
+		// const productRes = await prisma.products.create({
+		// 	data: dto
+		// })
 
 		return c.json({
 			msg: "product created",
-			prodId: productRes.id
+			// prodId: productRes.id
 		})
 
 	} catch (error: any) {

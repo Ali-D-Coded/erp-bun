@@ -201,26 +201,42 @@ model ProductsVariant {
   updatedAt DateTime @updatedAt()
   deleted   Boolean  @default(false)
 
-  variantName  String
-  variantValue String
-  sku          String
+  variantName         String
+  variantCombinations VariantCombinations[]
+
+  sku String
 
   // price       Decimal
-  productCode Int       @unique
-  barCode     String    @unique
-  Products    Products? @relation(fields: [productsId], references: [id], onDelete: Cascade)
-  productsId  Int?
-  price       Decimal?
+  productCode   Int      @unique
+  barCode       String   @unique
+  price         Decimal?
+  quantity      Int
+  quantityAlert Int
 
   VAT           Decimal
-  discountType  DISCTYPE       @default(PERCENT)
-  discountValue Decimal        @default(0.00)
-  images        Media[]
-  ProductStocks ProductStocks?
+  discountType  DISCTYPE @default(PERCENT)
+  discountValue Decimal  @default(0.00)
 
   customFields Json?
 
+  images        Media[]
+  Products      Products?      @relation(fields: [productsId], references: [id], onDelete: Cascade)
+  productsId    Int?
+  ProductStocks ProductStocks?
+
   @@index([id, productCode, barCode])
+}
+
+model VariantCombinations {
+  id        String   @id @unique @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
+
+  variantType       String
+  variantValue      String
+  ProductsVariant   ProductsVariant? @relation(fields: [productsVariantId], references: [id])
+  productsVariantId Int?
 }
 
 model VariantAttributes {
