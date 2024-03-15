@@ -34,15 +34,35 @@ export const UpdateProductVariantDto = z.object({
 	customFields: z.object({}).optional(),
 })
 
+const VariantCombinations = z.object({
+	variantType: z.string(),
+	variantValue: z.string(),
+
+});
+
+
 export const CreateProductDto = z.object({
+
 	name: z.string(),
 	description: z.string(),
 	slug: z.string(),
-	brandId: z.number(),
-	unitsId: z.number(),
-	raksId: z.number(),
-	categoriesId: z.number().optional(),
-	subCategoriesId: z.number().optional(),
+	brandId: z.string().transform(it => +it),
+	unitsId: z.string().transform(it => +it),
+	raksId: z.string().transform(it => +it),
+	categoriesId: z.string().transform(it => +it).optional(),
+	subCategoriesId: z.string().transform(it => +it).optional(),
+
+
+	sku: z.string(),
+	barCode: z.string().optional(),
+	quantityAlert: z.string().transform(it => +it),
+	vat: z.string().transform(it => +it),
+	discountType: z.string(),
+	discountValue: z.string().transform(it => +it).optional(),
+	customFields: z.any(),
+
+	variantCombinations: z.any().transform(it => JSON.parse(it)),
+
 })
 
 export const UpdateProductDto = z.object({

@@ -9,18 +9,18 @@ const productsRoute = new Hono()
 
 
 
-productsRoute.post("/create-product", zValidator("json", CreateProductDto), async (c) => {
+productsRoute.post("/create-product", zValidator("form", CreateProductDto), async (c) => {
 	try {
-		const dto = await CreateProductDto.parseAsync(c.req.json())
-		const data = {
-			...Object.entries(dto).reduce((acc, [key, value]) => {
-				if (value !== undefined) {
-					acc[key] = value
-				}
-				return acc
-			}, {})
-		}
-		console.log({ dto, data });
+		const dto = await CreateProductDto.parseAsync(await c.req.parseBody())
+		// const data = {
+		// 	...Object.entries(dto).reduce((acc, [key, value]) => {
+		// 		if (value !== undefined) {
+		// 			acc[key] = value
+		// 		}
+		// 		return acc
+		// 	}, {})
+		// }
+		console.log({ dto });
 
 		// const productRes = await db.insert(products).values(data)
 		// const productRes = await prisma.products.create({

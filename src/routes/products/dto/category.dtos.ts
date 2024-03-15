@@ -5,5 +5,5 @@ export const CreateCategoryDto = z.object({
 })
 export const CreateSubCategoryDto = z.object({
 	name: z.string().trim(),
-	categoryId: z.number()
+	categoriesId: z.number()
 })

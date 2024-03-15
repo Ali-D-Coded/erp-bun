@@ -162,6 +162,11 @@ model Brand {
   products Products[]
 }
 
+enum DISCTYPE {
+  FLAT
+  PERCENT
+}
+
 model Products {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -177,8 +182,6 @@ model Products {
   SubCategories   SubCategories? @relation(fields: [subCategoriesId], references: [id])
   subCategoriesId Int?
 
-  variants ProductsVariant[]
-
   Brand   Brand? @relation(fields: [brandId], references: [id])
   brandId Int?
 
@@ -187,31 +190,15 @@ model Products {
   Raks    Raks?  @relation(fields: [raksId], references: [id])
   raksId  Int?
 
-  @@index([name])
-}
-
-enum DISCTYPE {
-  FLAT
-  PERCENT
-}
-
-model ProductsVariant {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt()
-  deleted   Boolean  @default(false)
-
-  variantName         String
   variantCombinations VariantCombinations[]
 
   sku String
 
-  // price       Decimal
   productCode   Int      @unique
   barCode       String   @unique
   price         Decimal?
-  quantity      Int
-  quantityAlert Int
+  quantity      Int?
+  quantityAlert Int?
 
   VAT           Decimal
   discountType  DISCTYPE @default(PERCENT)
@@ -219,12 +206,11 @@ model ProductsVariant {
 
   customFields Json?
 
-  images        Media[]
-  Products      Products?      @relation(fields: [productsId], references: [id], onDelete: Cascade)
-  productsId    Int?
+  images Media[]
+
   ProductStocks ProductStocks?
 
-  @@index([id, productCode, barCode])
+  @@index([name, id, productCode, barCode])
 }
 
 model VariantCombinations {
@@ -233,10 +219,11 @@ model VariantCombinations {
   updatedAt DateTime @updatedAt()
   deleted   Boolean  @default(false)
 
-  variantType       String
-  variantValue      String
-  ProductsVariant   ProductsVariant? @relation(fields: [productsVariantId], references: [id])
-  productsVariantId Int?
+  variantType  String
+  variantValue String
+
+  Products   Products? @relation(fields: [productsId], references: [id])
+  productsId Int?
 }
 
 model VariantAttributes {
@@ -259,8 +246,9 @@ model Media {
   name String
   url  String
 
-  ProductsVariant   ProductsVariant? @relation(fields: [productsVariantId], references: [id], onDelete: Cascade)
   productsVariantId Int?
+  Products          Products? @relation(fields: [productsId], references: [id])
+  productsId        Int?
 }
 
 model Raks {
@@ -332,8 +320,8 @@ model ProductStocks {
   updatedAt DateTime @updatedAt()
   deleted   Boolean  @default(false)
 
-  productVariant    ProductsVariant? @relation(fields: [productsVariantId], references: [id])
-  productsVariantId Int?             @unique
+  product   Products? @relation(fields: [productId], references: [id])
+  productId Int?      @unique
 
   purchaseItem   PurchaseItem? @relation(fields: [purchaseItemId], references: [id])
   purchaseItemId Int?          @unique
@@ -382,12 +370,12 @@ model SalesProducts {
   updatedAt DateTime @updatedAt()
   deleted   Boolean  @default(false)
 
-  Sales            Sales?  @relation(fields: [salesId], references: [id], onDelete: Cascade)
-  salesId          Int?
-  discountAmount   Decimal
-  productVariantId Int
-  productCode      Int
-  quantity         Int
+  Sales          Sales?  @relation(fields: [salesId], references: [id], onDelete: Cascade)
+  salesId        Int?
+  discountAmount Decimal
+  productId      Int
+  productCode    Int
+  quantity       Int
 }
 
 model SalesReturn {
