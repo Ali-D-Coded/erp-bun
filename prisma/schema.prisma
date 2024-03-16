@@ -224,6 +224,8 @@ model VariantCombinations {
 
   Products   Products? @relation(fields: [productsId], references: [id])
   productsId Int?
+
+  images Media[]
 }
 
 model VariantAttributes {
@@ -246,9 +248,11 @@ model Media {
   name String
   url  String
 
-  productsVariantId Int?
-  Products          Products? @relation(fields: [productsId], references: [id])
-  productsId        Int?
+  productsVariantId     Int?
+  Products              Products?            @relation(fields: [productsId], references: [id])
+  productsId            Int?
+  VariantCombinations   VariantCombinations? @relation(fields: [variantCombinationsId], references: [id])
+  variantCombinationsId String?
 }
 
 model Raks {
