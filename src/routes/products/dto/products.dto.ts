@@ -54,7 +54,7 @@ export const CreateProductDto = z.object({
 
 
 	sku: z.string(),
-	barCode: z.string().optional(),
+	barCode: z.string(),
 	productCode: z.string(),
 	quantityAlert: z.string().transform(it => +it),
 	vat: z.string().transform(it => +it),
@@ -62,7 +62,7 @@ export const CreateProductDto = z.object({
 	discountValue: z.string().transform(it => +it).optional(),
 	customFields: z.any(),
 
-	variantCombinations: z.any().transform(it => JSON.parse(it)),
+	variantCombinations: z.any(),
 
 })
 
