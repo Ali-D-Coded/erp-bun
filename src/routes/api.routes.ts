@@ -18,6 +18,7 @@ import vendorRoutes from "./vendors/vendor.routes";
 import brandRoutes from "./products/brands.routes";
 import rakRoutes from "./products/raks.routes";
 import VAroutes from "./products/variant-attributes.routes";
+import mediaRoute from "./media/media.routes";
 
 
 const api = new Hono()
@@ -59,6 +60,7 @@ api.route("/stocks", stocksRoute)
 api.route("/brands", brandRoutes)
 api.route("/raks", rakRoutes)
 api.route("/variant-attributes", VAroutes)
+api.route("/media", mediaRoute)
 
 
 

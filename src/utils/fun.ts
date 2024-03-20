@@ -44,3 +44,28 @@ export const saveFile = async (file: any, path: string) => {
 
   return fileName
 }
+
+
+export const saveFiles = async (files: any[], path: string, name?: string) => {
+
+  // console.log("31", { file: files });
+  const fileNames: any[] = []
+  for (const file of files) {
+    console.log({ filenamee: file.name });
+
+    const [_mime, ext] = String(file.type).split('/');
+    console.log(_mime);
+    const originfileName = file.name.split('.')[0]
+
+    const fileName = !name ? originfileName + '-' + randomUUID() + "." + ext : name + '.' + ext;
+    fileNames.push({
+      name: fileName,
+      url: fileName,
+    })
+    // console.log("35", { fileName });
+    // console.log("data:", file);
+
+    // await Bun.write(`${path}/${fileName}`, file)
+  }
+  return fileNames
+}

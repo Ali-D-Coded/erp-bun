@@ -244,7 +244,8 @@ model Media {
   deleted   Boolean  @default(false)
 
   name String
-  url  String
+  url  String @unique
+  path String
 
   Products   Products? @relation(fields: [productsId], references: [id])
   productsId Int?

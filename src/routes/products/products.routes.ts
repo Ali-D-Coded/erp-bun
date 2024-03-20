@@ -49,35 +49,36 @@ productsRoute.post("/create-product", zValidator("form", CreateProductDto), asyn
 		// }
 		console.log({ dto, formData: formData.getAll("files") });
 		console.log({ varcombo: JSON.parse(dto.variantCombinations) });
+		const variantCombinations: [] = JSON.parse(dto.variantCombinations).length > 0 ? JSON.parse(dto.variantCombinations) : undefined
+		const data = {
+			name: dto.name,
+			barCode: dto.barCode,
+			productCode: +dto.productCode,
+			sku: dto.sku,
+			VAT: dto.vat,
+			brandId: dto.brandId,
+			categoriesId: dto.categoriesId,
+			customFields: JSON.parse(dto.customFields),
+			description: dto.description,
+			discountType: dto.discountType as DISCTYPE,
+			discountValue: dto.discountValue,
+			quantityAlert: dto.quantityAlert,
+			raksId: dto.raksId,
+			slug: dto.slug,
+			subCategoriesId: dto.subCategoriesId,
+			unitsId: dto.unitsId,
+			variantCombinations: {
+				createMany: {
+					data: variantCombinations
+				}
+			},
+		}
+
+
 
 
 		const productRes = await prisma.products.create({
-			data: {
-				name: dto.name,
-				barCode: dto.barCode,
-				productCode: +dto.productCode,
-				sku: dto.sku,
-				VAT: dto.vat,
-				brandId: dto.brandId,
-				categoriesId: dto.categoriesId,
-				customFields: JSON.parse(dto.customFields),
-				description: dto.description,
-				discountType: dto.discountType as DISCTYPE,
-				discountValue: dto.discountValue,
-				quantityAlert: dto.quantityAlert,
-				raksId: dto.raksId,
-				slug: dto.slug,
-				subCategoriesId: dto.subCategoriesId,
-				unitsId: dto.unitsId,
-				variantCombinations: {
-					createMany: {
-						data: JSON.parse(dto.variantCombinations)
-					}
-				},
-
-
-
-			}
+			data
 		})
 
 		const fileNames: any[] = formData.getAll("files").length > 0 ? await saveFile(formData.getAll("files"), STORE_PATH, productRes.id) : []
@@ -99,6 +100,26 @@ productsRoute.post("/create-product", zValidator("form", CreateProductDto), asyn
 
 	} catch (error: any) {
 		return c.newResponse(error, 400)
+	}
+})
+
+productsRoute.get("/all/:id", async (c) => {
+	try {
+
+		const { id } = await c.req.param()
+		const product = await prisma.products.findUniqueOrThrow({
+			where: {
+				id: +id
+			},
+			include: {
+				images: true,
+				variantCombinations: true,
+			}
+		})
+		return c.json(product)
+	} catch (error) {
+		return c.newResponse(error, 400)
+
 	}
 })
 
@@ -146,7 +167,10 @@ productsRoute.get("/all", async (c) => {
 				Categories: true,
 				SubCategories: true,
 				variantCombinations: true,
-				images: true
+				images: true,
+				Brand: true,
+				Raks: true,
+				Units: true
 			}
 		})
 		return c.json(prods)
@@ -156,87 +180,6 @@ productsRoute.get("/all", async (c) => {
 })
 
 
-// productsRoute.get("/product-variants/all", async (c) => {
-// 	try {
-// 		const productVariants = await prisma.productsVariant.findMany({
-// 			include: {
-// 				images: true,
-// 				// unitsToProductVariants: true
-// 			}
-// 		})
-// 		return c.json(productVariants)
-// 	} catch (error) {
-// 		return c.newResponse(error, 400)
-// 	}
-// })
-
-// productsRoute.get("/product-variants/:id", async (c) => {
-// 	try {
-// 		const { id } = c.req.param()
-// 		const productVariant = await prisma.productsVariant.findUnique({
-// 			where: {
-// 				id: +id
-// 			},
-// 			include: {
-// 				images: true
-// 			}
-// 		})
-// 		return c.json(productVariant)
-// 	} catch (error) {
-// 		return c.newResponse(error, 400)
-// 	}
-// })
-
-
-
-
-
-
-
-// productsRoute.post("/create-product-variants", zValidator("form", CreateProductVariantDto), async (c) => {
-// 	console.log("creating product");
-
-// 	try {
-// 		const STORE_PATH = "uploads/products";
-// 		const formData = await c.req.formData()
-// 		const data = await CreateProductVariantDto.parseAsync(await c.req.parseBody())
-
-// 		const countryCode = 8
-// 		const manuCode = generateRandomNumber()
-// 		const productCode = generateRandomNumber()
-// 		const barCode = `${countryCode}${manuCode}${productCode}`
-
-// 		// console.log({formData: formData.getAll("files").length});
-
-
-// 		// const productVariant = await db.insert(productsVariant).values({ ...data, productId: +data.productId, productCode, barCode })
-// 		const productVariant = await prisma.productsVariant.create({
-// 			data: {
-// 				...data,
-// 				productsId: +data.productsId,
-// 				productCode, barCode: barCode
-
-// 			}
-// 		})
-
-// 		const fileNames: any[] = formData.getAll("files").length > 0 ? await saveFile(formData.getAll("files"), STORE_PATH, productVariant.id) : []
-
-// 		console.log({ fileNames });
-
-
-// 		// await db.insert(media).values(fileNames)
-// 		await prisma.media.createMany({
-// 			data: fileNames
-// 		})
-
-
-// 		return c.json({
-// 			msg: "product created"
-// 		})
-// 	} catch (error: any) {
-// 		return c.newResponse(error, 400)
-// 	}
-// })
 
 
 
@@ -336,6 +279,35 @@ productsRoute.delete("/delete/:id", async (c) => {
 		// await db.delete(products).where(eq(products.id, +id))
 		await prisma.products.softDelete(+id)
 		return c.json("product deleted")
+	} catch (error) {
+		return c.newResponse(error, 400)
+	}
+})
+
+productsRoute.delete("/destroy/:id", async (c) => {
+	try {
+		const { id } = await c.req.param()
+		// await db.delete(products).where(eq(products.id, +id))
+		const sales = await prisma.salesProducts.count({
+			where: {
+				productId: +id
+			}
+		})
+
+		const purchases = await prisma.purchaseItem.count({
+			where: {
+				id: +id
+			}
+		})
+		console.log(sales);
+
+		if (sales < 1 && purchases < 1) {
+			await prisma.products.delete({ where: { id: +id } })
+			return c.json("product deleted")
+		} else {
+			throw new Error("Cannot destroy product")
+		}
+
 	} catch (error) {
 		return c.newResponse(error, 400)
 	}

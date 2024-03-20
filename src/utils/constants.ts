@@ -2,18 +2,18 @@ export const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(
 
 export const permissionsList = [
   {
-	  permissionName: "manage_users",
-	  endpoint:"/users"
-	  
+    permissionName: "manage_users",
+    endpoint: "/users"
+
   },
   {
-	  permissionName: "manage_roles",
-	  endpoint:"/roles"
+    permissionName: "manage_roles",
+    endpoint: "/roles"
   },
   {
-	  permissionName: "assign_permissions",
-	  endpoint:"/permissions"
-	  
+    permissionName: "assign_permissions",
+    endpoint: "/permissions"
+
   },
   {
     "permissionName": "edit_all_data"
@@ -214,3 +214,10 @@ export const permissionsList = [
     "permissionName": "generate_product_reports"
   }
 ]
+
+
+export const storepaths = new Map([
+  ['products', 'uploads/products'],
+  ['brands', 'uploads/brands'],
+
+]);
