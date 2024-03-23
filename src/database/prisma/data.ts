@@ -1,19 +1,42 @@
-import { DISCTYPE } from "@prisma/client"
+import { DISCTYPE, GENDER } from "@prisma/client"
 import { Decimal } from "@prisma/client/runtime/library"
+
+
 
 
 export const rolesData = [
 	{
 		roleName: "ADMIN",
-		description: ""
+		description: "",
+		privileges: {
+			create: {
+				crud: true
+			}
+		}
 	},
 	{
 		roleName: "SALESMAN",
-		description: ""
+		description: "",
+		privileges: {
+			create: {
+				create: [],
+				read: [],
+				update: [],
+				delete: []
+			}
+		}
 	},
 	{
 		roleName: "ACCOUNTANT",
-		description: ""
+		description: "",
+		privileges: {
+			create: {
+				create: ["SALE", "PURCH", "PROD", "UNIT", "CATE", "SBCATE", "BRND", "RAK", "VATT", "MEDIA"],
+				read: ["RAK", "SALE", "PROD", "UNIT", "CATE", "SBCATE", "BRND", "VATT", "MEDIA", "DEP", "VEND", "CUST", "ROL"],
+				update: ["SALE", "PURCH", "PROD", "UNIT", "CATE", "SBCATE", "BRND", "RAK", "VATT", "MEDIA"],
+				delete: []
+			}
+		}
 	}
 ]
 
@@ -38,37 +61,86 @@ export const employeesData = [
 		email: 'mongan@gmail.com',
 		password: '$argon2id$v=19$m=65536,t=2,p=1$aUFybAfCq1dQNSbxM0xCeZnBTpz72ee1Nbl4GAxx0AM$7fpfdbXF65Upk0J7MomRiRUTQQ6cJ8MadVPFEsH+bQM',
 		phone: '9685451256',
+		dob: "21/02/2000",
 		rolesId: 2,
-
 		jobTitle: 'salesman',
 		departmentsId: 1,
 		joiningDate: new Date("2024-01-01T00:00:00.000Z"),
-		salary: new Decimal(20000.00)
+
+		gender: GENDER.MALE,
+		bloodGroup: "A+",
+		nationality: "India",
+		empCode: 'HUN1ROL2',
+		basicSalary: new Decimal(20000.00),
+		shift: "Morning",
+		address: {
+			create: {
+				address: "fjudlajilgf,fhiufewfwe f,fkjbfnewsf 656445",
+				country: "India",
+				state: "Kerala",
+				city: "Malappuram",
+				zipcode: "676965"
+
+			}
+		}
 	},
 	{
 		fullName: 'Manish',
 		userName: 'oral',
 		email: 'manish@gmail.com',
+		dob: "21/02/2000",
 		password: '$argon2id$v=19$m=65536,t=2,p=1$aUFybAfCq1dQNSbxM0xCeZnBTpz72ee1Nbl4GAxx0AM$7fpfdbXF65Upk0J7MomRiRUTQQ6cJ8MadVPFEsH+bQM',
 		phone: '6352458956',
 		rolesId: 2,
-
 		jobTitle: 'salesman',
 		departmentsId: 1,
 		joiningDate: new Date("2024-01-01T00:00:00.000Z"),
-		salary: new Decimal(20000.00)
+
+		gender: GENDER.MALE,
+		bloodGroup: "A+",
+		nationality: "India",
+		empCode: 'MAN22',
+		basicSalary: new Decimal(20000.00),
+		shift: "Morning",
+		address: {
+			create: {
+				address: "fjudlajilgf,fhiufewfwe f,fkjbfnewsf 656445",
+				country: "India",
+				state: "Kerala",
+				city: "Malappuram",
+				zipcode: "676965"
+
+			}
+		}
 	},
 	{
 		fullName: 'Sreya',
 		userName: 'sreay110',
 		email: 'sreya@gmail.com',
+		dob: "21/02/2000",
 		password: '$argon2id$v=19$m=65536,t=2,p=1$aUFybAfCq1dQNSbxM0xCeZnBTpz72ee1Nbl4GAxx0AM$7fpfdbXF65Upk0J7MomRiRUTQQ6cJ8MadVPFEsH+bQM',
 		phone: '9685122365',
 		rolesId: 3,
 		jobTitle: 'accountant',
 		departmentsId: 2,
 		joiningDate: new Date("2024-01-01T00:00:00.000Z"),
-		salary: new Decimal(20000.00)
+
+		gender: GENDER.FEMALE,
+		bloodGroup: "A+",
+		nationality: "India",
+		empCode: 'SRE1ROL3',
+		basicSalary: new Decimal(20000.00),
+		shift: "Morning",
+		address: {
+			create: {
+				address: "fjudlajilgf,fhiufewfwe f,fkjbfnewsf 656445",
+				country: "India",
+				state: "Kerala",
+				city: "Malappuram",
+				zipcode: "676965"
+
+			}
+		}
 	},
 ]
 
@@ -244,7 +316,14 @@ export const productsData = [
 		brandId: 1,
 		unitsId: 1,
 		raksId: 1,
-		subCategoriesId: 1
+		subCategoriesId: 1,
+		sku: '',
+		productCode: 45474655,
+		barCode: "44544sd444ds54d",
+		quantityAlert: 10,
+		VAT: 15.00,
+		customFields: "",
+		// variantCombinations: []
 	},
 	{
 		name: "ASUS ROG Zephyrus G14 (2023) with 76WHr Battery, AI Powered AMD Ryzen 9 Octa Core 7940HS - (16 GB/1 TB SSD/Windows 11 Home/6 GB Graphics/NVIDIA GeForce RTX 4050/165 Hz/120 TGP) GA402XU-N2044WS Gaming Laptop  (14 Inch, Moonlight White AniMe Matrix Version, 1.72 Kg, With MS Office)",
@@ -253,37 +332,33 @@ export const productsData = [
 		brandId: 2,
 		unitsId: 1,
 		raksId: 2,
-		subCategoriesId: 5
+		subCategoriesId: 5,
+		sku: '',
+		productCode: 546842874,
+		barCode: "IYUK46878454YU74K",
+		quantityAlert: 10,
+		VAT: 15.00,
+		customFields: "",
+		// variantCombinations: []
+
 	},
 ]
 
-export const productVariantsData = [
-	{
-		variantName: "realme 12 Pro 5G (Navigator Beige, 128 GB)  (8 GB RAM)",
 
-		sku: "PASD54754",
-		productCode: 55455,
-		barCode: "5454559477",
-		price: new Decimal(0.00),
-		VAT: new Decimal(15.00),
-		discountType: DISCTYPE.PERCENT,
-		discountValue: new Decimal(16.00),
-		customFields: {
-
-		},
-		productsId: 1,
-
-	}
-
-]
 
 export const varinatComboData = [
 	{
-		variantType: "",
-		variantValue: "",
-		productsVariantId: 1
+		variantType: "RAM",
+		variantValue: "64",
+		productsId: 1
 
-	}
+	},
+	{
+		variantType: "Color",
+		variantValue: "red",
+		productsId: 1
+
+	},
 ]
 
 
@@ -291,43 +366,9 @@ export const mediaData = [
 	{
 		name: "-original-imagxhd5gqhzszeb.jpeg",
 		url: "-original-imagxhd5gqhzszeb.jpeg",
-		productsVariantId: 1
-	},
-	{
-		name: "-original-imagxhd5mux3vmra.jpeg",
-		url: "-original-imagxhd5mux3vmra.jpeg",
-		productsVariantId: 1
-	},
-	{
-		name: "12-pro-5g-rmx3840-realme-original-imagxgnk9zzrs9y6.jpeg",
-		url: "12-pro-5g-rmx3840-realme-original-imagxgnk9zzrs9y6.jpeg",
-		productsVariantId: 1
-	},
-	{
-		name: "-original-imagxhd5gqhzszeb.jpeg",
-		url: "-original-imagxhd5gqhzszeb.jpeg",
-		productsVariantId: 2
-	},
-	{
-		name: "-original-imagxhd5mux3vmra.jpeg",
-		url: "-original-imagxhd5mux3vmra.jpeg",
-		productsVariantId: 2
-	},
-	{
-		name: "12-pro-5g-rmx3840-realme-original-imagxgnk9zzrs9y6.jpeg",
-		url: "12-pro-5g-rmx3840-realme-original-imagxgnk9zzrs9y6.jpeg",
-		productsVariantId: 2
-	},
-	{
-		name: "-original-imagqkqnfzpvkdvf.jpeg",
-		url: "-original-imagqkqnfzpvkdvf.jpeg",
-		productsVariantId: 3
-	},
-	{
-		name: "-original-imagqkqnvnzb7gwa.jpeg",
-		url: "-original-imagqkqnvnzb7gwa.jpeg",
-		productsVariantId: 3
-	},
+		path: "",
+
+	}
 ]
 
 

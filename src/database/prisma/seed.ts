@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { categoryData, customersData, departmentsData, employeesData, mediaData, productVariantsData, subCategoriesData, unitsData, vendorsData } from "./data";
+import { brandsData, categoryData, customersData, departmentsData, employeesData, productsData, raks, rolesData, subCategoriesData, unitsData, vendorsData } from "./data";
 
 
 const prisma = new PrismaClient()
@@ -8,6 +8,15 @@ export async function mainSeeder() {
 	console.log("started", { departmentsData });
 
 	try {
+
+		for (const role of rolesData) {
+			await prisma.roles.create({
+				data: role
+			})
+		}
+
+
+
 		const hash = await Bun.password.hash("12356")
 		await prisma.admins.create({
 			data: {
@@ -24,9 +33,13 @@ export async function mainSeeder() {
 		await prisma.departments.createMany({
 			data: departmentsData
 		})
-		await prisma.employees.createMany({
-			data: employeesData
-		})
+		for (const emp of employeesData) {
+
+			await prisma.employees.create({
+				data: emp
+			})
+		}
+
 		await prisma.vendors.createMany({
 			data: vendorsData
 		})
@@ -36,7 +49,7 @@ export async function mainSeeder() {
 		const unts = await prisma.units.createMany({
 			data: unitsData
 		})
-		console.log({ unts });
+
 
 		await prisma.categories.createMany({
 			data: categoryData
@@ -44,15 +57,18 @@ export async function mainSeeder() {
 		await prisma.subCategories.createMany({
 			data: subCategoriesData
 		})
-		await prisma.products.createMany({
-			data: subCategoriesData
+		await prisma.raks.createMany({
+			data: raks
 		})
-		// await prisma.productsVariant.createMany({
-		// 	data: productVariantsData
-		// })
-		// await prisma.media.createMany({
-		// 	data: mediaData
-		// })
+		await prisma.brand.createMany({
+			data: brandsData
+		})
+		for (const prod of productsData) {
+			await prisma.products.create({
+				data: prod
+			})
+		}
+
 	} catch (error) {
 		return Error(error)
 	}

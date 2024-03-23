@@ -9,7 +9,9 @@ import dbroute from './routes/db.routes'
 
 
 const app = new Hono()
-app.use('/api/*', cors())
+app.use('/api/*', cors({
+  origin: ['http://localhost:3000', 'https://example.org'],
+}))
 app.use("*", logger())
 app.use('*', poweredBy())
 

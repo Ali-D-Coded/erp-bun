@@ -22,8 +22,25 @@ model Roles {
   roleName    String  @unique
   description String?
 
+  privileges Privileges[]
+
   admins    Admins[]
   employees Employees[]
+}
+
+model Privileges {
+  id        String   @id @unique @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
+
+  crud    Boolean @default(false) //if this is true then no need to check the other four
+  create  Json?
+  read    Json?
+  update  Json?
+  delete  Json?
+  Roles   Roles?  @relation(fields: [rolesId], references: [id])
+  rolesId Int?
 }
 
 model Admins {
@@ -88,7 +105,8 @@ model Stores {
   phone     String @unique
   email     String @unique
 
-  active Boolean @default(true)
+  warehouses WareHouse[]
+  active     Boolean     @default(true)
 }
 
 model WareHouse {
@@ -103,6 +121,8 @@ model WareHouse {
   email         String @unique
 
   Location Location?
+  Stores   Stores?   @relation(fields: [storesId], references: [id])
+  storesId Int?
 }
 
 model Location {
@@ -117,8 +137,8 @@ model Location {
   city    String
   zipcode String
 
-  warehouse   WareHouse @relation(fields: [wareHouseId], references: [id])
-  wareHouseId Int       @unique
+  warehouse   WareHouse? @relation(fields: [wareHouseId], references: [id])
+  wareHouseId Int?       @unique
 
   Employees   Employees? @relation(fields: [employeesId], references: [id])
   employeesId Int?

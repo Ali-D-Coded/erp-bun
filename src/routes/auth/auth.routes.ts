@@ -52,6 +52,8 @@ authRoute.post("local/admin/login", zValidator("json", schema), async (c) => {
 	const jwtHandler = new JwtHandler()
 	try {
 		const data = await schema.parseAsync(c.req.json())
+		console.log({ data });
+
 		// const { password, ...nonPwCols } = getTableColumns(users);
 		// const adminData = await db.select().from(admins).where(eq(admins.email, data.email))
 

@@ -1,13 +1,17 @@
 import { Hono } from "hono";
 import prisma from "../database/prisma";
-import { categoryData, customersData, departmentsData, employeesData, mediaData, productVariantsData, productsData, rolesData, subCategoriesData, unitsData, vendorsData } from "../database/prisma/data";
+import { brandsData, categoryData, customersData, departmentsData, employeesData, mediaData, productsData, raks, rolesData, subCategoriesData, unitsData, vendorsData } from "../database/prisma/data";
 
 const dbroute = new Hono()
 
 dbroute.post("/seed-data", async (c) => {
 	try {
 
-		await prisma.roles.createMany({ data: rolesData })
+		for (const role of rolesData) {
+			await prisma.roles.create({
+				data: role
+			})
+		}
 
 
 
@@ -27,9 +31,13 @@ dbroute.post("/seed-data", async (c) => {
 		await prisma.departments.createMany({
 			data: departmentsData
 		})
-		await prisma.employees.createMany({
-			data: employeesData
-		})
+		for (const emp of employeesData) {
+
+			await prisma.employees.create({
+				data: emp
+			})
+		}
+
 		await prisma.vendors.createMany({
 			data: vendorsData
 		})
@@ -47,15 +55,23 @@ dbroute.post("/seed-data", async (c) => {
 		await prisma.subCategories.createMany({
 			data: subCategoriesData
 		})
-		await prisma.products.createMany({
-			data: productsData
+
+		await prisma.raks.createMany({
+			data: raks
 		})
-		await prisma.productsVariant.createMany({
-			data: productVariantsData
+		await prisma.brand.createMany({
+			data: brandsData
 		})
-		await prisma.media.createMany({
-			data: mediaData
-		})
+
+		for (const prod of productsData) {
+			await prisma.products.create({
+				data: prod
+			})
+		}
+
+		// await prisma.media.createMany({
+		// 	data: mediaData
+		// })
 		return c.json("db seeding complete")
 	} catch (error) {
 		return c.newResponse(error.message, 400)
