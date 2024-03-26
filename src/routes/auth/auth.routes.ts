@@ -48,10 +48,10 @@ authRoute.post("admin/seeder", async (c) => {
 
 })
 
-authRoute.post("local/admin/login", zValidator("json", schema), async (c) => {
+authRoute.post("local/admin/login", async (c) => {
 	const jwtHandler = new JwtHandler()
 	try {
-		const data = await schema.parseAsync(c.req.json())
+		const data = await c.req.json()
 		console.log({ data });
 
 		// const { password, ...nonPwCols } = getTableColumns(users);

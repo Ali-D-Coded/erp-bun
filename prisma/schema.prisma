@@ -39,7 +39,7 @@ model Privileges {
   read    Json?
   update  Json?
   delete  Json?
-  Roles   Roles?  @relation(fields: [rolesId], references: [id])
+  Roles   Roles?  @relation(fields: [rolesId], references: [id], onDelete: Cascade)
   rolesId Int?
 }
 
