@@ -29,7 +29,7 @@ model Roles {
 }
 
 model Privileges {
-  id        String   @id @unique @default(cuid())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
   deleted   Boolean  @default(false)
@@ -41,6 +41,16 @@ model Privileges {
   delete  Json?
   Roles   Roles?  @relation(fields: [rolesId], references: [id], onDelete: Cascade)
   rolesId Int?
+}
+
+model PrivilegeCode {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
+
+  source String
+  code   String
 }
 
 model Admins {
@@ -234,7 +244,7 @@ model Products {
 }
 
 model VariantCombinations {
-  id        String   @id @unique @default(cuid())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
   deleted   Boolean  @default(false)

@@ -1,9 +1,44 @@
 import { zValidator } from "@hono/zod-validator"
 import { Hono } from "hono"
 import prisma from "../../database/prisma"
-import { CreateRoleDto, UpdateRoleDto } from "./dto/role.dto"
+import { CreatePrivilegeCode, CreateRoleDto, UpdateRoleDto } from "./dto/role.dto"
 
 const roleRoutes = new Hono()
+
+
+
+roleRoutes.post("/privileges-code/create", zValidator("json", CreatePrivilegeCode), async (c) => {
+	try {
+		const body = await CreatePrivilegeCode.parseAsync(c.req.json())
+
+		await prisma.privilegeCode.create({
+			data: body
+		})
+		return c.json("role created")
+	} catch (error: any) {
+		return c.newResponse(error, 400)
+	}
+})
+
+roleRoutes.get("privileges-code/all", async (c) => {
+	try {
+		const priv = await prisma.privilegeCode.findMany()
+		return c.json(priv)
+	} catch (error) {
+		return c.newResponse(error, 400)
+	}
+})
+
+roleRoutes.delete("privileges/delete/:id", async (c) => {
+	try {
+		const { id } = await c.req.param()
+		await prisma.privileges.delete({ where: { id: +id } })
+	} catch (error) {
+
+	}
+})
+
+
 
 roleRoutes.post("/create", zValidator("json", CreateRoleDto), async (c) => {
 	try {
@@ -18,14 +53,24 @@ roleRoutes.post("/create", zValidator("json", CreateRoleDto), async (c) => {
 	}
 })
 
+
 roleRoutes.get("/all", async (c) => {
 	try {
 
 		const rolesRes = await prisma.roles.findMany({
-			where: {
-				NOT: {
-					roleName: "ADMIN"
-				},
+			// where: {
+			// 	NOT: {
+			// 		roleName: "ADMIN"
+			// 	},
+			// },
+			include: {
+				privileges: true,
+				_count: {
+					select: {
+						admins: true,
+						employees: true
+					}
+				}
 			},
 			includeDeleted: true
 

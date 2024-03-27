@@ -54,13 +54,7 @@ authRoute.post("local/admin/login", async (c) => {
 		const data = await c.req.json()
 		console.log({ data });
 
-		// const { password, ...nonPwCols } = getTableColumns(users);
-		// const adminData = await db.select().from(admins).where(eq(admins.email, data.email))
 
-		// const admin : Admin | any = adminData[0]
-		// if (!admin) {
-		// 	 throw new Error("Incorrect username or passowrd")
-		// }
 		const admin = await prisma.admins.findUniqueOrThrow({
 			where: {
 				email: data.email
@@ -82,6 +76,39 @@ authRoute.post("local/admin/login", async (c) => {
 	} catch (error: any) {
 		return c.newResponse(error, 400)
 	}
+})
+
+
+authRoute.post("local/employee/login", async (c) => {
+
+	const jwtHandler = new JwtHandler()
+	try {
+		const data = await c.req.json()
+		console.log({ data });
+
+
+		const employee = await prisma.employees.findUniqueOrThrow({
+			where: {
+				email: data.email
+			}
+		})
+
+
+		const passmatched = await Bun.password.verify(data.password, employee.password)
+
+
+
+		if (!passmatched) {
+			throw new Error("Incorrect username or passowrd")
+		}
+
+		const token = jwtHandler.generateToken({ id: employee.id, userName: employee.userName, email: employee.email, role: employee.rolesId })
+		const { password, ...rest } = employee
+		return c.json({ user: rest, token })
+	} catch (error: any) {
+		return c.newResponse(error, 400)
+	}
+
 })
 
 
