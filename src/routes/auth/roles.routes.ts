@@ -44,7 +44,7 @@ roleRoutes.post("/create", zValidator("json", CreateRoleDto), async (c) => {
 	try {
 		const body = await CreateRoleDto.parseAsync(c.req.json())
 
-		await prisma.roles.createMany({
+		await prisma.roles.create({
 			data: body
 		})
 		return c.json("role created")
@@ -58,11 +58,11 @@ roleRoutes.get("/all", async (c) => {
 	try {
 
 		const rolesRes = await prisma.roles.findMany({
-			// where: {
-			// 	NOT: {
-			// 		roleName: "ADMIN"
-			// 	},
-			// },
+			where: {
+				NOT: {
+					roleName: "ADMIN"
+				},
+			},
 			include: {
 				privileges: true,
 				_count: {
@@ -101,6 +101,30 @@ roleRoutes.patch("/update/:id", zValidator("json", UpdateRoleDto), async (c) => 
 roleRoutes.delete("/delete/:id", async (c) => {
 	try {
 		const { id } = c.req.param()
+		const role = await prisma.roles.findUnique({
+			where: {
+				id: +id
+			},
+			include: {
+				_count: {
+					select: {
+						admins: true,
+						employees: true
+					}
+				}
+			}
+		})
+
+
+
+
+		if (role?._count.admins > 0 || role?._count.employees > 0) {
+			console.log("cant deletd");
+
+			throw new Error("Cannot delete this role")
+
+		}
+
 		await prisma.roles.delete({
 			where: {
 				id: +id

@@ -5,7 +5,7 @@ export const CreateRoleDto = z.object({
 	description: z.string().optional(),
 	privileges: z.object({
 		create: z.object({
-			crud: z.array(z.string()).optional(),
+			crud: z.boolean().optional(),
 			create: z.array(z.string()).optional(),
 			read: z.array(z.string()).optional(),
 			update: z.array(z.string()).optional(),

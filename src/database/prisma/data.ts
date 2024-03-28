@@ -2,6 +2,73 @@ import { DISCTYPE, GENDER } from "@prisma/client"
 import { Decimal } from "@prisma/client/runtime/library"
 
 
+export const privilegeData = [
+	{
+		source: "roles",
+		code: "ROLE"
+	},
+	{
+		source: "customer",
+		code: "CUST"
+	},
+	{
+		source: "vendors",
+		code: "VEND"
+	},
+	{
+		source: "departments",
+		code: "DEP"
+	},
+	{
+		source: "employees",
+		code: "EMPL"
+	},
+	{
+		source: "purchase",
+		code: "PURCH"
+	},
+	{
+		source: "sales",
+		code: "SALE"
+	},
+	{
+		source: "products",
+		code: "PROD"
+	},
+	{
+		source: "units",
+		code: "UNIT"
+	},
+	{
+		source: "category",
+		code: "CATE"
+	},
+	{
+		source: "sub-category",
+		code: "SBCATE"
+	},
+	{
+		source: "stocks",
+		code: "STK"
+	},
+	{
+		source: "brands",
+		code: "BRND"
+	},
+	{
+		source: "raks",
+		code: "RAK"
+	},
+	{
+		source: "variant-attributes",
+		code: "VATT"
+	},
+	{
+		source: "media",
+		code: "MEDIA"
+	},
+]
+
 
 
 export const rolesData = [
