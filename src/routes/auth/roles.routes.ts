@@ -25,6 +25,7 @@ roleRoutes.get("privileges-code/all", async (c) => {
 		const priv = await prisma.privilegeCode.findMany()
 		return c.json(priv)
 	} catch (error) {
+
 		return c.newResponse(error, 400)
 	}
 })
