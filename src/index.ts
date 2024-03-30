@@ -5,6 +5,7 @@ import api from './routes/api.routes'
 import { cors } from 'hono/cors'
 import { mainSeeder } from './database/prisma/seed'
 import dbroute from './routes/db.routes'
+import { serveStatic } from 'hono/bun'
 
 
 
@@ -14,6 +15,9 @@ app.use('/api/*', cors({
 }))
 app.use("*", logger())
 app.use('*', poweredBy())
+
+app.use('/uploads/*', serveStatic({ root: './' }))
+
 
 // Add X-Response-Time header
 app.use('*', async (c, next) => {
