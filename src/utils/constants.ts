@@ -26,5 +26,4 @@ export const routePermissionsList = new Map([
 export const storepaths = new Map([
   ['products', 'uploads/products'],
   ['brands', 'uploads/brands'],
-
 ]);
