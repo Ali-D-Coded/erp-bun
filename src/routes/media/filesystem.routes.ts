@@ -20,7 +20,9 @@ fsRoutes.get("/all", async (c) => {
 
 	try {
 
-		const files = await readdir(`./${BASEPATH}/`, { recursive: true });
+		const query = await c.req.query()
+
+		const files = query.name ? await readdir(`./${BASEPATH}/${query.name}`, { recursive: true }) : await readdir(`./${BASEPATH}/`, { recursive: true });
 
 		console.log({ files });
 
@@ -42,7 +44,7 @@ fsRoutes.get("/all", async (c) => {
 		const folderList = Object.keys(folderCounts).map(folder => {
 
 			return {
-				foldername: folder,
+				name: folder,
 				filesinFolder: folderCounts[folder]
 			};
 
@@ -59,10 +61,11 @@ fsRoutes.get("/all", async (c) => {
 	}
 })
 
-fsRoutes.patch("/update", zValidator("json", RenameDirectory), async (c) => {
+fsRoutes.patch("/rename", zValidator("json", RenameDirectory), async (c) => {
 	try {
-		const { id } = c.req.param()
-		return c.json(`response ${id}`)
+		const dto = await RenameDirectory.parseAsync(c.req.json())
+		await rename(`./${BASEPATH}/${dto.currentName}`, `./${BASEPATH}/${dto.newName}`, { recursive: true })
+		return c.json(`renamed successfully`)
 	} catch (error: any) {
 		return c.newResponse(error, 400)
 	}
