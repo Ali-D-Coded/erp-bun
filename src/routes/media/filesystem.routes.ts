@@ -61,6 +61,30 @@ fsRoutes.get("/all", async (c) => {
 	}
 })
 
+fsRoutes.get("/files/:filename", async (c) => {
+	try {
+		const { filename } = await c.req.param()
+		// console.log(c.req.url.split("/").splice(0, 3).filter(it => it !== "").toString().replace(/,/g, "//"))
+
+		// console.log(c.req.url);
+		const base = c.req.url.split("/").splice(0, 3).filter(it => it !== "").toString().replace(/,/g, "//")
+
+
+		const files: string[] = await readdir(`./${BASEPATH}/${filename}`, { recursive: true })
+
+		const filesdata: { path: string, alt: string }[] = []
+		files.forEach(it => {
+			filesdata.push({
+				path: `${base}/${BASEPATH}/${filename}/${it}`,
+				alt: it
+			})
+		})
+		return c.json(filesdata)
+	} catch (error) {
+		return c.newResponse(error, 400)
+	}
+})
+
 fsRoutes.patch("/rename", zValidator("json", RenameDirectory), async (c) => {
 	try {
 		const dto = await RenameDirectory.parseAsync(c.req.json())
