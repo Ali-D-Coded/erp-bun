@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import prisma from "../database/prisma";
-import { brandsData, categoryData, customersData, departmentsData, employeesData, mediaData, privilegeData, productsData, raks, rolesData, subCategoriesData, unitsData, vendorsData } from "../database/prisma/data";
+import { brandsData, categoryData, customersData, departmentsData, employeesData, mediaData, privilegeData, productsData, raks, rolesData, subCategoriesData, unitsData, varinatComboData, vendorsData } from "../database/prisma/data";
 
 const dbroute = new Hono()
 
@@ -73,9 +73,9 @@ dbroute.post("/seed-data", async (c) => {
 			})
 		}
 
-		// await prisma.media.createMany({
-		// 	data: mediaData
-		// })
+		await prisma.variantCombinations.createMany({
+			data: varinatComboData
+		})
 		return c.json("db seeding complete")
 	} catch (error) {
 		return c.newResponse(error.message, 400)

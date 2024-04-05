@@ -16,10 +16,10 @@ purchaseRoute.get("/all", async (c) => {
 					include: {
 						ProductStocks: {
 							include: {
-								productVariant: true
+								product: true
 							}
 						},
-						Units: true
+
 					}
 				},
 				Vendors: true
@@ -54,54 +54,13 @@ purchaseRoute.post("/create", zValidator("json", CreatePurchaseDto), async (c) =
 			}
 
 			return {
-				productsVariantId: pur.productVariantId,
+				productId: pur.productId,
 				quantityInStock: Number(unitRes[0].total),
 				purchaseItemId: 0
 			}
 		}))
 
-		// return c.json(stocks)
 
-		// await db.transaction(async (tx) => {
-		// 	//insert purchase data
-		// 	const purchaseRes = await tx.insert(purchase).values({
-		// 		vendorId: dto.vendorId,
-		// 		purchaseBillNo: dto.purchaseBillNo,
-		// 		date: new Date(dto.date),
-		// 		totalAmount: totalAmount
-		// 	})
-
-		// 	//inserting purchaseItems
-		// 	for (const item of dto.purchaseItems) {
-		// 		// Insert each purchase item one by one to capture insertId
-		// 		const purchaseItemRes = await tx.insert(purchaseItems).values({
-		// 			...item,
-		// 			purchaseId: purchaseRes[0].insertId,
-		// 			batchNumber: batchnumber,
-		// 		});
-		// 		console.log({ purchaseItemRes });
-
-
-		// 		// Add purchaseItem id to the stocks array based on productVariantId
-		// 		stocks = stocks.map(stock => stock.productVariantId === item.productVariantId ? {
-		// 			...stock,
-		// 			purchaseItemId: +purchaseItemRes[0].insertId // this presumes insertId can be obtained per insert
-		// 		} : stock);
-		// 	}
-
-
-		// 	//inserting productStocks
-		// 	await tx.insert(productStocks).values(stocks).onDuplicateKeyUpdate({
-		// 		set: {
-		// 			quantityInStock: sql`${productStocks.quantityInStock} + VALUES(quantity_in_stock)`
-		// 		}
-		// 	})
-
-
-
-		// 	// await tx.insert(productStocks).values(stocks)
-
-		// })
 
 		await prisma.$transaction(async (tx) => {
 			const purchaseRes = await tx.purchase.create({
@@ -114,9 +73,10 @@ purchaseRoute.post("/create", zValidator("json", CreatePurchaseDto), async (c) =
 			})
 
 			for (const item of dto.purchaseItems) {
+				const { unitsId, ...restitems } = item
 				const purchaseItemRes = await tx.purchaseItem.create({
 					data: {
-						...item,
+						...restitems,
 						purchaseId: purchaseRes.id,
 						batchNumber: batchnumber
 					}
@@ -126,7 +86,7 @@ purchaseRoute.post("/create", zValidator("json", CreatePurchaseDto), async (c) =
 
 
 
-				stocks = stocks.map(stock => stock.productsVariantId === item.productVariantId ? {
+				stocks = stocks.map(stock => stock.productId === item.productId ? {
 					...stock,
 					purchaseItemId: +purchaseItemRes.id
 				} : stock)
@@ -137,7 +97,7 @@ purchaseRoute.post("/create", zValidator("json", CreatePurchaseDto), async (c) =
 			for (const stk of stocks) {
 				await tx.productStocks.upsert({
 					where: {
-						productsVariantId: +stk.productsVariantId
+						productId: +stk.productId
 					},
 					create: stk,
 					update: stk

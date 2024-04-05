@@ -58,14 +58,15 @@ export const saveFiles = async (files: any[], path: string, name?: string) => {
     const originfileName = file.name.split('.')[0]
 
     const fileName = !name ? originfileName + '-' + randomUUID() + "." + ext : name + '.' + ext;
+    const fileUrl = originfileName + '-' + randomUUID() + "." + ext
     fileNames.push({
       name: fileName,
-      url: fileName,
+      url: fileUrl,
     })
     // console.log("35", { fileName });
     // console.log("data:", file);
 
-    // await Bun.write(`${path}/${fileName}`, file)
+    await Bun.write(`${path}/${fileUrl}`, file)
   }
   return fileNames
 }

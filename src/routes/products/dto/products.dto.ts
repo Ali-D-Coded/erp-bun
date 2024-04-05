@@ -63,6 +63,7 @@ export const CreateProductDto = z.object({
 	customFields: z.any(),
 
 	variantCombinations: z.any(),
+	images: z.array(z.string()),
 
 })
 

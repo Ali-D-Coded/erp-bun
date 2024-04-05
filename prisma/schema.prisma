@@ -28,7 +28,6 @@ model Roles {
   employees Employees[]
 }
 
-
 model Privileges {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -99,7 +98,8 @@ model Vendors {
   address       Json
   vatNo         String
 
-  purchases Purchase[]
+  purchases       Purchase[]
+  PurchaseReturns PurchaseReturns[]
 
   @@index([email])
 }
@@ -237,7 +237,8 @@ model Products {
 
   customFields Json?
 
-  images Media[]
+  // images Media[]
+  images Json?
 
   ProductStocks ProductStocks?
 
@@ -278,8 +279,8 @@ model Media {
   url  String @unique
   path String
 
-  Products   Products? @relation(fields: [productsId], references: [id])
-  productsId Int?
+  // Products   Products? @relation(fields: [productsId], references: [id])
+  // productsId Int?
 }
 
 model Raks {
@@ -319,7 +320,7 @@ model PurchaseItem {
   commissionPercentage Decimal
   quantity             Int
 
-  productVariantId Int
+  productId Int
 
   // Units      Units?    @relation(fields: [unitsId], references: [id])
   // unitsId    Int?
@@ -343,6 +344,44 @@ model Purchase {
   purchaseItems PurchaseItem[]
   Vendors       Vendors?       @relation(fields: [vendorsId], references: [id])
   vendorsId     Int?
+}
+
+model PurchaseReturns {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
+
+  purchaseBillNo String
+  date           DateTime
+  totalAmount    Decimal
+
+  purchaseItems PurchaseReturnItem[]
+  Vendors       Vendors?             @relation(fields: [vendorsId], references: [id])
+  vendorsId     Int?
+}
+
+model PurchaseReturnItem {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  deleted   Boolean  @default(false)
+
+  batchNumber          String
+  purchasePrice        Decimal
+  minimumSellingPrice  Decimal
+  maximumRetailPrice   Decimal
+  commissionPercentage Decimal
+  quantity             Int
+
+  productId Int
+
+  // Units      Units?    @relation(fields: [unitsId], references: [id])
+  // unitsId    Int?
+  unit String
+
+  PurchaseReturns   PurchaseReturns? @relation(fields: [purchaseReturnsId], references: [id])
+  purchaseReturnsId Int?
 }
 
 model ProductStocks {

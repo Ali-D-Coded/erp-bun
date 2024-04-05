@@ -390,6 +390,11 @@ export const productsData = [
 		quantityAlert: 10,
 		VAT: 15.00,
 		customFields: "",
+		images: [
+			"http://localhost:4040/uploads/products/realme12pro5g1.jpeg",
+			"http://localhost:4040/uploads/products/realme12pro5g1.jpeg",
+
+		]
 		// variantCombinations: []
 	},
 	{
@@ -406,6 +411,11 @@ export const productsData = [
 		quantityAlert: 10,
 		VAT: 15.00,
 		customFields: "",
+		images: [
+			"http://localhost:4040/uploads/products/rogzyphyrusg14.jpeg",
+			"http://localhost:4040/uploads/products/rogzyphyrusg143.jpeg",
+			"http://localhost:4040/uploads/products/zyphyrusg142.jpeg",
+		]
 		// variantCombinations: []
 
 	},

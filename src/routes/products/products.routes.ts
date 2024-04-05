@@ -32,21 +32,14 @@ const saveFile = async (files: any[], path: string, productId: number | null) =>
 
 
 
-productsRoute.post("/create-product", zValidator("form", CreateProductDto), async (c) => {
+productsRoute.post("/create-product", zValidator("json", CreateProductDto), async (c) => {
 	try {
-		const STORE_PATH = "uploads/products";
+		// const STORE_PATH = "uploads/products";
 		const formData = await c.req.formData()
 
 
 		const dto = await CreateProductDto.parseAsync(await c.req.parseBody())
-		// const data = {
-		// 	...Object.entries(dto).reduce((acc, [key, value]) => {
-		// 		if (value !== undefined) {
-		// 			acc[key] = value
-		// 		}
-		// 		return acc
-		// 	}, {})
-		// }
+
 		console.log({ dto, formData: formData.getAll("files") });
 		console.log({ varcombo: JSON.parse(dto.variantCombinations) });
 		const variantCombinations: [] = JSON.parse(dto.variantCombinations).length > 0 ? JSON.parse(dto.variantCombinations) : undefined
@@ -72,24 +65,26 @@ productsRoute.post("/create-product", zValidator("form", CreateProductDto), asyn
 					data: variantCombinations
 				}
 			},
+			images: dto.images
 		}
 
 
 
 
-		const productRes = await prisma.products.create({
+		await prisma.products.create({
 			data
 		})
 
-		const fileNames: any[] = formData.getAll("files").length > 0 ? await saveFile(formData.getAll("files"), STORE_PATH, productRes.id) : []
+		// const fileNames: any[] = formData.getAll("files").length > 0 ? await saveFile(formData.getAll("files"), STORE_PATH, productRes.id) : []
 
-		console.log({ fileNames });
+		// console.log({ fileNames });
 
 
-		// await db.insert(media).values(fileNames)
-		await prisma.media.createMany({
-			data: fileNames
-		})
+		// // await db.insert(media).values(fileNames)
+		// await prisma.media.createMany({
+		// 	data: fileNames
+		// })
+
 
 
 
@@ -112,7 +107,7 @@ productsRoute.get("/all/:id", async (c) => {
 				id: +id
 			},
 			include: {
-				images: true,
+				// images: true,
 				variantCombinations: true,
 			}
 		})
@@ -167,7 +162,7 @@ productsRoute.get("/all", async (c) => {
 				Categories: true,
 				SubCategories: true,
 				variantCombinations: true,
-				images: true,
+				// images: true,
 				Brand: true,
 				Raks: true,
 				Units: true
