@@ -240,7 +240,7 @@ model Products {
   // images Media[]
   images Json?
 
-  ProductStocks ProductStocks?
+  // ProductStocks ProductStocks[]
 
   @@index([name, id, productCode, barCode])
 }
@@ -376,8 +376,6 @@ model PurchaseReturnItem {
 
   productId Int
 
-  // Units      Units?    @relation(fields: [unitsId], references: [id])
-  // unitsId    Int?
   unit String
 
   PurchaseReturns   PurchaseReturns? @relation(fields: [purchaseReturnsId], references: [id])
@@ -390,8 +388,13 @@ model ProductStocks {
   updatedAt DateTime @updatedAt()
   deleted   Boolean  @default(false)
 
-  product   Products? @relation(fields: [productId], references: [id])
-  productId Int?      @unique
+  // product   Products? @relation(fields: [productId], references: [id])
+  // productId Int?
+
+  productId   Int
+  name        String @db.VarChar(540)
+  productCode Int
+  barCode     String
 
   purchaseItem   PurchaseItem? @relation(fields: [purchaseItemId], references: [id])
   purchaseItemId Int?          @unique

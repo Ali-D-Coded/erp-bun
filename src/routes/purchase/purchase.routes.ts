@@ -53,8 +53,17 @@ purchaseRoute.post("/create", zValidator("json", CreatePurchaseDto), async (c) =
 				throw new Error("No units")
 			}
 
+			const product = await prisma.products.findUniqueOrThrow({
+				where: {
+					id: pur.productId
+				}
+			})
+
 			return {
-				productId: pur.productId,
+				productId: product.id,
+				productName: product?.name,
+				productCode: product?.productCode,
+				barCode: product?.barCode,
 				quantityInStock: Number(unitRes[0].total),
 				purchaseItemId: 0
 			}
@@ -95,12 +104,17 @@ purchaseRoute.post("/create", zValidator("json", CreatePurchaseDto), async (c) =
 			console.log({ stocks });
 
 			for (const stk of stocks) {
-				await tx.productStocks.upsert({
-					where: {
-						productId: +stk.productId
-					},
-					create: stk,
-					update: stk
+				// await tx.productStocks.upsert({
+				// 	where: {
+				// 		productId: +stk.productId
+				// 	},
+				// 	create: stk,
+				// 	update: stk
+				// })
+				// const {productId,  } = stk`
+
+				await tx.productStocks.create({
+					data: stk
 				})
 			}
 
