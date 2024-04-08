@@ -392,7 +392,7 @@ model ProductStocks {
   // productId Int?
 
   productId   Int
-  name        String @db.VarChar(540)
+  productName String @db.VarChar(540)
   productCode Int
   barCode     String
 
