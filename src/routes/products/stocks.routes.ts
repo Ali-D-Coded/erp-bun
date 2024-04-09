@@ -16,7 +16,6 @@ stocksRoute.get("/all", async (c) => {
 
 		const stks = await prisma.productStocks.findMany({
 			include: {
-				product: true,
 				purchaseItem: true
 			}
 		})

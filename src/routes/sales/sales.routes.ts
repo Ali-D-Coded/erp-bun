@@ -20,19 +20,11 @@ salesRoutes.post("/create", zValidator("json", CreateSalesDto), async (c) => {
 
 			const prod1 = await prisma.productStocks.findUniqueOrThrow({
 				where: {
-					productsVariantId: +item.productVariantId
+					id: +item.stockId
 				},
 				include: {
 					// productVariant: true,
-					purchaseItem: {
-						include: {
-							ProductStocks: {
-								include: {
-									productVariant: true
-								}
-							}
-						}
-					}
+					purchaseItem: true
 				}
 			})
 
@@ -52,11 +44,12 @@ salesRoutes.post("/create", zValidator("json", CreateSalesDto), async (c) => {
 			const productCommission = await calculateDisc(+productCommissionPercent, productAmount)
 
 			return {
+				stockId: +item.stockId,
 				productAmount,
 				productCommission,
 				discountAmount,
-				productVariantId: item.productVariantId,
-				productCode: prod1.purchaseItem?.ProductStocks?.productVariant?.productCode,
+				productId: prod1.productId,
+				productCode: prod1.productCode,
 				quantity: item.quantity,
 			}
 		}))
@@ -81,44 +74,6 @@ salesRoutes.post("/create", zValidator("json", CreateSalesDto), async (c) => {
 
 
 
-		// await db.transaction(async (tx) => {
-		// 	const saleRes = await tx.insert(sales).values({
-		// 		date: new Date(dto.date),
-		// 		accountantId: dto.accountantId,
-		// 		salesmanId: dto.salesmanId,
-		// 		customerId: dto.customerId,
-		// 		totalAmount: totalAmount.toFixed(2),
-		// 		additionalDisocunt: additionalDiscountedAmount.toFixed(2),
-		// 		totalDiscountAmount: totalDiscountAmount.toFixed(2),
-		// 		grandTotal: grandTotal.toFixed(2)
-		// 	})
-
-		// 	const salesProductsData: NewSalesProduct[] = productsData.map(it => {
-		// 		return {
-		// 			saleId: saleRes[0].insertId,
-		// 			discountAmount: it.discountAmount.toFixed(2),
-		// 			productVariantId: it.productVariantId,
-		// 			quantity: it.quantity
-		// 		}
-		// 	})
-		// 	await tx.insert(salesProducts).values(salesProductsData)
-
-		// 	for (const prod of productsData) {
-		// 		await tx.update(productStocks).set({
-		// 			quantityInStock: sql`${productStocks.quantityInStock} - ${prod.quantity}`
-		// 		}).where(eq(productStocks.productVariantId, prod.productVariantId));
-		// 	}
-
-		// 	//add the commission to salesman
-		// 	await tx.insert(salesCommission).values({
-		// 		salesmanId: dto.salesmanId,
-		// 		saleId: saleRes[0].insertId,
-		// 		saleDate: new Date(dto.date),
-		// 		commissionEarned: totalProductCommission.toFixed(2),
-		// 		notes: "sales commission"
-		// 	})
-
-		// })
 
 		await prisma.$transaction(async (tx) => {
 			const salesRes = await tx.sales.create({
@@ -137,7 +92,7 @@ salesRoutes.post("/create", zValidator("json", CreateSalesDto), async (c) => {
 				return {
 					salesId: salesRes.id,
 					discountAmount: it.discountAmount.toFixed(2),
-					productVariantId: it.productVariantId,
+					productId: it.productId,
 					productCode: it.productCode,
 					quantity: it.quantity
 				}
@@ -151,7 +106,7 @@ salesRoutes.post("/create", zValidator("json", CreateSalesDto), async (c) => {
 			for (const prod of productsData) {
 				await tx.productStocks.update({
 					where: {
-						productsVariantId: +prod.productVariantId
+						id: +prod.stockId
 					},
 					data: {
 						quantityInStock: {

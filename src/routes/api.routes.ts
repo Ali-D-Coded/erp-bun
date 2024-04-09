@@ -1,25 +1,23 @@
 import { Hono } from "hono";
 
-import authRoute from "./auth/auth.routes";
 import departmentsApi from "./departments/departments.routes";
 import employeeRoutes from "./employees/employees.routes";
-import permissionsRoute from "./permissions/permissions.routes";
 
 import roleRoutes from "./auth/roles.routes";
+import fsRoutes from "./media/filesystem.routes";
+import mediaRoute from "./media/media.routes";
+import brandRoutes from "./products/brands.routes";
 import categoryRoute from "./products/categories.routes";
 import productsRoute from "./products/products.routes";
+import rakRoutes from "./products/raks.routes";
 import stocksRoute from "./products/stocks.routes";
 import subCategoryRoute from "./products/subCategories.routes";
 import unitsRoutes from "./products/units.routes";
+import VAroutes from "./products/variant-attributes.routes";
 import purchaseRoute from "./purchase/purchase.routes";
 import salesRoutes from "./sales/sales.routes";
 import customerRoutes from "./users/customer.routes";
 import vendorRoutes from "./vendors/vendor.routes";
-import brandRoutes from "./products/brands.routes";
-import rakRoutes from "./products/raks.routes";
-import VAroutes from "./products/variant-attributes.routes";
-import mediaRoute from "./media/media.routes";
-import fsRoutes from "./media/filesystem.routes";
 
 
 const api = new Hono()
@@ -44,7 +42,7 @@ const api = new Hono()
 // )
 
 
-api.route("/auth", authRoute)
+// api.route("/auth", authRoute)
 api.route("/roles", roleRoutes)
 api.route("/customer", customerRoutes)
 api.route("/vendors", vendorRoutes)

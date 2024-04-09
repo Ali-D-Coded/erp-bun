@@ -178,94 +178,94 @@ productsRoute.get("/all", async (c) => {
 
 
 
-productsRoute.patch("/update-product-variants/:id", zValidator("json", UpdateProductVariantDto), async (c) => {
-	try {
+// productsRoute.patch("/update-product-variants/:id", zValidator("json", UpdateProductVariantDto), async (c) => {
+// 	try {
 
-		const { id } = await c.req.param()
+// 		const { id } = await c.req.param()
 
-		const data = await UpdateProductVariantDto.parseAsync(await c.req.json())
+// 		const data = await UpdateProductVariantDto.parseAsync(await c.req.json())
 
-		console.log({ data });
-
-
-		// await db.update(productsVariant).set({ ...data }).where(eq(productsVariant.id, +id))
-		await prisma.productsVariant.update({
-			where: {
-				id: +id
-			},
-			data: {
-				...data
-			}
-		})
-		return c.json({
-			msg: "product updated"
-		})
-	} catch (error: any) {
-		return c.newResponse(error, 400)
-	}
-})
+// 		console.log({ data });
 
 
-productsRoute.patch("/update-product-variants-image/:productId", async (c) => {
-	try {
-		const { productId } = c.req.param()
-		const STORE_PATH = "uploads/products";
-		const formData = await c.req.formData()
+// 		// await db.update(productsVariant).set({ ...data }).where(eq(productsVariant.id, +id))
+// 		await prisma.productsVariant.update({
+// 			where: {
+// 				id: +id
+// 			},
+// 			data: {
+// 				...data
+// 			}
+// 		})
+// 		return c.json({
+// 			msg: "product updated"
+// 		})
+// 	} catch (error: any) {
+// 		return c.newResponse(error, 400)
+// 	}
+// })
 
 
-		// const mediaPrev = await db.query.media.findFirst({
-		// 	where: eq(media.id, +id)
-		// })
-
-		// if (mediaPrev) {
-		// console.log({mediaPrev});
-
-		const fileNames: any[] = formData.getAll("files").length > 0 ? await saveFile(formData.getAll("files"), STORE_PATH, +productId) : []
-		console.log({ fileNames });
+// productsRoute.patch("/update-product-variants-image/:productId", async (c) => {
+// 	try {
+// 		const { productId } = c.req.param()
+// 		const STORE_PATH = "uploads/products";
+// 		const formData = await c.req.formData()
 
 
-		// await db.insert(media).values(fileNames)
-		await prisma.media.createMany({ data: fileNames })
+// 		// const mediaPrev = await db.query.media.findFirst({
+// 		// 	where: eq(media.id, +id)
+// 		// })
 
-		// await removefile(`${STORE_PATH}/${mediaPrev.url}`)
-		return c.json({
-			msg: "product updated"
-		})
-		// } else {
-		// throw new Error("No media found")
-		// }
-	} catch (error: any) {
-		return c.newResponse(error, 400)
-	}
-})
+// 		// if (mediaPrev) {
+// 		// console.log({mediaPrev});
 
-productsRoute.delete("/delete/product-variant-image/:id", async (c) => {
-	try {
-		const STORE_PATH = "uploads/products";
-		const { id } = await c.req.param()
-		const mediadata = await prisma.media.findFirst({
-			where: {
-				id: +id
-			}
-		})
+// 		const fileNames: any[] = formData.getAll("files").length > 0 ? await saveFile(formData.getAll("files"), STORE_PATH, +productId) : []
+// 		console.log({ fileNames });
 
-		// await db.delete(media).where(eq(media.id, +id))
-		await prisma.media.delete({
-			where: {
-				id: +id
-			}
-		})
 
-		await removefile(`${STORE_PATH}/${mediadata?.url}`)
+// 		// await db.insert(media).values(fileNames)
+// 		await prisma.media.createMany({ data: fileNames })
 
-		return c.json({
-			msg: "image deleted"
-		})
+// 		// await removefile(`${STORE_PATH}/${mediaPrev.url}`)
+// 		return c.json({
+// 			msg: "product updated"
+// 		})
+// 		// } else {
+// 		// throw new Error("No media found")
+// 		// }
+// 	} catch (error: any) {
+// 		return c.newResponse(error, 400)
+// 	}
+// })
 
-	} catch (error) {
-		return c.newResponse(error, 400)
-	}
-})
+// productsRoute.delete("/delete/product-variant-image/:id", async (c) => {
+// 	try {
+// 		const STORE_PATH = "uploads/products";
+// 		const { id } = await c.req.param()
+// 		const mediadata = await prisma.media.findFirst({
+// 			where: {
+// 				id: +id
+// 			}
+// 		})
+
+// 		// await db.delete(media).where(eq(media.id, +id))
+// 		await prisma.media.delete({
+// 			where: {
+// 				id: +id
+// 			}
+// 		})
+
+// 		await removefile(`${STORE_PATH}/${mediadata?.url}`)
+
+// 		return c.json({
+// 			msg: "image deleted"
+// 		})
+
+// 	} catch (error) {
+// 		return c.newResponse(error, 400)
+// 	}
+// })
 
 
 productsRoute.delete("/delete/:id", async (c) => {

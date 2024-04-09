@@ -6,6 +6,8 @@ import { cors } from 'hono/cors'
 import { mainSeeder } from './database/prisma/seed'
 import dbroute from './routes/db.routes'
 import { serveStatic } from 'hono/bun'
+import { jwt } from 'hono/jwt'
+import authRoute from './routes/auth/auth.routes'
 
 
 
@@ -15,6 +17,15 @@ app.use('/api/*', cors({
 }))
 app.use("*", logger())
 app.use('*', poweredBy())
+
+const secret = process.env.JWT_SECRET || "thisissosecret"
+
+app.use(
+  '/api/*',
+  jwt({
+    secret: secret,
+  })
+)
 
 app.use('/uploads/*', serveStatic({ root: './' }))
 
@@ -36,6 +47,9 @@ app.notFound((c) => {
 app.route("/database", dbroute)
 
 app.route("/api", api)
+
+//auth route
+app.route("/auth", authRoute)
 
 app.get("/test", (c) => {
   return c.json({
