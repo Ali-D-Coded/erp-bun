@@ -11,7 +11,7 @@ mediaRoute.post("/create", zValidator("form", CreateMediaDto), async (c) => {
 	try {
 
 		const formData = await c.req.formData()
-		// console.log({ formData });
+		console.log({ formData });
 		// console.log(formData.get("path"));
 
 		const STORE_PATH = storepaths.get(formData.get("path") as string);
@@ -20,21 +20,27 @@ mediaRoute.post("/create", zValidator("form", CreateMediaDto), async (c) => {
 		const files = await saveFiles(formData.getAll("images"), STORE_PATH as string, formData.get("name") as string)
 
 
+		console.log({ files });
 
 
 		let lastCreatedRecords: any[] = []
 
 		for (const file of files) {
+
 			const res = await prisma.media.create({
 				data: {
 					...file,
 					path: STORE_PATH as string
 				}
 			})
-			lastCreatedRecords.push({
-				url: `${base}/${res.path}/${res.url}`
-			})
+			console.log({ res });
+
+			lastCreatedRecords.push(
+				`${base}/${res.path}/${res.url}`
+			)
 		}
+		console.log({ lastCreatedRecords });
+
 
 
 
