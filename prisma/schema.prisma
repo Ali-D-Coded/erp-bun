@@ -59,13 +59,14 @@ model Admins {
   updatedAt DateTime @updatedAt()
   deleted   Boolean  @default(false)
 
-  fullName String
-  userName String @unique
-  email    String @unique
-  password String
-  phone    String @unique
-  Roles    Roles? @relation(fields: [rolesId], references: [id])
-  rolesId  Int?
+  fullName     String
+  userName     String  @unique
+  email        String  @unique
+  password     String
+  phone        String  @unique
+  Roles        Roles?  @relation(fields: [rolesId], references: [id])
+  rolesId      Int?
+  refreshToken String? @unique @db.VarChar(540)
 
   @@index([id, userName, email])
 }
@@ -556,6 +557,8 @@ model Employees {
   salesCommission SalesCommission[] @relation("salesman")
 
   rak Raks?
+
+  refreshToken String? @unique @db.VarChar(540)
 }
 
 model Attendance {

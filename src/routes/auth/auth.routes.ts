@@ -5,6 +5,7 @@ import { z } from "zod";
 
 import prisma from "../../database/prisma";
 import { JwtHandler } from "../../utils/jwt";
+import { RefreshDto } from "./dto/auth.dto";
 
 
 
@@ -71,6 +72,14 @@ authRoute.post("local/admin/login", async (c) => {
 		}
 
 		const token = jwtHandler.generateToken({ id: admin.id, userName: admin.userName, email: admin.email, role: admin.rolesId })
+		await prisma.admins.update({
+			where: {
+				id: admin.id
+			},
+			data: {
+				refreshToken: token.refresh
+			}
+		})
 		const { password, ...rest } = admin
 		return c.json({ user: rest, token })
 	} catch (error: any) {
@@ -78,6 +87,63 @@ authRoute.post("local/admin/login", async (c) => {
 	}
 })
 
+
+authRoute.post("refresh", zValidator("json", RefreshDto), async (c) => {
+	try {
+		const dto = await RefreshDto.parseAsync(await c.req.json())
+
+
+
+		let user;
+		let token;
+		const jwtHandler = new JwtHandler()
+
+		if (dto.userType === "ADMIN") {
+			user = await prisma.admins.findUniqueOrThrow({
+				where: {
+					refreshToken: dto.refresh
+				}
+			})
+			token = jwtHandler.generateToken({ id: user.id, userName: user.userName, email: user.email, role: user.rolesId })
+
+			await prisma.admins.update({
+				where: {
+					id: user.id
+				},
+				data: {
+					refreshToken: token.refresh
+				}
+			})
+		} else if (dto.userType === "EMPL") {
+
+			user = await prisma.employees.findUniqueOrThrow({
+				where: {
+					refreshToken: dto.refresh
+				}
+			})
+			await prisma.employees.update({
+				where: {
+					id: user.id
+				},
+				data: {
+					refreshToken: token.refresh
+				}
+			})
+
+		} else {
+			throw new Error("Invalid User Type")
+		}
+
+
+
+
+		return c.json(token)
+
+	} catch (error) {
+		return c.newResponse(error, 400)
+
+	}
+})
 
 authRoute.post("local/employee/login", async (c) => {
 
@@ -103,6 +169,16 @@ authRoute.post("local/employee/login", async (c) => {
 		}
 
 		const token = jwtHandler.generateToken({ id: employee.id, userName: employee.userName, email: employee.email, role: employee.rolesId })
+
+		await prisma.employees.update({
+			where: {
+				id: employee.id
+			},
+			data: {
+				refreshToken: token.refresh
+			}
+		})
+
 		const { password, ...rest } = employee
 		return c.json({ user: rest, token })
 	} catch (error: any) {
@@ -110,6 +186,9 @@ authRoute.post("local/employee/login", async (c) => {
 	}
 
 })
+
+
+
 
 
 

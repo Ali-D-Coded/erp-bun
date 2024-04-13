@@ -18,6 +18,7 @@ import purchaseRoute from "./purchase/purchase.routes";
 import salesRoutes from "./sales/sales.routes";
 import customerRoutes from "./users/customer.routes";
 import vendorRoutes from "./vendors/vendor.routes";
+import userRoutes from "./users/user.routes";
 
 
 const api = new Hono()
@@ -61,6 +62,7 @@ api.route("/raks", rakRoutes)
 api.route("/variant-attributes", VAroutes)
 api.route("/media", mediaRoute)
 api.route("/fs", fsRoutes)
+api.route("/user", userRoutes)
 
 
 
