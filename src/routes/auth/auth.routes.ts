@@ -98,7 +98,22 @@ authRoute.post("refresh", zValidator("json", RefreshDto), async (c) => {
 		let token;
 		const jwtHandler = new JwtHandler()
 
-		if (dto.userType === "ADMIN") {
+		const reqtoken = c.req.header().authorization.replace("Bearer ", "").trim()
+		const verified = await jwtHandler.verifyToken(reqtoken)
+		// console.log({ verified });
+		// console.log(new Date() > new Date(verified.exp * 1000));
+
+		console.log(reqtoken);
+		const role: any = await prisma.roles.findUnique({
+			where: {
+				id: verified.role
+			},
+			include: {
+				privileges: true
+			}
+		})
+
+		if (role?.roleName === "ADMIN") {
 			user = await prisma.admins.findUniqueOrThrow({
 				where: {
 					refreshToken: dto.refresh
@@ -114,7 +129,7 @@ authRoute.post("refresh", zValidator("json", RefreshDto), async (c) => {
 					refreshToken: token.refresh
 				}
 			})
-		} else if (dto.userType === "EMPL") {
+		} else if (["SALESMAN", "ACCOUNTANT"].includes(role?.roleName)) {
 
 			user = await prisma.employees.findUniqueOrThrow({
 				where: {
