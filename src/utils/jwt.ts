@@ -22,7 +22,7 @@ export class JwtHandler {
 
 	generateToken(payload: any) {
 		console.log({ secret: this.secret_access });
-		const access = jwt.sign(payload, this.secret_access, { expiresIn: '1h' }); // 1 hour expiration
+		const access = jwt.sign(payload, this.secret_access, { expiresIn: 300 }); // 1 hour expiration
 		const refresh = jwt.sign(payload, this.secret_refresh, { expiresIn: '3d' }); // 3 day expiration
 		const accessExpires = this.verifyToken(access).exp * 1000
 

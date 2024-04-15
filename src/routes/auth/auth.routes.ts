@@ -81,7 +81,8 @@ authRoute.post("local/admin/login", async (c) => {
 			}
 		})
 		const { password, ...rest } = admin
-		return c.json({ user: rest, token })
+		// return c.json({ user: rest, token })
+		return c.json(token)
 	} catch (error: any) {
 		return c.newResponse(error, 400)
 	}
@@ -98,12 +99,12 @@ authRoute.post("refresh", zValidator("json", RefreshDto), async (c) => {
 		let token;
 		const jwtHandler = new JwtHandler()
 
-		const reqtoken = c.req.header().authorization.replace("Bearer ", "").trim()
-		const verified = await jwtHandler.verifyToken(reqtoken)
+		// const reqtoken = c.req.header().authorization.replace("Bearer ", "").trim()
+		const verified = await jwtHandler.verifyToken(dto.refresh)
 		// console.log({ verified });
 		// console.log(new Date() > new Date(verified.exp * 1000));
 
-		console.log(reqtoken);
+		// console.log(reqtoken);
 		const role: any = await prisma.roles.findUnique({
 			where: {
 				id: verified.role
@@ -136,6 +137,9 @@ authRoute.post("refresh", zValidator("json", RefreshDto), async (c) => {
 					refreshToken: dto.refresh
 				}
 			})
+
+			token = jwtHandler.generateToken({ id: user.id, userName: user.userName, email: user.email, role: user.rolesId })
+
 			await prisma.employees.update({
 				where: {
 					id: user.id
@@ -195,7 +199,8 @@ authRoute.post("local/employee/login", async (c) => {
 		})
 
 		const { password, ...rest } = employee
-		return c.json({ user: rest, token })
+		// return c.json({ user: rest, token })
+		return c.json(token)
 	} catch (error: any) {
 		return c.newResponse(error, 400)
 	}
